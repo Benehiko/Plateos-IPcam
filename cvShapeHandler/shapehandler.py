@@ -19,17 +19,18 @@ class ShapeHandler:
         # NEW CODE
         #img_blur = ImagePreProcessing.blur(self.img)
 
-        img_gray = ImagePreProcessing.togray(self.img)
+        img_resize = ImagePreProcessing.resize(self.img, 1080)
+        img_gray = ImagePreProcessing.togray(img_resize)
         #img_equ = ImagePreProcessing.equaHist(img_gray)
         #img_morph = ImagePreProcessing.morph(img_equ)
         img_thresh = ImagePreProcessing.binary(img_gray, 240)
         img_gray[img_thresh == 255] = 0
 
-        #img_erosion = ImagePreProcessing.erode(img_gray)
+        img_erosion = ImagePreProcessing.erode(img_gray)
         #img_gray = ImagePreProcessing.togray(img_erosion)
-        #img_dilate = ImagePreProcessing.dilate(img_erosion)
+        img_dilate = ImagePreProcessing.dilate(img_erosion)
         #img_canny = ImagePreProcessing.tocanny(img_erosion, 100)
-        #img_thresh = ImagePreProcessing.adaptiveBinnary(img_gray)
+        img_thresh = ImagePreProcessing.adaptiveBinnary(img_dilate)
         #cv2.imshow('Frame', cv2.resize(img_thresh, (1296, 720)))
 
         #New-New code
@@ -38,7 +39,9 @@ class ShapeHandler:
         # mat_denoise = ImagePreProcessing.denoise(mat_grey)
         # mat_binary = ImagePreProcessing.binary(mat_denoise)
 
-        image, contours, hierarchy = cv2.findContours(img_gray.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        img_resize = ImagePreProcessing.resize(img_thresh, self.img.shape[1])
+
+        image, contours, hierarchy = cv2.findContours(img_resize, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
         self.contours = contours
         # cnts = contours[0] if imutils.is_cv2() else contours[1]
@@ -76,7 +79,7 @@ class ShapeHandler:
         p_a = (area * 100) / img_area
         p_w = w * 100 / img_width
         p_h = h * 100 / img_height
-        if 0.15 <= p_a <= 5 and p_h <= 60 and p_w <= 60:
+        if 0.05 <= p_a <= 5 and p_h <= 60 and p_w <= 60:
             #if (0 >= angle >= -30 or -150 >= angle >= -180) or (0 <= angle <= 30 or 150 <= angle <= 180):
             return True
         return False

@@ -254,7 +254,7 @@ class ImagePreProcessing:
             new_h = img_h
             new_w = img_w
 
-            print("Image current resolution: ", str(img_w), "x", str(img_h))
+            #print("Image current resolution: ", str(img_w), "x", str(img_h))
             if img_w > max_w:
                 new_w = max_w
                 new_h = int((new_w * img_h) / img_w)
@@ -265,7 +265,7 @@ class ImagePreProcessing:
                 new_w = int((new_h * img_w) / img_h)
 
             dist_size = (new_w, new_h)
-            print("New size:", str(dist_size))
+            #print("New size:", str(dist_size))
             resized = cv2.resize(img, dist_size, interpolation=cv2.INTER_AREA)
             encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), quality]
 
@@ -292,7 +292,7 @@ class ImagePreProcessing:
         if img is not None:
             # print("Saving image of", img.nbytes/10000000, "MB")
             try:
-                tmp = ImagePreProcessing.cv_resize_compress(img)
+                tmp = ImagePreProcessing.cv_resize_compress(img, max_w=200)
                 tmp = ImagePreProcessing.bgr2rgb(tmp)
                 filename = datetime.datetime.now().strftime("%Y-%m-%d-%H_%M_%S")
                 if tmp is not None:

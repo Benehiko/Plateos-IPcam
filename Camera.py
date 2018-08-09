@@ -1,21 +1,23 @@
 from Backdrop.Backdrop import Backdrop
-from camera.Camera import Camera
+from Network.PortScanner import PortScanner
+import xml.etree.ElementTree as ET
 
+import asyncio
+import sys
 
-cam1 = "192.168.1.104"
-cam2 = "192.168.1.108"
-username = "admin"
-password = "Benehiko123!"
+#tree = ET.parse("settings.xml")
+#root = tree.getroot()
+#print(root)
 
-camera = Camera(cam1, username, password)
-camera2 = Camera(cam2, username, password)
+try:
+    scanner = PortScanner()
+    active = scanner.scan("192.168.1.100-192.168.1.200")
 
-camera.start()
-camera2.start()
-
-#runner1 = Backdrop(camera, camera2)
-#runner1.run()
-
-
-
-#cv2.destroyAllWindows()
+    if len(active) > 0:
+        args = ("admin", "Benehiko123!", active)
+        runner = Backdrop(args)
+        runner.run()
+    else:
+        print("Exiting...")
+except KeyboardInterrupt:
+    sys.exit(0)
