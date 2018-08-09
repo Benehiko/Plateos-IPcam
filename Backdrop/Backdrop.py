@@ -1,6 +1,10 @@
 from camera.Camera import Camera
 from multiprocessing import Process
 from tess.tesseract import Tess
+from cvShapeHandler.imageprocessing import ImagePreProcessing
+
+import datetime
+
 
 class Backdrop:
 
@@ -26,4 +30,6 @@ class Backdrop:
 
     def callbackPlate(self, plate):
         plate = [x for x in plate if x is not None]  # Keep element if it is not False
-        print(plate)
+        print(plate[0])
+        filename = "cache/" + datetime.datetime.now().strftime("%Y-%m-%d")
+        ImagePreProcessing.save(plate[1], filename)
