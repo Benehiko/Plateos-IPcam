@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+<username>Tove</username>
+<password>Jani</password> 
+<iprange>192.168.1.100-192.168.1.200</iprange>
+<posturl>Don't forget me this weekend!</posturl>
+<server-port>1000</server-port>
+</data>
