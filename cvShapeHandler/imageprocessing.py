@@ -10,6 +10,36 @@ class ImagePreProcessing:
         self.logger = logging.getLogger(self.__class__.__name__)
 
     @staticmethod
+    def deskew(image, thresh):
+        # grab the (x, y) coordinates of all pixel values that
+        # are greater than zero, then use these coordinates to
+        # compute a rotated bounding box that contains all
+        # coordinates
+        coords = np.column_stack(np.where(thresh > 0))
+        angle = cv2.minAreaRect(coords)[-1]
+
+        # the `cv2.minAreaRect` function returns values in the
+        # range [-90, 0); as the rectangle rotates clockwise the
+        # returned angle trends to 0 -- in this special case we
+        # need to add 90 degrees to the angle
+        if angle < -45:
+            angle = -(90 + angle)
+
+        # otherwise, just take the inverse of the angle to make
+        # it positive
+        else:
+            angle = -angle
+
+        # rotate the image to deskew it
+        (h, w) = image.shape[:2]
+        center = (w // 2, h // 2)
+        M = cv2.getRotationMatrix2D(center, angle, 1.0)
+        rotated = cv2.warpAffine(image, M, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
+        return rotated
+
+
+
+    @staticmethod
     def rotate_image(img, angle):
         height, width = img.shape[:2]
         image_center = (width / 2, height / 2)
@@ -197,9 +227,9 @@ class ImagePreProcessing:
         return img_bin
 
     @staticmethod
-    def otsu_binary(img):
-        blur = cv2.GaussianBlur(img, (5, 5), 0)
-        _, thresh = cv2.threshold(blur, 240, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    def otsu_binary(img, thresh=0):
+        #blur = cv2.GaussianBlur(img, (5, 5), 0)
+        thresh = cv2.threshold(img, thresh, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
         return thresh
 
     @staticmethod
@@ -315,3 +345,45 @@ class ImagePreProcessing:
     @staticmethod
     def init_UMAT(img):
         return cv2.UMat(img.copy())
+
+    @staticmethod
+    def inverse(image):
+        return cv2.bitwise_not(image)
+
+    @staticmethod
+    def process_for_shape_detection(image):
+        img = image.copy()
+        # Resize image for faster processing
+        img_resize = ImagePreProcessing.resize(img, 1080)
+        img_gray = ImagePreProcessing.togray(img_resize)
+
+        # Inverse the colours and make foreground pixels white and background black
+        inv = ImagePreProcessing.inverse(img_gray)
+        thresh = cv2.threshold(inv, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+
+        img_erosion = ImagePreProcessing.erode(thresh)
+        img_dilate = ImagePreProcessing.dilate(img_erosion)
+        img_denoise =  ImagePreProcessing.denoise(thresh)
+        thresh = ImagePreProcessing.adaptiveBinnary(img_erosion)
+
+        # Resize image back to original size to keep ratio
+        result = ImagePreProcessing.resize(img_denoise, image.shape[1])
+        return result
+
+    @staticmethod
+    def process_for_shape_detection_old(image):
+        img = image.copy()
+        img_resize = ImagePreProcessing.resize(img, 1080)
+        img_gray = ImagePreProcessing.togray(img_resize)
+        img_thresh = ImagePreProcessing.binary(img_gray, 240)
+
+        # Convert all white pixels to black
+        img_gray[img_thresh == 255] = 0
+
+        # Remove noise
+        img_erosion = ImagePreProcessing.erode(img_gray)
+        img_dilate = ImagePreProcessing.dilate(img_erosion)
+        img_thresh = ImagePreProcessing.adaptiveBinnary(img_dilate)
+
+        result = ImagePreProcessing.resize(img_thresh, image.shape[1])
+        return result

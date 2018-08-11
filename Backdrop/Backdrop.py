@@ -2,6 +2,7 @@ from camera.Camera import Camera
 from multiprocessing import Process
 from tess.tesseract import Tess
 from cvShapeHandler.imageprocessing import ImagePreProcessing
+from numberplate.Numberplate import Numberplate
 
 import datetime
 
@@ -15,7 +16,8 @@ class Backdrop:
         for addr in ip:
             self.camera.append(Camera(username=username, password=password, ip=addr, tess=self.tess))
 
-
+        self.plates = []
+        self.counter = 0
 
     def run(self):
         pool = []
@@ -28,8 +30,20 @@ class Backdrop:
         for i in range(0, len(pool)):
             pool[i].join()
 
-    def callbackPlate(self, plate):
-        plate = [x for x in plate if x is not None]  # Keep element if it is not False
-        print(plate[0])
-        filename = "cache/" + datetime.datetime.now().strftime("%Y-%m-%d")
-        ImagePreProcessing.save(plate[1], filename)
+    def callback_tess(self, plate):
+        #if self.counter == 20:
+            #plates = Numberplate.improve(self.plates)
+            #if len(plates) > 0:
+                #self.cache(plates)
+            #self.counter = 0
+            #self.plates = []
+
+        #plate = [x for x in plate if x is not None]  # Keep element if it is not None
+        self.plates.append(plate)
+        print(plate[0], plate[1], plate[2])
+        self.counter += 1
+
+    def cache(self, plates):
+        for plate in plates:
+            filename = "cache/" + datetime.datetime.now().strftime("%Y-%m-%d")
+            ImagePreProcessing.save(plate[1], filename)

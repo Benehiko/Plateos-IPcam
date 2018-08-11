@@ -6,6 +6,7 @@ from urllib.request import urlopen
 from threading import Thread
 from cvShapeHandler.imgprocess import ImgProcess
 from cvShapeHandler.imageprocessing import ImagePreProcessing
+from cvShapeHandler.imagedisplay import ImageDisplay
 
 
 class Camera:
@@ -21,7 +22,7 @@ class Camera:
 
     def start(self):
         print("Starting camera", self.ip)
-        bytes = ''
+        #bytes = ''
         while True:
             try:
                 reader = urlopen(self.url)
@@ -30,10 +31,8 @@ class Camera:
 
                 drawn, rectangles = self.img_process.process(img)
                 if drawn is not None:
-                    cv2.namedWindow(self.ip, cv2.WINDOW_NORMAL)
-                    cv2.imshow(self.ip, cv2.resize(drawn, (1296, 768)))
+                    ImageDisplay.display(drawn, self.ip)
                     cropped = self.img_process.process_for_tess(img, rectangles)
-                    f_counter = 0
                     pool = []
                     for i in cropped:
                         pool.append(Thread(target=self.tess.process(i)))
@@ -47,9 +46,10 @@ class Camera:
 
             except Exception as e:
                 print(e)
+                break
 
             finally:
-                time.sleep(5)
+                time.sleep(1)
 
     def resultime(self, results):
         filename = "cache/" + datetime.datetime.now().strftime("%Y-%m-%d")

@@ -1,4 +1,5 @@
 from cvShapeHandler.imageprocessing import ImagePreProcessing
+from cvShapeHandler.imagedisplay import ImageDisplay
 
 import logging
 import numpy as np
@@ -15,33 +16,11 @@ class ShapeHandler:
 
     def findcontours(self):
 
-        # Pre-process image
-        # NEW CODE
-        #img_blur = ImagePreProcessing.blur(self.img)
+        processed = ImagePreProcessing.process_for_shape_detection(self.img)
+        ImageDisplay.display(processed, "Processed")
+        #cv2.imshow("Testing result", processed)
 
-        img_resize = ImagePreProcessing.resize(self.img, 1080)
-        img_gray = ImagePreProcessing.togray(img_resize)
-        #img_equ = ImagePreProcessing.equaHist(img_gray)
-        #img_morph = ImagePreProcessing.morph(img_equ)
-        img_thresh = ImagePreProcessing.binary(img_gray, 240)
-        img_gray[img_thresh == 255] = 0
-
-        img_erosion = ImagePreProcessing.erode(img_gray)
-        #img_gray = ImagePreProcessing.togray(img_erosion)
-        img_dilate = ImagePreProcessing.dilate(img_erosion)
-        #img_canny = ImagePreProcessing.tocanny(img_erosion, 100)
-        img_thresh = ImagePreProcessing.adaptiveBinnary(img_dilate)
-        #cv2.imshow('Frame', cv2.resize(img_thresh, (1296, 720)))
-
-        #New-New code
-        # mat_blur = ImagePreProcessing.blur(self.img)
-        # mat_grey = ImagePreProcessing.togrey(mat_blur)
-        # mat_denoise = ImagePreProcessing.denoise(mat_grey)
-        # mat_binary = ImagePreProcessing.binary(mat_denoise)
-
-        img_resize = ImagePreProcessing.resize(img_thresh, self.img.shape[1])
-
-        image, contours, hierarchy = cv2.findContours(img_resize, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        __, contours, hierarchy = cv2.findContours(processed, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
         self.contours = contours
         # cnts = contours[0] if imutils.is_cv2() else contours[1]
@@ -112,6 +91,21 @@ class ShapeHandler:
             box_rect.append(box)
 
         return arrrect, box_rect
+
+    def getCharacters(self, contours):
+        arrrect = []
+        box_rect = []
+
+        for cnt in contours:
+            approx = self.get_approx(cnt)
+            rect = self.get_rotated_rect(approx)
+            arrrect.append(rect)
+            box = cv2.boxPoints(rect)
+            box = np.int0(box)
+            box_rect.append(box)
+
+        return arrrect, box_rect
+
 
     def isDuplicate(self, arrrect, box):
         for tmp in arrrect:
