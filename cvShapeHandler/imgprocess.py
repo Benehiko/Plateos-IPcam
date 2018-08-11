@@ -4,7 +4,7 @@ from cvShapeHandler.imagedraw import ImageDraw
 from cvShapeHandler.imagedisplay import ImageDisplay
 from cvShapeHandler.numpyencoder import NumpyEncoder
 
-
+import time
 import logging
 import json
 
@@ -26,25 +26,27 @@ class ImgProcess:
         for rectangle in rectangles:
             crop_img = ImagePreProcessing.auto_crop(image.copy(), rectangle)
             crop_img = ImagePreProcessing.togray(crop_img)
+            inverse = ImagePreProcessing.inverse(crop_img)
+            thresh = ImagePreProcessing.otsu_binary(inverse)
+            crop_img = ImagePreProcessing.deskew(crop_img, thresh)
+
+            #crop_img = ImagePreProcessing.binary(crop_img, 127)
+            #crop_img = ImagePreProcessing.denoise(crop_img, intensity=2, search_window=7, block_size=3)
+            #crop_img[thresh == 255] = 0
             #crop_img = ImagePreProcessing.equaHist(crop_img)
-            #crop_img = ImagePreProcessing.morph(crop_img)
+
+
             #crop_img = ImagePreProcessing.denoise(crop_img)
+
             images.append(crop_img)
         return images
 
-    def process(self, image):
-        # Resize image
-        img = image.copy()
-
-        if self.resize:
-            img = ImagePreProcessing.resize(img, 1080)
-            # ratio = img.shape[0] / float(resized.shape[0])
-
+    def char_roi(self, cropped):
+        img = cropped.copy()
         self.imgShapeH = ShapeHandler(img)
-        contours = self.imgShapeH.findcontours()
+        contours, binary = self.imgShapeH.findcontours()
         if len(contours) > 0:
-
-            rectangles, box_rectangles = self.imgShapeH.getRectangles(contours)
+            rectangles, box_rectangles = self.imgShapeH.getCharacters(contours)
 
             if len(rectangles) > 0:
                 if self.draw_enable:
@@ -53,13 +55,21 @@ class ImgProcess:
                     except Exception as e:
                         self.logger.error(e)
                     #Process.save("drawn", img)
-                    if self.show_image:
-                        ImageDisplay.display(img)
+                    #ImageDisplay.display(binary, "Drawn Display")
+                return img, rectangles
 
-                # self.overlay_handler(rectangles)
-                #print("Image has rectangles!")
-                # jrect = self.rectangle2json(rectangles)
-                # img_list = ImagePreProcessing.crop(self.img, jrect)
+        return None, None
+
+    def process(self, image):
+        img = image.copy()
+
+        self.imgShapeH = ShapeHandler(img)
+        contours = self.imgShapeH.findcontours()
+
+        if len(contours) > 0:
+            rectangles, box_rectangles = self.imgShapeH.getRectangles(contours)
+            if len(rectangles) > 0:
+                img = ImageDraw.draw(img, box_rectangles, "Green", 5)
                 return img, rectangles
 
         return None, None
