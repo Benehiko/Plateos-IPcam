@@ -67,12 +67,19 @@ class ImgProcess:
         contours = self.imgShapeH.findcontours()
 
         if len(contours) > 0:
-            rectangles, box_rectangles = self.imgShapeH.getRectangles(contours)
+            rectangles, box_rectangles, box_corrected, angles = self.imgShapeH.getRectangles(contours)
             if len(rectangles) > 0:
                 result = ImageDraw.draw(img.copy(), box_rectangles, "Green", 5)
-                return result, rectangles
+                corrected = img.copy()
+                for a in angles:
+                    #print(a[0])
+                    corrected = ImageDraw.draw_text(corrected, str(a[0]), a[1], "Red", 3, 3)
 
-        return None, None
+                if len(box_corrected) > 0:
+                    corrected = ImageDraw.draw(corrected, box_corrected, "Red", 5)
+                return result, rectangles, corrected
+
+        return None, None, None
 
     def rectangle2json(self, rectangles):
         inner = {'rectangles': {}}

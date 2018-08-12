@@ -40,7 +40,7 @@ class Backdrop:
 
         #plate = [x for x in plate if x is not None]  # Keep element if it is not None
         self.plates.append(plate)
-        print("Plate:", plate[0], "Province:", plate[1], "Confidence:",plate[2])
+        print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2])
         self.cache(plate)
         self.counter += 1
 
