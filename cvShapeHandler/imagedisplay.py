@@ -4,7 +4,7 @@ import numpy as np
 class ImageDisplay:
 
     @staticmethod
-    def display(img, window_name, size=(1296, 768)):
+    def display(img, window_name, size=(640, 480)):
         cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
         cv2.imshow(window_name, cv2.resize(img, size))
         #cv2.waitKey(0)
