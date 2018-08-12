@@ -69,8 +69,8 @@ class ImgProcess:
         if len(contours) > 0:
             rectangles, box_rectangles = self.imgShapeH.getRectangles(contours)
             if len(rectangles) > 0:
-                img = ImageDraw.draw(img, box_rectangles, "Green", 5)
-                return img, rectangles
+                result = ImageDraw.draw(img.copy(), box_rectangles, "Green", 5)
+                return result, rectangles
 
         return None, None
 

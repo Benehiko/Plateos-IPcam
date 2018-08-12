@@ -49,7 +49,8 @@ class Camera:
                 break
 
             finally:
-                time.sleep(1)
+                pass
+                #time.sleep(1)
 
     def resultime(self, results):
         filename = "cache/" + datetime.datetime.now().strftime("%Y-%m-%d")

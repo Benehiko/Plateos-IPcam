@@ -16,8 +16,10 @@ class ShapeHandler:
 
     def findcontours(self):
 
-        processed = ImagePreProcessing.process_for_shape_detection(self.img)
+
+        processed = ImagePreProcessing.process_for_shape_detection_bright_backlight(self.img)
         ImageDisplay.display(processed, "Processed")
+
         #cv2.imshow("Testing result", processed)
 
         __, contours, hierarchy = cv2.findContours(processed, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
@@ -43,8 +45,8 @@ class ShapeHandler:
         return False
 
     def get_approx(self, cnt):
-        epsilon = 0.01 * cv2.arcLength(cnt, True)
-        approx = cv2.approxPolyDP(cnt, epsilon, True)
+        epsilon = 0.01 * cv2.arcLength(cnt, False)
+        approx = cv2.approxPolyDP(cnt, epsilon, False)
         return approx
 
     def get_rotated_rect(self, approx):
