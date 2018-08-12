@@ -40,10 +40,10 @@ class Backdrop:
 
         #plate = [x for x in plate if x is not None]  # Keep element if it is not None
         self.plates.append(plate)
-        print(plate[0], plate[1], plate[2])
+        print("Plate:", plate[0], "Province:", plate[1], "Confidence:",plate[2])
+        self.cache(plate)
         self.counter += 1
 
-    def cache(self, plates):
-        for plate in plates:
-            filename = "cache/" + datetime.datetime.now().strftime("%Y-%m-%d")
-            ImagePreProcessing.save(plate[1], filename)
+    def cache(self, plate):
+        filename = "cache/" + datetime.datetime.now().strftime("%Y-%m-%d")
+        ImagePreProcessing.save(plate[3], filename)

@@ -361,13 +361,35 @@ class ImagePreProcessing:
         inv = ImagePreProcessing.inverse(img_gray)
         thresh = cv2.threshold(inv, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
 
-        img_erosion = ImagePreProcessing.erode(thresh)
-        img_dilate = ImagePreProcessing.dilate(img_erosion)
-        img_denoise =  ImagePreProcessing.denoise(thresh)
-        thresh = ImagePreProcessing.adaptiveBinnary(img_erosion)
+        erosion = ImagePreProcessing.erode(thresh)
+        #img_dilate = ImagePreProcessing.dilate(img_erosion)
+        #img_denoise =  ImagePreProcessing.denoise(thresh)
+        #thresh = ImagePreProcessing.adaptiveBinnary(img_erosion)
 
         # Resize image back to original size to keep ratio
-        result = ImagePreProcessing.resize(img_denoise, image.shape[1])
+        result = ImagePreProcessing.resize(erosion, image.shape[1])
+        return result
+
+    @staticmethod
+    def process_for_shape_detection_bright_backlight(image):
+        img = image.copy()
+        # Resize image for faster processing
+        img_resize = ImagePreProcessing.resize(img, 1080)
+
+        img_gray = ImagePreProcessing.togray(img_resize)
+        #thresh = ImagePreProcessing.binary(img_gray, 240)
+        #img_gray[thresh == 255] = 0
+
+        erode = ImagePreProcessing.erode(img_gray)
+        #dilate = ImagePreProcessing.dilate(erode)
+        inv = ImagePreProcessing.inverse(erode)
+        binary = ImagePreProcessing.adaptiveBinnary(inv)
+        denoise = ImagePreProcessing.denoise(binary, intensity=5)
+        #dilate = ImagePreProcessing.dilate(morph)
+
+
+        # Resize image back to original size to keep ratio
+        result = ImagePreProcessing.resize(denoise, image.shape[1])
         return result
 
     @staticmethod
