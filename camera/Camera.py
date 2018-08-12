@@ -29,9 +29,11 @@ class Camera:
                 imgNp = np.array(bytearray(reader.read()), dtype=np.uint8)
                 img = cv2.imdecode(imgNp,-1)
 
-                drawn, rectangles = self.img_process.process(img)
+                drawn, rectangles, corrected = self.img_process.process(img)
                 if drawn is not None:
                     ImageDisplay.display(drawn, self.ip)
+                    if corrected is not None:
+                        ImageDisplay.display(corrected, self.ip+"_corrected")
                     cropped = self.img_process.process_for_tess(img, rectangles)
                     pool = []
                     for i in cropped:
