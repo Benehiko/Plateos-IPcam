@@ -15,8 +15,6 @@ class ShapeHandler:
         self.contours = None
 
     def findcontours(self):
-
-
         processed = ImagePreProcessing.process_for_shape_detection_bright_backlight(self.img)
         ImageDisplay.display(processed, "Processed")
 
@@ -61,34 +59,34 @@ class ShapeHandler:
         p_w = w * 100 / img_width
         p_h = h * 100 / img_height
 
-        if 0.15 <= p_a <= 5 and p_h <= 25 and p_w <= 25:
-                return  True
-
-        return False
+        return (0.15 <= p_a <= 5) and (p_h <= 35 and p_w <= 35)
 
     def in_correct_angle(self, rect):
-        (__, __, angle) = rect
-        if angle > 0:
-            if 0 <= angle <= 180:
-                return True
-        else:
-            if -0 >= angle:
-                return True
+        (__, (w, h), angle) = rect
 
-        return True
+        if w < h:
+            angle = angle - 90
+
+        return angle
+        # if angle > 0:
+        #     if 0 <= angle <= 180:
+        #         return True
+        # else:
+        #     if -0 >= angle:
+        #         return True
+        #
+        # return True
 
     def correct_ratio(self, rect):
         (__, (w, h), angle) = rect
         ratio_w_h = (w / h)
         ratio_h_w = (h / w)
-        if 0.1 < ratio_w_h < 1.5 or 0.1 < ratio_h_w < 1.5:
-            return True
-        return False
+        return True
+        #return 0.1 <= ratio_w_h <= 10 or 0.1 <= ratio_h_w <= 10
 
     def getRectangles(self, contours):
 
         arrrect = []
-        box_rect = []
         cnt_cache = []
         for cnt in contours:
             # Contour
@@ -109,19 +107,18 @@ class ShapeHandler:
         for cnt in cnt_cache:
             approx = self.get_approx(cnt)
             rect = self.get_rotated_rect(approx)
-            arrrect.append(rect)
             box = cv2.boxPoints(rect)
             box = np.int0(box)
-            if self.in_correct_angle(rect) and self.correct_ratio(rect):
+            if self.correct_ratio(rect):
+                arrrect.append(rect)
                 box_corrected.append(box)
-                ((x, y), __, angle) = rect
+                angle = self.in_correct_angle(rect)
+                ((x, y), __, __) = rect
                 x = int(x)
                 y = int(y)
                 angles.append((angle, (x, y)))
-            else:
-                box_rect.append(box)
 
-        return arrrect, box_rect, box_corrected, angles
+        return arrrect, box_corrected, angles
 
     def getCharacters(self, contours):
         arrrect = []
