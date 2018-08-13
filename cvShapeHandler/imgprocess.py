@@ -29,15 +29,6 @@ class ImgProcess:
             inverse = ImagePreProcessing.inverse(crop_img)
             thresh = ImagePreProcessing.otsu_binary(inverse)
             crop_img = ImagePreProcessing.deskew(crop_img, thresh)
-
-            #crop_img = ImagePreProcessing.binary(crop_img, 127)
-            #crop_img = ImagePreProcessing.denoise(crop_img, intensity=2, search_window=7, block_size=3)
-            #crop_img[thresh == 255] = 0
-            #crop_img = ImagePreProcessing.equaHist(crop_img)
-
-
-            #crop_img = ImagePreProcessing.denoise(crop_img)
-
             images.append(crop_img)
         return images
 
@@ -61,25 +52,23 @@ class ImgProcess:
         return None, None
 
     def process(self, image):
-        img = image.copy()
+        if image is not None:
+            corrected = image.copy()
 
-        self.imgShapeH = ShapeHandler(img)
-        contours = self.imgShapeH.findcontours()
+            self.imgShapeH = ShapeHandler(corrected)
+            contours = self.imgShapeH.findcontours()
 
-        if len(contours) > 0:
-            rectangles, box_rectangles, box_corrected, angles = self.imgShapeH.getRectangles(contours)
-            if len(rectangles) > 0:
-                result = ImageDraw.draw(img.copy(), box_rectangles, "Green", 5)
-                corrected = img.copy()
-                for a in angles:
-                    #print(a[0])
-                    corrected = ImageDraw.draw_text(corrected, str(a[0]), a[1], "Red", 3, 3)
-
-                if len(box_corrected) > 0:
+            if len(contours) > 0:
+                rectangles, box_corrected, angles = self.imgShapeH.getRectangles(contours)
+                if len(rectangles) > 0:
                     corrected = ImageDraw.draw(corrected, box_corrected, "Red", 5)
-                return result, rectangles, corrected
+                    for a in angles:
+                        corrected = ImageDraw.draw_text(corrected, str(a[0]), a[1], "Red", 3, 3)
 
-        return None, None, None
+                    return rectangles, corrected
+
+            return None, corrected
+        return None, None
 
     def rectangle2json(self, rectangles):
         inner = {'rectangles': {}}

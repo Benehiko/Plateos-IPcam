@@ -1,5 +1,6 @@
 from difflib import SequenceMatcher
 import numpy as np
+import operator
 
 '''
                 CASE LETTERS: Literal letters in the numberplate
@@ -48,14 +49,39 @@ class Numberplate:
 
     @staticmethod
     def improve(plates):
-        chance = 0
-        carcount = 0
+        #text, province, confidence = plates
+        p = [x[0] for x in plates]
+        p_confidence = [x[2] for x in plates]
+        compressed, count = np.unique(p, return_counts=True)
+        max_value = np.max(count) # max(count)
+        max_index = np.where(count == max_value)
 
-        bestPlate = ""
-        compressed, count = np.unique(plates, return_counts=True)
+        best_plate = compressed[max_index][0]
 
-        print(compressed)
-        return compressed
+        p_confidence[max_index] = p_confidence[max_index] + (p_confidence[max_index] * count / 100)
+
+        print("New Confidence", p_confidence[max_index])
+
+        ratio_highest = 0
+        ratio_highest_index = 0
+
+        ratio_lowest = 0
+        ratio_lowest_index = np.where(np.min(p_confidence))
+
+        for y in compressed:
+            i = np.where(compressed == y)
+            seq = SequenceMatcher(None, best_plate, y)
+            d = seq.ratio()*100
+            if d > ratio_highest:
+                ratio_highest_index = i
+            elif d <= ratio_lowest and (p_confidence[i] >= p_confidence[ratio_lowest_index]):
+                ratio_lowest_index = i
+
+
+        print("Matcher ratio high:", compressed[ratio_highest_index][0])
+        print("Matcher ratio :", compressed[ratio_lowest_index][0])
+
+        return compressed, count
 
     @staticmethod
     def sanitise(text):
