@@ -1,6 +1,5 @@
+from collections import Counter
 from difflib import SequenceMatcher
-import numpy as np
-import operator
 
 '''
                 CASE LETTERS: Literal letters in the numberplate
@@ -35,7 +34,7 @@ class Numberplate:
     @staticmethod
     def validate(text, use_provinces=False):
         if use_provinces:
-            result = ""
+            result = None
             confidence = 0
 
             if 2 <= len(text) <= 9:
@@ -49,39 +48,20 @@ class Numberplate:
 
     @staticmethod
     def improve(plates):
-        #text, province, confidence = plates
-        p = [x[0] for x in plates]
-        p_confidence = [x[2] for x in plates]
-        compressed, count = np.unique(p, return_counts=True)
-        max_value = np.max(count) # max(count)
-        max_index = np.where(count == max_value)
-
-        best_plate = compressed[max_index][0]
-
-        p_confidence[max_index] = p_confidence[max_index] + (p_confidence[max_index] * count / 100)
-
-        print("New Confidence", p_confidence[max_index])
-
-        ratio_highest = 0
-        ratio_highest_index = 0
-
-        ratio_lowest = 0
-        ratio_lowest_index = np.where(np.min(p_confidence))
-
-        for y in compressed:
-            i = np.where(compressed == y)
-            seq = SequenceMatcher(None, best_plate, y)
-            d = seq.ratio()*100
-            if d > ratio_highest:
-                ratio_highest_index = i
-            elif d <= ratio_lowest and (p_confidence[i] >= p_confidence[ratio_lowest_index]):
-                ratio_lowest_index = i
-
-
-        print("Matcher ratio high:", compressed[ratio_highest_index][0])
-        print("Matcher ratio :", compressed[ratio_lowest_index][0])
-
-        return compressed, count
+        tmp = Numberplate.remove_duplicates(plates)
+        out = []
+        while True:
+            highest = Numberplate.get_highest(tmp)
+            if highest is not None:
+                result, remainder = Numberplate.split_plates(tmp, highest)
+                out.append(result)
+                if len(remainder) < 0:
+                    break
+                else:
+                    tmp = remainder
+            else:
+                break
+        return out
 
     @staticmethod
     def sanitise(text):
@@ -156,7 +136,6 @@ class Numberplate:
                     result = "Limpopo"
                     confidence = 0.5
 
-
         if text[1] in provinces_post:
             if text[1].isalpha():
                 if text[0] == "C":
@@ -192,3 +171,56 @@ class Numberplate:
                         confidence = 0.8
 
         return result, confidence
+
+    """
+        Remove all the duplicates.
+        Returns list without duplicates with increased confidence.
+    """
+    @staticmethod
+    def remove_duplicates(l):
+
+        """Get duplication count of each element"""
+        counts = list(Counter([x[0] for x in l]).values())
+
+        """Remove duplicates using set then convert back to list"""
+        plates = set(l)
+        plates = list(plates)
+
+        for x in range(0, len(plates)):
+            (pl, pr, con) = plates[x]
+            con = con + (counts[x] / 100)
+            plates[x] = (pl, pr, con)
+
+        return plates
+
+    """Get the highest confidence value"""
+    @staticmethod
+    def get_highest(l):
+        if len(l) > 0:
+            highest = l[0]
+            for x in range(0, len(l)):
+                _, _, con = l[x]
+                _, _, h = highest
+                if h < con:
+                    highest = l[x]
+
+            return highest
+        return None
+
+    """
+        Split plates based off of their similarity report
+        Returns The best plate (confidence level highest)
+        Returns the remainder that was not similar
+    """
+    @staticmethod
+    def split_plates(plates, highest):
+        remainder = []
+        similar = []
+        for x in plates:
+            if SequenceMatcher(None, highest[0], x[0]).ratio() * 100 > 80:
+                similar.append(x)
+            else:
+                remainder.append(x)
+
+        r = max(similar, key=lambda x: x[2])
+        return r, remainder

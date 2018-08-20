@@ -16,7 +16,7 @@ class ShapeHandler:
 
     def findcontours(self):
         processed = ImagePreProcessing.process_for_shape_detection_bright_backlight(self.img)
-        ImageDisplay.display(processed, "Processed")
+        #ImageDisplay.display(processed, "Processed")
 
         #cv2.imshow("Testing result", processed)
 
