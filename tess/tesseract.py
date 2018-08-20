@@ -31,8 +31,8 @@ class Tess:
             text = Numberplate.sanitise(self.t.GetUTF8Text())
             #print("Raw Output:", text)
             plate_type, confidence = Numberplate.validate(text, use_provinces=True)
-            if len(plate_type) > 0 and confidence > 0:
-                self.backdrop.callback_tess((text, plate_type, confidence, image))
+            if plate_type is not None and confidence > 0:
+                self.backdrop.callback_tess((text, plate_type, confidence), image)
 
     def process_with_roi(self, image, rectangles):
         chars = []
@@ -52,7 +52,8 @@ class Tess:
             print(chars)
 
             text = ''.join(chars)
-            if Numberplate.validate(text):
+            result, confidence = Numberplate.validate(text, use_provinces=True)
+            if result is not None:
                 self.backdrop.callback_tess((text, image))
 
 

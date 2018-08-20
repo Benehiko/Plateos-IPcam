@@ -1,55 +1,59 @@
-from camera.Camera import Camera
-from multiprocessing import Process
-from tess.tesseract import Tess
-from cvShapeHandler.imageprocessing import ImagePreProcessing
-from numberplate.Numberplate import Numberplate
-from Network.PortScanner import PortScanner
-
 import datetime
+import asyncio
+
+from time import sleep
+from multiprocessing import Process
+
+from Network.PortScanner import PortScanner
+from camera.Camera import Camera
+from cvShapeHandler.imageprocessing import ImagePreProcessing
+from tess.tesseract import Tess
 
 
 class Backdrop:
 
-    def __init__(self):
+    def __init__(self, args, iprange):
+        self.iprange = iprange
         self.camera = []
         self.tess = Tess(backdrop=self)
-
-        self.plates = []
-        self.counter = 0
-        self.pool = []
+        self.active = set()
         self.scanner = PortScanner()
+        self.username, self.password = args
+        self.counter = 0
 
-    def run(self, args):
-        (username, password) = args
-
+    @asyncio.coroutine
+    def scan(self):
         while True:
-            active = self.scanner.scan("192.168.1.100-192.168.1.200")
-            a = [x for x in active if x not in self.pool]
-            for addr in a:
-                self.threader(username, password, addr)
+            print("Current Active cameras", self.active)
+            tmp = self.scanner.scan(self.iprange)
+            active_ip = [x[0] for x in self.active]
+            for x in tmp:
+                if x not in active_ip:
+                    self.add(x)
+            sleep(5)
+            self.check_alive()
 
-    def callback_tess(self, plate):
-        # if self.counter == 10:
-        #     Numberplate.improve(self.plates)
-        #     self.counter = 0
-        #     self.plates = []
+    def add(self, a):
+        tmp = Camera(username=self.username, password=self.password, ip=a, tess=self.tess, backdrop=self)
+        p = Process(target=tmp.start)
+        self.active.add((a, p))
+        p.start()
 
-        #plate = [x for x in plate if x is not None]  # Keep element if it is not None
-        #self.plates.append(plate)
+    def callback_tess(self, plate, image):
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2])
-        self.cache(plate)
+        self.cache(image)
         self.counter += 1
 
-    def cache(self, plate):
+    def cache(self, image):
         filename = "cache/" + datetime.datetime.now().strftime("%Y-%m-%d")
-        ImagePreProcessing.save(plate[3], filename)
+        ImagePreProcessing.save(image, filename)
 
-    def callback_camera(self, camera_id):
-        del self.pool[self.pool.index(camera_id)]
+    def callback_camera(self, ip):
+        print("Removing camera", ip)
+        self.active.discard(ip)
 
-    def threader(self, username, password, ip):
-        self.pool.append(ip)
-        tmp = Camera(username=username, password=password, ip=ip, tess=self.tess, backdrop=self)
-        p = Process(target=tmp.start)
-        p.start()
-        p.join()
+    def check_alive(self):
+        tmp = self.active.copy()
+        for process in tmp:
+            if process[1].is_alive() is False:
+                self.active.discard(process)

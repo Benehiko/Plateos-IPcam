@@ -1,18 +1,22 @@
-import cv2, datetime
-import numpy as np
-import time
-
-from urllib.request import urlopen
+import datetime
+import random
+import string
+from time import sleep
 from threading import Thread
-from cvShapeHandler.imgprocess import ImgProcess
+from urllib.request import urlopen
+
+import cv2
+import numpy as np
+
 from cvShapeHandler.imageprocessing import ImagePreProcessing
-from cvShapeHandler.imagedisplay import ImageDisplay
+from cvShapeHandler.imgprocess import ImgProcess
 
 
 class Camera:
 
     def __init__(self, ip, username, password, tess, backdrop):
-        self.url = "http://" + ip + "/cgi-bin/api.cgi?cmd=Snap&channel=0&rs=wuuPhkmUCeI9WG7C&user=" + username + "&password=" + password
+        randomcmd = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+        self.url = "http://" + ip + "/cgi-bin/api.cgi?cmd=Snap&channel=0&rs="+randomcmd+"&user=" + username + "&password=" + password
 
         # self.url = "rtsp://"+username+":"+password+"@"+ip+":554//h264Preview_01_main"
         # self.url = "rtmp://" + ip + "/bcs/channel0_main.bcs?channel=0&stream=0&user=" + username + "&password=" + password
@@ -23,26 +27,28 @@ class Camera:
 
     def start(self):
         print("Starting camera", self.ip)
-        # bytes = ''
         while True:
             try:
-                reader = urlopen(self.url)
-                img_npy = np.array(bytearray(reader.read()), dtype=np.uint8)
-                img = cv2.imdecode(img_npy, -1)
+                reader = urlopen(self.url, timeout=10)
+                if reader.status == 200:
+                    img_npy = np.array(bytearray(reader.read()), dtype=np.uint8)
+                    img = cv2.imdecode(img_npy, -1)
 
-                rectangles, corrected = self.img_process.process(img)
-                if rectangles is not None:
-                    ImageDisplay.display(corrected, self.ip)
-                    cropped = self.img_process.process_for_tess(img, rectangles)
-                    pool = []
-                    for i in cropped:
-                        pool.append(Thread(target=self.tess.process(i)))
+                    rectangles, corrected = self.img_process.process(img)
+                    if rectangles is not None:
+                        #ImageDisplay.display(corrected, self.ip)
+                        cropped = self.img_process.process_for_tess(img, rectangles)
+                        pool = []
+                        for i in cropped:
+                            pool.append(Thread(target=self.tess.process(i)))
 
-                    for i in pool:
-                        i.start()
+                        for i in pool:
+                            i.start()
 
-                if cv2.waitKey(25) & 0xFF == ord('q'):
-                    cv2.destroyWindow(self.ip)
+                    if cv2.waitKey(25) & 0xFF == ord('q'):
+                        cv2.destroyWindow(self.ip)
+                        break
+                else:
                     break
 
             except Exception as e:
@@ -50,7 +56,7 @@ class Camera:
                 break
 
             finally:
-                pass
+                sleep(5)
         self.backdrop.callback_camera(self.ip)
 
     def resultime(self, results):

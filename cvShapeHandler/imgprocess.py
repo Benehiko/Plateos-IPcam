@@ -1,12 +1,10 @@
-from cvShapeHandler.imageprocessing import ImagePreProcessing
-from cvShapeHandler.shapehandler import ShapeHandler
-from cvShapeHandler.imagedraw import ImageDraw
-from cvShapeHandler.imagedisplay import ImageDisplay
-from cvShapeHandler.numpyencoder import NumpyEncoder
-
-import time
-import logging
 import json
+import logging
+
+from cvShapeHandler.imagedraw import ImageDraw
+from cvShapeHandler.imageprocessing import ImagePreProcessing
+from cvShapeHandler.numpyencoder import NumpyEncoder
+from cvShapeHandler.shapehandler import ShapeHandler
 
 
 class ImgProcess:
