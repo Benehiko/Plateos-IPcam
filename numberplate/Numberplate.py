@@ -96,7 +96,9 @@ class Numberplate:
                         result = "Gauteng"
                     elif text[-1:] == "L":
                         result = "Limpopo"
-                    confidence = 0.8
+
+                    if len(result) > 0:
+                        confidence = 0.8
                 elif text[0:2].isalpha() and text[2:4].isnumeric() and text[4:6].isalpha():
                     if pre == "GP":
                         result = "Gauteng"
@@ -142,7 +144,9 @@ class Numberplate:
                     result = "Western Cape"
                 elif text[0] == "N":
                     result = "KwaZulu-Natal"
-                confidence = 0.8
+
+                if len(result) > 0:
+                    confidence = 0.8
 
         return result, confidence
 

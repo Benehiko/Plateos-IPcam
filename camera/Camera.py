@@ -45,9 +45,9 @@ class Camera:
                         for i in pool:
                             i.start()
 
-                    if cv2.waitKey(25) & 0xFF == ord('q'):
-                        cv2.destroyWindow(self.ip)
-                        break
+                    # if cv2.waitKey(25) & 0xFF == ord('q'):
+                    #     cv2.destroyWindow(self.ip)
+                    #     break
                 else:
                     break
 

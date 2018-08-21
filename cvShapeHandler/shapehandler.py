@@ -10,20 +10,13 @@ class ShapeHandler:
 
     def __init__(self, img):
         self.logger = logging.getLogger(self.__class__.__name__)
-
         self.img = img
         self.contours = None
 
     def findcontours(self):
         processed = ImagePreProcessing.process_for_shape_detection_bright_backlight(self.img)
-        #ImageDisplay.display(processed, "Processed")
-
-        #cv2.imshow("Testing result", processed)
-
         __, contours, hierarchy = cv2.findContours(processed, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-
         self.contours = contours
-        # cnts = contours[0] if imutils.is_cv2() else contours[1]
         return contours
 
     def polygontest(self, cnt_array, rect):
@@ -35,10 +28,9 @@ class ShapeHandler:
                 if cv2.pointPolygonTest(cnt, pnt, False) > -1:
                     count += 1
             if count == 4:
-                rect_area = w * h  # cv2.contourArea(pnt_array)
+                rect_area = w * h
                 cnt_area = cv2.contourArea(cnt)
                 if cnt_area > rect_area:
-                    # print("Point inside contour!")
                     return True
         return False
 
@@ -49,7 +41,6 @@ class ShapeHandler:
 
     def get_rotated_rect(self, approx):
         rect  = cv2.minAreaRect(approx)
-        #((x, y), (w, h), angle) = rect
         return rect
 
     def in_scope_percentage(self, rect, area):
@@ -63,19 +54,10 @@ class ShapeHandler:
 
     def in_correct_angle(self, rect):
         (__, (w, h), angle) = rect
-
         if w < h:
             angle = angle - 90
-
         return angle
-        # if angle > 0:
-        #     if 0 <= angle <= 180:
-        #         return True
-        # else:
-        #     if -0 >= angle:
-        #         return True
-        #
-        # return True
+
 
     def correct_ratio(self, rect):
         (__, (w, h), angle) = rect
