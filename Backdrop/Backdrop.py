@@ -1,5 +1,6 @@
 import datetime
 import asyncio
+import numpy as np
 
 from time import sleep
 from multiprocessing import Process
@@ -8,6 +9,7 @@ from Network.PortScanner import PortScanner
 from camera.Camera import Camera
 from cvShapeHandler.imageprocessing import ImagePreProcessing
 from tess.tesseract import Tess
+from Caching.CacheHandler import CacheHandler
 
 
 class Backdrop:
@@ -19,7 +21,7 @@ class Backdrop:
         self.active = set()
         self.scanner = PortScanner()
         self.username, self.password = args
-        self.counter = 0
+        self.cached = np.array(50, dtype=object)
 
     @asyncio.coroutine
     def scan(self):
@@ -40,9 +42,13 @@ class Backdrop:
         p.start()
 
     def callback_tess(self, plate, image):
+        self.cached.put(values=[[plate, image]])
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2])
-        self.cache(image)
-        self.counter += 1
+        today = datetime.datetime.now().strftime("%Y-%m-%d")
+        if self.cached.size > 49:
+            CacheHandler.save(today, self.cached)
+            self.cached = np.array(50)
+
 
     def cache(self, image):
         filename = "cache/" + datetime.datetime.now().strftime("%Y-%m-%d")
