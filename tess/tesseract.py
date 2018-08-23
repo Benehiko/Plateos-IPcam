@@ -1,4 +1,7 @@
+from datetime import datetime
 from tesserocr import PyTessBaseAPI, PSM, OEM
+
+from cvShapeHandler.imageprocessing import ImagePreProcessing
 from numberplate.Numberplate import Numberplate
 from PIL import Image
 
@@ -29,10 +32,11 @@ class Tess:
             tmp = Image.fromarray(np.uint8(image))
             self.t.SetImage(tmp)
             text = Numberplate.sanitise(self.t.GetUTF8Text())
-            #print("Raw Output:", text)
             plate_type, confidence = Numberplate.validate(text, use_provinces=True)
             if plate_type is not None and confidence > 0:
-                self.backdrop.callback_tess((text, plate_type, confidence), image)
+                image = ImagePreProcessing.cv_resize_compress(image, max_w=200)
+                now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                self.backdrop.callback_tess((text, plate_type, confidence, now, image))
 
     def process_with_roi(self, image, rectangles):
         chars = []

@@ -34,7 +34,6 @@ class PortScanner(threading.Thread):
         for t in range(0, len(threads)):
             threads[t].join()
 
-        print("Done scanning")
         for i in range(start, end+1):
             if output[i]:
                 active.append(subip+str(i))
