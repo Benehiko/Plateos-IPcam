@@ -1,5 +1,6 @@
-from collections import Counter
 from difflib import SequenceMatcher
+
+from DataHandler.CompareData import CompareData
 
 '''
                 CASE LETTERS: Literal letters in the numberplate
@@ -52,10 +53,12 @@ class Numberplate:
         out = []
         while True:
             highest = Numberplate.get_highest(tmp)
+
             if highest is not None:
                 result, remainder = Numberplate.split_plates(tmp, highest)
-                out.append(result)
-                if len(remainder) < 0:
+                if result is not None:
+                    out.append(result)
+                if len(remainder) < 1:
                     break
                 else:
                     tmp = remainder
@@ -146,7 +149,7 @@ class Numberplate:
                     result = "KwaZulu-Natal"
 
                 if len(result) > 0:
-                    confidence = 0.8
+                    confidence = 0.6
 
         return result, confidence
 
@@ -184,16 +187,17 @@ class Numberplate:
     def remove_duplicates(l):
 
         """Get duplication count of each element"""
-        counts = list(Counter([x[0] for x in l]).values())
+        #counts = list(Counter([x[0] for x in l]).values())
 
         """Remove duplicates using set then convert back to list"""
-        plates = set(l)
-        plates = list(plates)
-
+        # gen = (random.choice(tuple(g)) for _, g in groupby(l, key=lambda x: x[0]))
+        # plates = list(islice(gen, 4))
+        plates, counts = CompareData.del_duplicates_list_tuples(l)
+        #print("Non-duplicate", plates)
         for x in range(0, len(plates)):
-            (pl, pr, con) = plates[x]
+            (pl, pr, con, t, img) = plates[x]
             con = con + (counts[x] / 100)
-            plates[x] = (pl, pr, con)
+            plates[x] = (pl, pr, con, t, img)
 
         return plates
 
@@ -202,12 +206,11 @@ class Numberplate:
     def get_highest(l):
         if len(l) > 0:
             highest = l[0]
-            for x in range(0, len(l)):
-                _, _, con = l[x]
-                _, _, h = highest
+            for x in l:
+                _, _, con, _, _ = x
+                _, _, h, _, _ = highest
                 if h < con:
-                    highest = l[x]
-
+                    highest = x
             return highest
         return None
 
@@ -220,11 +223,14 @@ class Numberplate:
     def split_plates(plates, highest):
         remainder = []
         similar = []
-        for x in plates:
-            if SequenceMatcher(None, highest[0], x[0]).ratio() * 100 > 80:
-                similar.append(x)
-            else:
-                remainder.append(x)
-
-        r = max(similar, key=lambda x: x[2])
+        if len(plates) > 0:
+            for x in plates:
+                if SequenceMatcher(None, highest[0], x[0]).ratio() * 100 > 80:
+                    similar.append(x)
+                else:
+                    remainder.append(x)
+        if len(similar) > 0:
+            r = max(similar, key=lambda x: x[2])
+        else:
+            r = None
         return r, remainder
