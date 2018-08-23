@@ -57,7 +57,7 @@ class Backdrop:
             self.cached = Numberplate.improve(self.cached)
             res = CacheHandler.save("cache/", today, self.cached)
             if res is not None:
-                print(res)
+                #print(res)
                 self.upload_dataset(res)
             self.cached = []
 

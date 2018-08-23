@@ -19,6 +19,7 @@ class Request:
             d = [('plate', plate), ('province', province), ('confidence', confidence), ('time', date), ('mac', mac)]
             out.append(dict(d))
 
+        print("Posting:", out)
         if Request.check_connectivity():
             Request.send(url, out)
         else:
