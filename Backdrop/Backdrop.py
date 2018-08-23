@@ -52,7 +52,7 @@ class Backdrop:
 
     def cache(self, plate):
         self.cached.append(plate)
-        if len(self.cached) > 5:
+        if len(self.cached) > 49:
             today = datetime.datetime.now().strftime('%Y-%m-%d %H')
             self.cached = Numberplate.improve(self.cached)
             res = CacheHandler.save("cache/", today, self.cached)
