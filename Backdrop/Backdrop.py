@@ -78,12 +78,15 @@ class Backdrop:
         Request.post(data, self.url)
 
     def cleanup_cache(self):
-        files = [f.replace('.npy.gz', '') for f in listdir("cache") if isfile(join("cache", f))]
-        file_last_date = datetime.datetime.strptime(max(files), "%Y-%m-%d %H")
-        now = datetime.datetime.now()
-        diff = now - file_last_date
-        if datetime.timedelta(days=30) < diff:
-            CacheHandler.remove("cache/", file_last_date.strftime("%Y-%m-%d %H"))
+        try:
+            files = [f.replace('.npy.gz', '') for f in listdir("cache") if isfile(join("cache", f))]
+            file_last_date = datetime.datetime.strptime(max(files), "%Y-%m-%d %H")
+            now = datetime.datetime.now()
+            diff = now - file_last_date
+            if datetime.timedelta(days=30) < diff:
+                CacheHandler.remove("cache/", file_last_date.strftime("%Y-%m-%d %H"))
+        except:
+            pass
 
     def offline_check(self):
         if Request.check_connectivity():
