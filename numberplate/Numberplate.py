@@ -196,7 +196,7 @@ class Numberplate:
         #print("Non-duplicate", plates)
         for x in range(0, len(plates)):
             (pl, pr, con, t, img) = plates[x]
-            con = con + (counts[x] / 100)
+            con = round(con + (counts[x] / 100), 2)
             plates[x] = (pl, pr, con, t, img)
 
         return plates
