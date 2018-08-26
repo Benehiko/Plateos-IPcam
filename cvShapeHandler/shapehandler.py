@@ -13,6 +13,7 @@ class ShapeHandler:
         self.img = img
         self.contours = None
 
+
     def findcontours(self):
         processed = ImagePreProcessing.process_for_shape_detection_bright_backlight(self.img)
         __, contours, hierarchy = cv2.findContours(processed, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
@@ -50,7 +51,7 @@ class ShapeHandler:
         p_w = w * 100 / img_width
         p_h = h * 100 / img_height
 
-        return (0.15 <= p_a <= 5) and (p_h <= 35 and p_w <= 35)
+        return (0.015 <= p_a <= 2) and (p_h <= 20 and p_w <= 20)
 
     def in_correct_angle(self, rect):
         (__, (w, h), angle) = rect
@@ -89,16 +90,18 @@ class ShapeHandler:
         for cnt in cnt_cache:
             approx = self.get_approx(cnt)
             rect = self.get_rotated_rect(approx)
-            box = cv2.boxPoints(rect)
-            box = np.int0(box)
-            if self.correct_ratio(rect):
-                arrrect.append(rect)
-                box_corrected.append(box)
-                angle = self.in_correct_angle(rect)
-                ((x, y), __, __) = rect
-                x = int(x)
-                y = int(y)
-                angles.append((angle, (x, y)))
+            angle = self.in_correct_angle(rect)
+            if angle > -80 or angle < -100 or angle < -150:
+                box = cv2.boxPoints(rect)
+                box = np.int0(box)
+                if self.correct_ratio(rect):
+                    arrrect.append(rect)
+                    box_corrected.append(box)
+                    #angle = self.in_correct_angle(rect)
+                    ((x, y), __, __) = rect
+                    x = int(x)
+                    y = int(y)
+                    angles.append((angle, (x, y)))
 
         return arrrect, box_corrected, angles
 

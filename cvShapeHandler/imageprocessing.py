@@ -3,11 +3,13 @@ import datetime, pathlib
 import numpy as np
 import logging
 
+from cvShapeHandler.gpuhandler import GPUHandler
+
 
 class ImagePreProcessing:
 
     def __init__(self):
-        self.logger = logging.getLogger(self.__class__.__name__)
+        cv2.ocl.setUseOpenCL(True)
 
     @staticmethod
     def deskew(image, thresh):
@@ -374,7 +376,7 @@ class ImagePreProcessing:
     def process_for_shape_detection_bright_backlight(image):
         img = image.copy()
         # Resize image for faster processing
-        img_resize = ImagePreProcessing.resize(img, 1080)
+        img_resize = GPUHandler.toUmat(ImagePreProcessing.resize(img, int(image.shape[1]/2))) #1080
 
         img_gray = ImagePreProcessing.togray(img_resize)
         #thresh = ImagePreProcessing.binary(img_gray, 240)
@@ -389,7 +391,8 @@ class ImagePreProcessing:
 
 
         # Resize image back to original size to keep ratio
-        result = ImagePreProcessing.resize(denoise, image.shape[1])
+        result = GPUHandler.getMat(denoise)
+        result = ImagePreProcessing.resize(result, image.shape[1])
         return result
 
     @staticmethod

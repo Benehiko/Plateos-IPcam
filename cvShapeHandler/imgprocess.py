@@ -1,6 +1,7 @@
 import json
 import logging
 
+from cvShapeHandler.gpuhandler import GPUHandler
 from cvShapeHandler.imagedraw import ImageDraw
 from cvShapeHandler.imageprocessing import ImagePreProcessing
 from cvShapeHandler.numpyencoder import NumpyEncoder
@@ -22,10 +23,11 @@ class ImgProcess:
     def process_for_tess(self, image, rectangles):
         images = []
         for rectangle in rectangles:
-            crop_img = ImagePreProcessing.auto_crop(image.copy(), rectangle)
+            crop_img = GPUHandler.toUmat(ImagePreProcessing.auto_crop(image.copy(), rectangle))
             crop_img = ImagePreProcessing.togray(crop_img)
             inverse = ImagePreProcessing.inverse(crop_img)
-            thresh = ImagePreProcessing.otsu_binary(inverse)
+            thresh = GPUHandler.getMat(ImagePreProcessing.otsu_binary(inverse))
+            crop_img = GPUHandler.getMat(crop_img)
             crop_img = ImagePreProcessing.deskew(crop_img, thresh)
             images.append(crop_img)
         return images
@@ -59,7 +61,7 @@ class ImgProcess:
             if len(contours) > 0:
                 rectangles, box_corrected, angles = self.imgShapeH.getRectangles(contours)
                 if len(rectangles) > 0:
-                    corrected = ImageDraw.draw(corrected, box_corrected, "Red", 5)
+                    corrected = ImageDraw.draw(corrected, box_corrected, "Red", 10)
                     for a in angles:
                         corrected = ImageDraw.draw_text(corrected, str(a[0]), a[1], "Red", 3, 3)
 
