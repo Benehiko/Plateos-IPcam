@@ -1,8 +1,8 @@
+import asyncio
 import datetime
 import random
 import string
 from time import sleep
-from threading import Thread
 from urllib.request import urlopen
 
 import cv2
@@ -24,6 +24,7 @@ class Camera:
         self.img_process = ImgProcess(draw_enable=True)
         self.ip = ip
         self.backdrop = backdrop
+        self.loop = asyncio.get_event_loop()
 
     def start(self):
         print("Starting camera", self.ip)
@@ -40,10 +41,15 @@ class Camera:
                         cropped = self.img_process.process_for_tess(img, rectangles)
                         pool = []
                         for i in cropped:
-                            pool.append(Thread(target=self.tess.process(i)))
+                            pool.append(asyncio.ensure_future(self.tess.process(i)))
 
-                        for i in pool:
-                            i.start()
+                        coros = asyncio.gather(*pool, loop=self.loop)
+                        self.loop.run_until_complete(coros)
+                        # for i in cropped:
+                        #     pool.append(Thread(target=self.tess.process(i)))
+                        #
+                        # for i in pool:
+                        #     i.start()
 
                     # if cv2.waitKey(25) & 0xFF == ord('q'):
                     #     cv2.destroyWindow(self.ip)
