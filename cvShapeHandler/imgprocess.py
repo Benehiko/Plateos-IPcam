@@ -63,7 +63,7 @@ class ImgProcess:
                 if len(rectangles) > 0:
                     corrected = ImageDraw.draw(corrected, box_corrected, "Red", 10)
                     for a in angles:
-                        corrected = ImageDraw.draw_text(corrected, str(a[0]), a[1], "Red", 3, 3)
+                        corrected = ImageDraw.draw_text(corrected, s2tr(a[0]), a[1], "Red", 3, 3)
 
                     return rectangles, corrected
 
