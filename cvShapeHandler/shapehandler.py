@@ -36,8 +36,8 @@ class ShapeHandler:
         return False
 
     def get_approx(self, cnt):
-        epsilon = 0.01 * cv2.arcLength(cnt, True)
-        approx = cv2.approxPolyDP(cnt, epsilon, True)
+        epsilon = 0.01 * cv2.arcLength(cnt, False)
+        approx = cv2.approxPolyDP(cnt, epsilon, False)
         return approx
 
     def get_rotated_rect(self, approx):
