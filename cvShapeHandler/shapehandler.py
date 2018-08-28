@@ -115,7 +115,6 @@ class ShapeHandler:
             box = cv2.boxPoints(rect)
             box = np.int0(box)
             box_rect.append(box)
-
         return arrrect, box_rect
 
     def isDuplicate(self, arrrect, box):

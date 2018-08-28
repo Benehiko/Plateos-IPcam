@@ -320,12 +320,12 @@ class ImagePreProcessing:
         # erode = ImagePreProcessing.erode(thresh)
         # dilate = ImagePreProcessing.dilate(erode)
         inv = ImagePreProcessing.inverse(thresh)
-        #binary = ImagePreProcessing.adaptiveBinnary(inv)
-        denoise = ImagePreProcessing.denoise(inv, intensity=5)
+        binary = ImagePreProcessing.adaptiveBinnary(inv)
+        #denoise = ImagePreProcessing.denoise(inv, intensity=5)
 
         # Resize image back to original size to keep ratio
 
-        result = GPUHandler.getMat(denoise)
+        result = GPUHandler.getMat(binary)
         #ImageDisplay.display("Processed", result)
         result = ImagePreProcessing.resize(result, image.shape[1])
         return result

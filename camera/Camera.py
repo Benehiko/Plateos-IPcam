@@ -38,17 +38,15 @@ class Camera:
 
                     rectangles, corrected = self.img_process.process(img)
                     if rectangles is not None:
-                        #ImageDisplay.display(corrected, self.ip)
+                        ImageDisplay.display(corrected, self.ip)
                         cropped = self.img_process.process_for_tess(img, rectangles)
-                        pool = []
-                        for i in cropped:
-                            pool.append(Thread(target=self.tess.process(i)))
+                        t = Thread(target=self.tess.multi(cropped))
+                        t.start()
+                        t.join(5)
+                        # for i in cropped:
+                        #     t = Thread(target=self.tess.process(i))
+                        #     t.start()
 
-                        for i in pool:
-                            i.start()
-
-                        for i in pool:
-                            i.join()
 
                     if cv2.waitKey(25) & 0xFF == ord('q'):
                         cv2.destroyWindow(self.ip)
