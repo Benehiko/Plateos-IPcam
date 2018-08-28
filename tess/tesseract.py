@@ -1,6 +1,7 @@
 from datetime import datetime
 from tesserocr import PyTessBaseAPI, PSM, OEM
 
+from cvShapeHandler.imagedisplay import ImageDisplay
 from cvShapeHandler.imageprocessing import ImagePreProcessing
 from numberplate.Numberplate import Numberplate
 from PIL import Image
@@ -45,6 +46,7 @@ class Tess:
         asyncio.set_event_loop(loop)
         for image in images:
             if image is not None:
+                ImageDisplay.display(window_name="Cropped", img=image)
                 pool.append(asyncio.ensure_future(self.runner(image), loop=loop))
 
         results = loop.run_until_complete(asyncio.gather(*pool))
