@@ -44,7 +44,7 @@ class Camera:
                             pool.append(asyncio.ensure_future(self.tess.process(i)))
 
                         coros = asyncio.gather(*pool, loop=self.loop)
-                        self.loop.run_until_complete(coros)
+                        yield self.loop.run_until_complete(coros)
                         # for i in cropped:
                         #     pool.append(Thread(target=self.tess.process(i)))
                         #
@@ -62,7 +62,7 @@ class Camera:
                 break
 
             finally:
-                sleep(5)
+                sleep(2)
         self.backdrop.callback_camera(self.ip)
 
     def resultime(self, results):
