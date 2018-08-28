@@ -119,7 +119,6 @@ class ShapeHandler:
 
         return arrrect, box_rect
 
-
     def isDuplicate(self, arrrect, box):
         for tmp in arrrect:
             return box == tmp

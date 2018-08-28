@@ -11,7 +11,7 @@ class ImagePreProcessing:
 
     def __init__(self):
         pass
-        #cv2.ocl.setUseOpenCL(False)
+        # cv2.ocl.setUseOpenCL(False)
 
     @staticmethod
     def deskew(image, thresh):
@@ -40,8 +40,6 @@ class ImagePreProcessing:
         M = cv2.getRotationMatrix2D(center, angle, 1.0)
         rotated = cv2.warpAffine(image, M, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
         return rotated
-
-
 
     @staticmethod
     def rotate_image(img, angle):
@@ -86,7 +84,6 @@ class ImagePreProcessing:
         return cv2.warpAffine(image, mapping, (width, height), flags=cv2.WARP_INVERSE_MAP,
                               borderMode=cv2.BORDER_REPLICATE)
 
-
     @staticmethod
     def crop_minAreaRect(img, rect):
         ((x, y), (w, h), angle) = rect
@@ -95,8 +92,8 @@ class ImagePreProcessing:
         # w = int(w)
         # h = int(h)
         img_crop = ImagePreProcessing.crop(img, (x, y, w, h))
-        #img_crop = ImagePreProcessing.rotate_image(img_crop, -180)
-        #img_crop = img[y:h, x:w]
+        # img_crop = ImagePreProcessing.rotate_image(img_crop, -180)
+        # img_crop = img[y:h, x:w]
         return img_crop
 
     @staticmethod
@@ -106,20 +103,9 @@ class ImagePreProcessing:
         # First slightly crop edge - some images had a rogue 2 pixel black edge on one side
         init_crop = 10
         h, w = image_source.shape[:2]
-        image_source = image_source[init_crop:init_crop + (h - init_crop * 2),
-                       init_crop:init_crop + (w - init_crop * 2)]
+        image_source = image_source[init_crop:init_crop + (h - init_crop * 2), init_crop:init_crop + (w - init_crop * 2)]
         # Add back a white border
-
-        image_source = cv2.copyMakeBorder(image_source, 5, 5, 5, 5, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-
-        # image_gray = cv2.cvtColor(image_source, cv2.COLOR_BGR2GRAY)
-        # _, image_thresh = cv2.threshold(image_gray, THRESHOLD, 255, cv2.THRESH_BINARY)
-        #
-        # image_thresh2 = image_thresh.copy()
-        # image_thresh2 = cv2.Canny(image_thresh2, 100, 100, apertureSize=3)
-
-        #points = cv2.findNonZero(image_thresh2)
-
+        image_source = cv2.copyMakeBorder(image_source, 5, 5, 5, 5, cv2.BORDER_CONSTANT, value=(0, 0, 0))
         centre, dimensions, theta = rectangle
 
         width = int(dimensions[0])
@@ -134,58 +120,7 @@ class ImagePreProcessing:
 
         image_patch = ImagePreProcessing.sub_image(image_source, (cx, cy), theta + 90, height, width)
 
-        # add back a small white border
-        # image_patch = cv2.copyMakeBorder(image_patch, 1, 1, 1, 1, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-        #
-        # # Convert image to binary, edge is black. Do edge detection and convert edges to a list of points.
-        # # Then calculate a minimum set of points that can enclose the points.
-        #
-        # _, image_thresh = cv2.threshold(image_patch, THRESHOLD, 255, 1)
-        # image_thresh = cv2.Canny(image_thresh, 100, 100, 3)
-        # points = cv2.findNonZero(image_thresh)
-        # hull = cv2.convexHull(points)
-        #
-        # # Find min epsilon resulting in exactly 4 points, typically between 7 and 21
-        # # This is the smallest set of 4 points to enclose the image.
-        # for epsilon in range(3, 50):
-        #     hull_simple = cv2.approxPolyDP(hull, epsilon, 1)
-        #
-        #     if len(hull_simple) == 4:
-        #         break
-        #
-        # hull = hull_simple
-        #
-        # # Find closest fitting image size and warp/crop to fit, i.e. reduce scaling to a minimum.
-        #
-        # x, y, w, h = cv2.boundingRect(hull)
-        # target_corners = np.array([[0, 0], [w, 0], [w, h], [0, h]], np.float32)
-        #
-        # # Sort hull into tl,tr,br,bl order.
-        # # n.b. hull is already sorted in clockwise order, we just need to know where top left is.
-        #
-        # source_corners = hull.reshape(-1, 2).astype('float32')
-        # min_dist = 100000
-        # index = 0
-        #
-        # for n in xrange(len(source_corners)):
-        #     x, y = source_corners[n]
-        #     dist = math.hypot(x, y)
-        #
-        #     if dist < min_dist:
-        #         index = n
-        #         min_dist = dist
-        #
-        # # Rotate the array so tl is first
-        # source_corners = np.roll(source_corners, -(2 * index))
-        #
-        # try:
-        #     transform = cv2.getPerspectiveTransform(source_corners, target_corners)
-        #     return cv2.warpPerspective(image_patch, transform, (w, h))
-        #
-        # except:
-        #     print
-        #     "Warp failure"
-        #     return image_patch
+
         return image_patch
 
     @staticmethod
@@ -232,7 +167,7 @@ class ImagePreProcessing:
 
     @staticmethod
     def otsu_binary(img, thresh=0):
-        #blur = cv2.GaussianBlur(img, (5, 5), 0)
+        # blur = cv2.GaussianBlur(img, (5, 5), 0)
         thresh = cv2.threshold(img, thresh, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
         return thresh
 
@@ -288,7 +223,7 @@ class ImagePreProcessing:
             new_h = img_h
             new_w = img_w
 
-            #print("Image current resolution: ", str(img_w), "x", str(img_h))
+            # print("Image current resolution: ", str(img_w), "x", str(img_h))
             if img_w > max_w:
                 new_w = max_w
                 new_h = int((new_w * img_h) / img_w)
@@ -299,7 +234,7 @@ class ImagePreProcessing:
                 new_w = int((new_h * img_w) / img_h)
 
             dist_size = (new_w, new_h)
-            #print("New size:", str(dist_size))
+            # print("New size:", str(dist_size))
             resized = cv2.resize(img, dist_size, interpolation=cv2.INTER_AREA)
             encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), quality]
 
@@ -366,9 +301,9 @@ class ImagePreProcessing:
         thresh = cv2.threshold(inv, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
 
         erosion = ImagePreProcessing.erode(thresh)
-        #img_dilate = ImagePreProcessing.dilate(img_erosion)
-        #img_denoise =  ImagePreProcessing.denoise(thresh)
-        #thresh = ImagePreProcessing.adaptiveBinnary(img_erosion)
+        # img_dilate = ImagePreProcessing.dilate(img_erosion)
+        # img_denoise =  ImagePreProcessing.denoise(thresh)
+        # thresh = ImagePreProcessing.adaptiveBinnary(img_erosion)
 
         # Resize image back to original size to keep ratio
         result = ImagePreProcessing.resize(erosion, image.shape[1])
@@ -378,20 +313,21 @@ class ImagePreProcessing:
     def process_for_shape_detection_bright_backlight(image):
         img = image.copy()
         # Resize image for faster processing
-        img_resize = GPUHandler.toUmat(ImagePreProcessing.resize(img, int(image.shape[1]/2))) #1080
+        img_resize = GPUHandler.toUmat(ImagePreProcessing.resize(img, int(image.shape[1]/4)))  # 1080
         img_gray = ImagePreProcessing.togray(img_resize)
         thresh = ImagePreProcessing.otsu_binary(img_gray, 240)
-        #img_gray[thresh == 255] = 0
-        #erode = ImagePreProcessing.erode(thresh)
-        #dilate = ImagePreProcessing.dilate(erode)
+        # img_gray[thresh == 255] = 0
+        # erode = ImagePreProcessing.erode(thresh)
+        # dilate = ImagePreProcessing.dilate(erode)
         inv = ImagePreProcessing.inverse(thresh)
-        binary = ImagePreProcessing.adaptiveBinnary(inv)
-        denoise = ImagePreProcessing.denoise(binary, intensity=5)
+        #binary = ImagePreProcessing.adaptiveBinnary(inv)
+        denoise = ImagePreProcessing.denoise(inv, intensity=5)
 
         # Resize image back to original size to keep ratio
+
         result = GPUHandler.getMat(denoise)
+        #ImageDisplay.display("Processed", result)
         result = ImagePreProcessing.resize(result, image.shape[1])
-        ImageDisplay.display(result, "Test Processed")
         return result
 
     @staticmethod
