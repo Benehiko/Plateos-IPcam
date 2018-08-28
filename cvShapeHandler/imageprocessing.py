@@ -213,8 +213,8 @@ class ImagePreProcessing:
 
     @staticmethod
     def morph(img):
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
-        morph = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+        morph = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
         return morph
 
     @staticmethod
@@ -379,18 +379,14 @@ class ImagePreProcessing:
         img = image.copy()
         # Resize image for faster processing
         img_resize = GPUHandler.toUmat(ImagePreProcessing.resize(img, int(image.shape[1]/2))) #1080
-
         img_gray = ImagePreProcessing.togray(img_resize)
-        #thresh = ImagePreProcessing.binary(img_gray, 240)
+        thresh = ImagePreProcessing.otsu_binary(img_gray, 240)
         #img_gray[thresh == 255] = 0
-
-        erode = ImagePreProcessing.erode(img_gray)
+        #erode = ImagePreProcessing.erode(thresh)
         #dilate = ImagePreProcessing.dilate(erode)
-        inv = ImagePreProcessing.inverse(erode)
+        inv = ImagePreProcessing.inverse(thresh)
         binary = ImagePreProcessing.adaptiveBinnary(inv)
-        denoise = ImagePreProcessing.denoise(binary, intensity=2, search_window=17, block_size=5)
-        #dilate = ImagePreProcessing.dilate(morph)
-
+        denoise = ImagePreProcessing.denoise(binary, intensity=5)
 
         # Resize image back to original size to keep ratio
         result = GPUHandler.getMat(denoise)
