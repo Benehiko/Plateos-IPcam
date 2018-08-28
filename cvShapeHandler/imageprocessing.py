@@ -9,7 +9,7 @@ from cvShapeHandler.gpuhandler import GPUHandler
 class ImagePreProcessing:
 
     def __init__(self):
-        cv2.ocl.setUseOpenCL(True)
+        cv2.ocl.setUseOpenCL(False)
 
     @staticmethod
     def deskew(image, thresh):
