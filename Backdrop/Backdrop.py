@@ -48,7 +48,7 @@ class Backdrop:
         p.start()
 
     def callback_tess(self, plate):
-        #ImageDisplay.display(plate[4], "Cropped Plate")
+        ImageDisplay.display(plate[4], "Cropped Plate")
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2], "Date:", plate[3])
         self.cache(plate)
 
@@ -59,7 +59,6 @@ class Backdrop:
             self.cached = Numberplate.improve(self.cached)
             res = CacheHandler.save("cache/", today, self.cached)
             if res is not None:
-                #print(res)
                 self.upload_dataset(res)
             self.cached = []
 

@@ -7,6 +7,7 @@ from PIL import Image
 
 import os
 import numpy as np
+import asyncio
 
 
 class Tess:
@@ -24,8 +25,33 @@ class Tess:
         self.t.SetVariable("load_fixed_length_dawgs", "false")
         self.t.SetVariable("tessedit_create_hocr", "0")
         self.t.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-
         self.backdrop = backdrop
+
+    @asyncio.coroutine
+    def runner(self, image):
+        tmp = Image.fromarray(np.uint8(image))
+        self.t.SetImage(tmp)
+        text = Numberplate.sanitise(self.t.GetUTF8Text())
+        plate_type, confidence = Numberplate.validate(text, use_provinces=True)
+        if plate_type is not None and confidence > 0:
+            image = ImagePreProcessing.cv_resize_compress(image, max_w=200)
+            now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            return ((text, plate_type, confidence, now, image))
+        return None
+
+    def multi(self, images):
+        pool = []
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        for image in images:
+            if image is not None:
+                pool.append(asyncio.ensure_future(self.runner(image), loop=loop))
+
+        results = loop.run_until_complete(asyncio.gather(*pool))
+        loop.close()
+        for result in results:
+            if result is not None:
+                self.backdrop.callback_tess(result)
 
     def process(self, image):
         if image is not None:
