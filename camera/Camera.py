@@ -47,7 +47,6 @@ class Camera:
                         #     t = Thread(target=self.tess.process(i))
                         #     t.start()
 
-
                     if cv2.waitKey(25) & 0xFF == ord('q'):
                         cv2.destroyWindow(self.ip)
                         break

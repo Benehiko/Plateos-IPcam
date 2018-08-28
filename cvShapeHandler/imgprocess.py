@@ -27,7 +27,7 @@ class ImgProcess:
             crop_img = ImagePreProcessing.togray(crop_img)
             inverse = ImagePreProcessing.inverse(crop_img)
             thresh = GPUHandler.getMat(ImagePreProcessing.otsu_binary(inverse))
-            crop_img = GPUHandler.getMat(crop_img)
+            crop_img = GPUHandler.getMat(inverse)
             crop_img = ImagePreProcessing.deskew(crop_img, thresh)
             # thresh = ImagePreProcessing.binary(crop_img, 100)
             # morph = ImagePreProcessing.morph(thresh)
