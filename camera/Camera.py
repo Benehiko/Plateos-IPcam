@@ -38,7 +38,7 @@ class Camera:
 
                     rectangles, corrected = self.img_process.process(img)
                     if rectangles is not None:
-                        ImageDisplay.display(corrected, self.ip)
+                        #ImageDisplay.display(corrected, self.ip)
                         cropped = self.img_process.process_for_tess(img, rectangles)
                         pool = []
                         for i in cropped:
