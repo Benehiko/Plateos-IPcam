@@ -387,8 +387,8 @@ class ImagePreProcessing:
         erode = ImagePreProcessing.erode(img_gray)
         #dilate = ImagePreProcessing.dilate(erode)
         inv = ImagePreProcessing.inverse(erode)
-        binary = ImagePreProcessing.adaptiveBinnary(inv)
-        denoise = ImagePreProcessing.denoise(binary, intensity=2)
+        binary = ImagePreProcessing.adaptiveBinnary(erode) #Changed this experimental
+        denoise = ImagePreProcessing.denoise(binary, intensity=5)
         #dilate = ImagePreProcessing.dilate(morph)
 
 
