@@ -4,6 +4,7 @@ import numpy as np
 import logging
 
 from cvShapeHandler.gpuhandler import GPUHandler
+from cvShapeHandler.imagedisplay import ImageDisplay
 
 
 class ImagePreProcessing:
@@ -394,6 +395,7 @@ class ImagePreProcessing:
         # Resize image back to original size to keep ratio
         result = GPUHandler.getMat(denoise)
         result = ImagePreProcessing.resize(result, image.shape[1])
+        ImageDisplay.display(result, "Test Processed")
         return result
 
     @staticmethod
