@@ -51,7 +51,7 @@ class ShapeHandler:
         p_w = w * 100 / img_width
         p_h = h * 100 / img_height
 
-        return (0.05 <= p_a <= 1) and (p_h <= 10 and p_w <= 10)
+        return (0.025 <= p_a <= 1) and (p_h <= 10 and p_w <= 10)
 
     def in_correct_angle(self, rect):
         (__, (w, h), angle) = rect
@@ -64,8 +64,7 @@ class ShapeHandler:
         (__, (w, h), angle) = rect
         ratio_w_h = (w / h)
         ratio_h_w = (h / w)
-        return True
-        #return 0.1 <= ratio_w_h <= 10 or 0.1 <= ratio_h_w <= 10
+        return 0.1 <= ratio_w_h <= 10 or 0.1 <= ratio_h_w <= 10
 
     def getRectangles(self, contours):
 

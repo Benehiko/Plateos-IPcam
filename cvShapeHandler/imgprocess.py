@@ -29,7 +29,9 @@ class ImgProcess:
             thresh = GPUHandler.getMat(ImagePreProcessing.otsu_binary(inverse))
             crop_img = GPUHandler.getMat(crop_img)
             crop_img = ImagePreProcessing.deskew(crop_img, thresh)
-            #crop_img = ImagePreProcessing.binary(crop_img)
+            # thresh = ImagePreProcessing.binary(crop_img, 100)
+            # morph = ImagePreProcessing.morph(thresh)
+            #crop_img[thresh == 0] = 255
             images.append(crop_img)
         return images
 
