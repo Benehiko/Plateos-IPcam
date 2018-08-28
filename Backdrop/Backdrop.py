@@ -9,6 +9,7 @@ from Caching.CacheHandler import CacheHandler
 from Network.PortScanner import PortScanner
 from Network.requestor import Request
 from camera.Camera import Camera
+from cvShapeHandler.imagedisplay import ImageDisplay
 from numberplate.Numberplate import Numberplate
 from tess.tesseract import Tess
 
