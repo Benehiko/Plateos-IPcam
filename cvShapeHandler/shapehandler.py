@@ -51,7 +51,7 @@ class ShapeHandler:
         p_w = w * 100 / img_width
         p_h = h * 100 / img_height
 
-        return (0.025 <= p_a <= 1) and (p_h <= 10 and p_w <= 10)
+        return (0.05 <= p_a <= 1) and (p_h <= 10 and p_w <= 10)
 
     def in_correct_angle(self, rect):
         (__, (w, h), angle) = rect
