@@ -23,16 +23,17 @@ class ImgProcess:
     def process_for_tess(self, image, rectangles):
         images = []
         for rectangle in rectangles:
-            crop_img = GPUHandler.toUmat(ImagePreProcessing.auto_crop(image.copy(), rectangle))
-            crop_img = ImagePreProcessing.togray(crop_img)
-            inverse = ImagePreProcessing.inverse(crop_img)
-            thresh = GPUHandler.getMat(ImagePreProcessing.otsu_binary(inverse))
-            crop_img = GPUHandler.getMat(inverse)
-            crop_img = ImagePreProcessing.deskew(crop_img, thresh)
-            # thresh = ImagePreProcessing.binary(crop_img, 100)
-            # morph = ImagePreProcessing.morph(thresh)
-            #crop_img[thresh == 0] = 255
-            images.append(crop_img)
+            cropped = ImagePreProcessing.auto_crop(image.copy(), rectangle)
+            gray = ImagePreProcessing.togray(cropped)
+
+            ugray = GPUHandler.toUmat(gray)
+            inverse = ImagePreProcessing.inverse(ugray)
+            thresh = ImagePreProcessing.otsu_binary(inverse)
+
+            compare = GPUHandler.getMat(thresh)
+            deskew = ImagePreProcessing.deskew(gray, compare)
+            inverse = ImagePreProcessing.inverse(deskew)
+            images.append(inverse)
         return images
 
     def char_roi(self, cropped):

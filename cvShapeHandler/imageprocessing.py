@@ -147,9 +147,13 @@ class ImagePreProcessing:
         return erosion
 
     @staticmethod
-    def morph(img):
+    def morph(img, type):
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
-        morph = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
+        if type == "gradient":
+            morph = cv2.morphologyEx(img, cv2.MORPH_GRADIENT, kernel)
+        else:
+            morph = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
+
         return morph
 
     @staticmethod
