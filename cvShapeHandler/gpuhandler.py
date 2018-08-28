@@ -6,9 +6,11 @@ class GPUHandler:
 
     @staticmethod
     def toUmat(mat):
-        return cv2.UMat(mat)
+        return mat
+        #return cv2.UMat(mat)
 
     @staticmethod
     def getMat(umat):
-        return umat.get()
+        return umat
+        #return umat.get()
 
