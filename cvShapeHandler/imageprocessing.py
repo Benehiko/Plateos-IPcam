@@ -378,7 +378,7 @@ class ImagePreProcessing:
     def process_for_shape_detection_bright_backlight(image):
         img = image.copy()
         # Resize image for faster processing
-        img_resize = GPUHandler.toUmat(ImagePreProcessing.resize(img, int(image.shape[1]/4))) #1080
+        img_resize = GPUHandler.toUmat(ImagePreProcessing.resize(img, int(image.shape[1]/2))) #1080
 
         img_gray = ImagePreProcessing.togray(img_resize)
         #thresh = ImagePreProcessing.binary(img_gray, 240)
@@ -388,7 +388,7 @@ class ImagePreProcessing:
         #dilate = ImagePreProcessing.dilate(erode)
         inv = ImagePreProcessing.inverse(erode)
         binary = ImagePreProcessing.adaptiveBinnary(inv)
-        denoise = ImagePreProcessing.denoise(binary, intensity=5, search_window=17, block_size=5)
+        denoise = ImagePreProcessing.denoise(binary, intensity=2, search_window=17, block_size=5)
         #dilate = ImagePreProcessing.dilate(morph)
 
 
