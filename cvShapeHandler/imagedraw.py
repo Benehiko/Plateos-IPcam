@@ -29,5 +29,5 @@ class ImageDraw:
     def draw_text(img, text, position, colour, size, thickness):
         font = cv2.FONT_HERSHEY_SIMPLEX
         col = ImageDraw.get_colour(colour)
-        cv2.putText(img, text, position, font, size, col, thickness)
+        #cv2.putText(img, text, position, font, size, col, thickness)
         return img
