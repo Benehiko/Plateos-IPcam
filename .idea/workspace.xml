@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a85401bd-c83b-4ac0-95a5-200fa421a1a1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/cvShapeHandler/imageprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/cvShapeHandler/imageprocessing.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cvShapeHandler/imgprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/cvShapeHandler/imgprocess.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -80,11 +79,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cvShapeHandler/imgprocess.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="58" column="42" lean-forward="true" selection-start-line="58" selection-start-column="42" selection-end-line="58" selection-end-column="42" />
+            <state relative-caret-position="258">
+              <caret line="65" column="68" selection-start-line="65" selection-start-column="68" selection-end-line="65" selection-end-column="68" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -104,10 +103,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cvShapeHandler/imageprocessing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="318">
+            <state relative-caret-position="273">
               <caret line="390" column="64" selection-start-line="390" selection-start-column="64" selection-end-line="390" selection-end-column="64" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
@@ -131,8 +130,8 @@
         <option value="$PROJECT_DIR$/cvShapeHandler/imagedraw.py" />
         <option value="$PROJECT_DIR$/cvShapeHandler/shapehandler.py" />
         <option value="$PROJECT_DIR$/Backdrop/Backdrop.py" />
-        <option value="$PROJECT_DIR$/cvShapeHandler/imgprocess.py" />
         <option value="$PROJECT_DIR$/cvShapeHandler/imageprocessing.py" />
+        <option value="$PROJECT_DIR$/cvShapeHandler/imgprocess.py" />
       </list>
     </option>
   </component>
@@ -338,16 +337,6 @@
     <entry file="file://$PROJECT_DIR$/Backdrop/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/tess/tesseract.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-214">
-          <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Backdrop/Backdrop.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-39">
@@ -368,12 +357,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cvShapeHandler/imgprocess.py">
+    <entry file="file://$PROJECT_DIR$/cvShapeHandler/imageprocessing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="58" column="42" lean-forward="true" selection-start-line="58" selection-start-column="42" selection-end-line="58" selection-end-column="42" />
+        <state relative-caret-position="273">
+          <caret line="390" column="64" selection-start-line="390" selection-start-column="64" selection-end-line="390" selection-end-column="64" />
           <folding>
-            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#0#25#0" expanded="true" />
+            <marker date="1535454940880" expanded="true" signature="253:262" ph="..." />
           </folding>
         </state>
       </provider>
@@ -388,13 +378,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cvShapeHandler/imageprocessing.py">
+    <entry file="file://$PROJECT_DIR$/tess/tesseract.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="318">
-          <caret line="390" column="64" selection-start-line="390" selection-start-column="64" selection-end-line="390" selection-end-column="64" />
+        <state relative-caret-position="-214">
+          <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
           <folding>
-            <element signature="e#0#25#0" expanded="true" />
-            <marker date="1535454940880" expanded="true" signature="253:262" ph="..." />
+            <element signature="e#0#29#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cvShapeHandler/imgprocess.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="258">
+          <caret line="65" column="68" selection-start-line="65" selection-start-column="68" selection-end-line="65" selection-end-column="68" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
