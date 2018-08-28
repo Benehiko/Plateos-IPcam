@@ -63,7 +63,7 @@ class Camera:
                 break
 
             finally:
-                sleep(2)
+                sleep(0.5)
         self.backdrop.callback_camera(self.ip)
 
     def resultime(self, results):
