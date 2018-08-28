@@ -280,7 +280,7 @@ class ImagePreProcessing:
         return resized
 
     @staticmethod
-    def cv_resize_compress(img, max_w=1640, max_h=1232, quality=80):
+    def cv_resize_compress(img, max_w=1640, max_h=1232, quality=65):
         try:
             # print("DEBUG: resize the image...using shape")
             img_h = img.shape[0]
@@ -378,7 +378,7 @@ class ImagePreProcessing:
     def process_for_shape_detection_bright_backlight(image):
         img = image.copy()
         # Resize image for faster processing
-        img_resize = GPUHandler.toUmat(ImagePreProcessing.resize(img, int(image.shape[1]/3))) #1080
+        img_resize = GPUHandler.toUmat(ImagePreProcessing.resize(img, int(image.shape[1]/4))) #1080
 
         img_gray = ImagePreProcessing.togray(img_resize)
         #thresh = ImagePreProcessing.binary(img_gray, 240)
@@ -387,7 +387,7 @@ class ImagePreProcessing:
         erode = ImagePreProcessing.erode(img_gray)
         #dilate = ImagePreProcessing.dilate(erode)
         inv = ImagePreProcessing.inverse(erode)
-        binary = ImagePreProcessing.adaptiveBinnary(erode) #Changed this experimental
+        binary = ImagePreProcessing.adaptiveBinnary(inv)
         denoise = ImagePreProcessing.denoise(binary, intensity=5)
         #dilate = ImagePreProcessing.dilate(morph)
 
