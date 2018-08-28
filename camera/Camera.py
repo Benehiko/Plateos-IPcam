@@ -46,11 +46,9 @@ class Camera:
 
                         for i in pool:
                             i.start()
-                        # for i in cropped:
-                        #     pool.append(Thread(target=self.tess.process(i)))
-                        #
-                        # for i in pool:
-                        #     i.start()
+
+                        for i in pool:
+                            i.join()
 
                     if cv2.waitKey(25) & 0xFF == ord('q'):
                         cv2.destroyWindow(self.ip)
@@ -63,7 +61,7 @@ class Camera:
                 break
 
             finally:
-                sleep(0.5)
+                pass
         self.backdrop.callback_camera(self.ip)
 
     def resultime(self, results):
