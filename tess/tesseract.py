@@ -7,7 +7,7 @@ from PIL import Image
 
 import os
 import numpy as np
-import asyncio
+
 
 class Tess:
 
@@ -27,7 +27,6 @@ class Tess:
 
         self.backdrop = backdrop
 
-    @asyncio.coroutine
     def process(self, image):
         if image is not None:
             tmp = Image.fromarray(np.uint8(image))

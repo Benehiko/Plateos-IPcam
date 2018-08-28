@@ -8,6 +8,7 @@ from threading import Thread
 import cv2
 import numpy as np
 
+from cvShapeHandler.imagedisplay import ImageDisplay
 from cvShapeHandler.imageprocessing import ImagePreProcessing
 from cvShapeHandler.imgprocess import ImgProcess
 
@@ -37,7 +38,7 @@ class Camera:
 
                     rectangles, corrected = self.img_process.process(img)
                     if rectangles is not None:
-                        #ImageDisplay.display(corrected, self.ip)
+                        ImageDisplay.display(corrected, self.ip)
                         cropped = self.img_process.process_for_tess(img, rectangles)
                         pool = []
                         for i in cropped:
@@ -51,9 +52,9 @@ class Camera:
                         # for i in pool:
                         #     i.start()
 
-                    # if cv2.waitKey(25) & 0xFF == ord('q'):
-                    #     cv2.destroyWindow(self.ip)
-                    #     break
+                    if cv2.waitKey(25) & 0xFF == ord('q'):
+                        cv2.destroyWindow(self.ip)
+                        break
                 else:
                     break
 
