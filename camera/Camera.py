@@ -4,7 +4,7 @@ import random
 import string
 from time import sleep
 from urllib.request import urlopen
-
+from threading import Thread
 import cv2
 import numpy as np
 
@@ -41,10 +41,10 @@ class Camera:
                         cropped = self.img_process.process_for_tess(img, rectangles)
                         pool = []
                         for i in cropped:
-                            pool.append(asyncio.ensure_future(self.tess.process(i)))
+                            pool.append(Thread(target=self.tess.process(i)))
 
-                        coros = asyncio.gather(*pool, loop=self.loop)
-                        yield self.loop.run_until_complete(coros)
+                        for i in pool:
+                            i.start()
                         # for i in cropped:
                         #     pool.append(Thread(target=self.tess.process(i)))
                         #
