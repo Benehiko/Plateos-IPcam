@@ -48,7 +48,7 @@ class Backdrop:
         p.start()
 
     def callback_tess(self, plate):
-        ImageDisplay.display(plate[4], "Cropped Plate")
+        #ImageDisplay.display(plate[4], "Cropped Plate")
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2], "Date:", plate[3])
         self.cache(plate)
 

@@ -46,7 +46,7 @@ class Tess:
         asyncio.set_event_loop(loop)
         for image in images:
             if image is not None:
-                ImageDisplay.display(window_name="Cropped", img=image)
+                #ImageDisplay.display(window_name="Cropped", img=image)
                 pool.append(asyncio.ensure_future(self.runner(image), loop=loop))
 
         results = loop.run_until_complete(asyncio.gather(*pool))
