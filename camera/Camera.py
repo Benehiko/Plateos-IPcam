@@ -2,13 +2,13 @@ import asyncio
 import datetime
 import random
 import string
+from threading import Thread
 from time import sleep
 from urllib.request import urlopen
-from threading import Thread
+
 import cv2
 import numpy as np
 
-from cvShapeHandler.imagedisplay import ImageDisplay
 from cvShapeHandler.imageprocessing import ImagePreProcessing
 from cvShapeHandler.imgprocess import ImgProcess
 
@@ -38,14 +38,10 @@ class Camera:
 
                     rectangles, corrected = self.img_process.process(img)
                     if rectangles is not None:
-                        #ImageDisplay.display(corrected, self.ip)
                         cropped = self.img_process.process_for_tess(img, rectangles)
                         t = Thread(target=self.tess.multi(cropped))
                         t.start()
                         t.join(5)
-                        # for i in cropped:
-                        #     t = Thread(target=self.tess.process(i))
-                        #     t.start()
 
                     if cv2.waitKey(25) & 0xFF == ord('q'):
                         cv2.destroyWindow(self.ip)
@@ -58,7 +54,7 @@ class Camera:
                 break
 
             finally:
-                pass
+                sleep(2)
         self.backdrop.callback_camera(self.ip)
 
     def resultime(self, results):
