@@ -37,7 +37,7 @@ class Tess:
         if plate_type is not None and confidence > 0:
             image = ImagePreProcessing.cv_resize_compress(image, max_w=200)
             now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            return (text, plate_type, confidence, now, image)
+            return ((text, plate_type, confidence, now, image))
         return None
 
     def multi(self, images):
@@ -73,6 +73,7 @@ class Tess:
             tmp = Image.fromarray(np.uint8(image))
             self.t.SetImage(tmp)
             for roi in rectangles:
+                #print(roi)
                 ((x1, y1), (x2, y2), _) = roi
                 x1 = int(x1)
                 y1 = int(y1)

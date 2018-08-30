@@ -2,7 +2,6 @@ import json
 import logging
 
 from cvShapeHandler.gpuhandler import GPUHandler
-from cvShapeHandler.imagedisplay import ImageDisplay
 from cvShapeHandler.imagedraw import ImageDraw
 from cvShapeHandler.imageprocessing import ImagePreProcessing
 from cvShapeHandler.numpyencoder import NumpyEncoder
@@ -21,28 +20,39 @@ class ImgProcess:
         self.show_image = show_image
         self.resize = resize
 
-    def highlight(self, image, regions):
-        for rectangle in regions:
-            centre, dimensions, theta = rectangle
-            h, w = dimensions
-            thresh = ImagePreProcessing.otsu_binary(image[h:w], 240)
-            image[thresh == 0] = (0, 0, 255)
-
-        ImageDisplay.display(image, "Highlight")
-        return image
-
     def process_for_tess(self, image, rectangles):
         images = []
         for rectangle in rectangles:
             cropped = ImagePreProcessing.auto_crop(image.copy(), rectangle)
             gray = ImagePreProcessing.togray(cropped)
+
             ugray = GPUHandler.toUmat(gray)
             inverse = ImagePreProcessing.inverse(ugray)
             thresh = ImagePreProcessing.otsu_binary(inverse)
+
             compare = GPUHandler.getMat(thresh)
             deskew = ImagePreProcessing.deskew(gray, compare)
-            images.append(deskew)
+            inverse = ImagePreProcessing.inverse(deskew)
+            images.append(inverse)
         return images
+
+    def get_subimages(self, image, rectangles):
+        images = []
+        for rectangle in rectangles:
+            cropped = ImagePreProcessing.auto_crop(image.copy(), rectangle)
+            images.append(cropped)
+        return images
+
+    def process_change(self, historic, present):
+        self.imgShapeH = ShapeHandler(present)
+        contours = self.imgShapeH.image_difference(historic, present)
+        if len(contours) > 0:
+            rectangles, box_rectangles, angles = self.imgShapeH.getRectangles(contours)
+            if len(rectangles) > 0:
+                img = ImageDraw.draw(present, box_rectangles, "Red", 5)
+                return rectangles, img
+
+        return None, None
 
     def char_roi(self, cropped):
         img = cropped.copy()

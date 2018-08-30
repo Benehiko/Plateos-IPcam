@@ -1,3 +1,5 @@
+from skimage.measure import compare_ssim
+
 from cvShapeHandler.imageprocessing import ImagePreProcessing
 from cvShapeHandler.imagedisplay import ImageDisplay
 
@@ -13,11 +15,15 @@ class ShapeHandler:
         self.img = img
         self.contours = None
 
-
     def findcontours(self):
         processed = ImagePreProcessing.process_for_shape_detection_bright_backlight(self.img)
         __, contours, hierarchy = cv2.findContours(processed, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
         self.contours = contours
+        return contours
+
+    def image_difference(self, imgA, imgB):
+        processed = ImagePreProcessing.process_change(imgA, imgB)
+        __, contours, __ = cv2.findContours(processed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         return contours
 
     def polygontest(self, cnt_array, rect):
@@ -51,7 +57,7 @@ class ShapeHandler:
         p_w = w * 100 / img_width
         p_h = h * 100 / img_height
 
-        return (0.025 <= p_a <= 1) and (p_h <= 10 and p_w <= 10)
+        return (0.5 <= p_a <= 10) and (p_h <= 60 and p_w <= 60)
 
     def in_correct_angle(self, rect):
         (__, (w, h), angle) = rect

@@ -9,6 +9,7 @@ from Caching.CacheHandler import CacheHandler
 from Network.PortScanner import PortScanner
 from Network.requestor import Request
 from camera.Camera import Camera
+from cvShapeHandler.imagedisplay import ImageDisplay
 from numberplate.Numberplate import Numberplate
 from tess.tesseract import Tess
 
@@ -47,7 +48,7 @@ class Backdrop:
         p.start()
 
     def callback_tess(self, plate):
-        #ImageDisplay.display(plate[4], "Cropped Plate")
+        ImageDisplay.display(plate[4], "Cropped Plate")
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2], "Date:", plate[3])
         self.cache(plate)
 
