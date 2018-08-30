@@ -2,13 +2,13 @@ import asyncio
 import datetime
 import random
 import string
-from threading import Thread
 from time import sleep
 from urllib.request import urlopen
-
+from threading import Thread
 import cv2
 import numpy as np
 
+from cvShapeHandler.imagedisplay import ImageDisplay
 from cvShapeHandler.imageprocessing import ImagePreProcessing
 from cvShapeHandler.imgprocess import ImgProcess
 
@@ -26,6 +26,7 @@ class Camera:
         self.ip = ip
         self.backdrop = backdrop
         self.loop = asyncio.get_event_loop()
+        self.historic = (None, None)
 
     def start(self):
         print("Starting camera", self.ip)
@@ -35,13 +36,29 @@ class Camera:
                 if reader.status == 200:
                     img_npy = np.array(bytearray(reader.read()), dtype=np.uint8)
                     img = cv2.imdecode(img_npy, -1)
+                    now = datetime.datetime.now()
 
-                    rectangles, corrected = self.img_process.process(img)
-                    if rectangles is not None:
-                        cropped = self.img_process.process_for_tess(img, rectangles)
-                        t = Thread(target=self.tess.multi(cropped))
-                        t.start()
-                        t.join(5)
+                    if self.historic is None:
+                        self.historic = (img, now)
+                    else:
+                        diff = now - self.historic[1]
+                        if datetime.timedelta(minutes=1) < diff:
+                            self.historic = (img, now)
+
+                    roi, change = self.img_process.process_change(self.historic[0], img)
+                    if roi is not None:
+                        ImageDisplay.display(change, self.ip)
+                        targets = self.img_process.get_subimages(img, roi)
+
+                        for target in targets:
+                            rectangles, corrected = self.img_process.process(target)
+
+                            if rectangles is not None:
+                                #ImageDisplay.display(corrected, self.ip)
+                                cropped = self.img_process.process_for_tess(img, rectangles)
+                                t = Thread(target=self.tess.multi(cropped))
+                                t.start()
+                                t.join(5)
 
                     if cv2.waitKey(25) & 0xFF == ord('q'):
                         cv2.destroyWindow(self.ip)
@@ -54,7 +71,7 @@ class Camera:
                 break
 
             finally:
-                sleep(2)
+                pass
         self.backdrop.callback_camera(self.ip)
 
     def resultime(self, results):

@@ -27,7 +27,7 @@ class Process:
             crop_img = ImagePreProcessing.auto_crop(image.copy(), rectangle)
             crop_img = ImagePreProcessing.togray(crop_img)
             crop_img = ImagePreProcessing.equaHist(crop_img)
-            crop_img = ImagePreProcessing.morph(crop_img)
+            crop_img = ImagePreProcessing.morph(crop_img, "close")
             crop_img = ImagePreProcessing.denoise(crop_img)
             images.append(crop_img)
         return images
@@ -35,10 +35,6 @@ class Process:
     def process(self, image):
         # Resize image
         img = image.copy()
-
-        if self.resize:
-            img = ImagePreProcessing.resize(img, 1080)
-            # ratio = img.shape[0] / float(resized.shape[0])
 
         self.imgShapeH = ShapeHandler(img)
         contours = self.imgShapeH.findcontours()
@@ -52,14 +48,8 @@ class Process:
                         img = ImageDraw.draw(img, box_rectangles, "Green", 5)
                     except Exception as e:
                         self.logger.error(e)
-                    #Process.save("drawn", img)
-                    if self.show_image:
-                        ImageDisplay.display(img)
 
-                # self.overlay_handler(rectangles)
                 print("Image has rectangles!")
-                # jrect = self.rectangle2json(rectangles)
-                # img_list = ImagePreProcessing.crop(self.img, jrect)
                 return img, rectangles
 
         return None, None

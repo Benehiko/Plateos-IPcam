@@ -3,6 +3,7 @@ import datetime, pathlib
 import numpy as np
 import logging
 
+from skimage.measure import compare_ssim
 from cvShapeHandler.gpuhandler import GPUHandler
 from cvShapeHandler.imagedisplay import ImageDisplay
 
@@ -26,7 +27,6 @@ class ImagePreProcessing:
         # range [-90, 0); as the rectangle rotates clockwise the
         # returned angle trends to 0 -- in this special case we
         # need to add 90 degrees to the angle
-
         if angle < -45:
             angle = -(90 + angle)
 
@@ -104,20 +104,20 @@ class ImagePreProcessing:
         # First slightly crop edge - some images had a rogue 2 pixel black edge on one side
         init_crop = 10
         h, w = image_source.shape[:2]
-        image_source = image_source[init_crop:init_crop + h, init_crop:init_crop + w]#(h - init_crop * 2), init_crop:init_crop + (w - init_crop * 2)]
+        image_source = image_source[init_crop:init_crop + (h - init_crop * 2), init_crop:init_crop + (w - init_crop * 2)]
         # Add back a white border
         image_source = cv2.copyMakeBorder(image_source, 5, 5, 5, 5, cv2.BORDER_CONSTANT, value=(0, 0, 0))
         centre, dimensions, theta = rectangle
 
-        width = int(dimensions[0] + 20)
-        height = int(dimensions[1] + 20)
+        width = int(dimensions[0])
+        height = int(dimensions[1])
 
         box = cv2.boxPoints(rectangle)
         box = np.int0(box)
 
         M = cv2.moments(box)
-        cx = int(M['m10'] / M['m00']) - 5
-        cy = int(M['m01'] / M['m00']) - 5
+        cx = int(M['m10'] / M['m00'])
+        cy = int(M['m01'] / M['m00'])
 
         image_patch = ImagePreProcessing.sub_image(image_source, (cx, cy), theta + 90, height, width)
 
@@ -161,7 +161,7 @@ class ImagePreProcessing:
     def equaHist(img):
         # The code commented below only equalises the whole image and not piece by piece. This creates noise.
         # equ = cv2.equalizeHist(img)
-        clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(15, 15))
+        clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
         result = clahe.apply(img)
         return result
 
@@ -352,3 +352,28 @@ class ImagePreProcessing:
 
         result = ImagePreProcessing.resize(img_thresh, image.shape[1])
         return result
+
+    @staticmethod
+    def process_shape_new(image):
+        tmp = image.copy()
+        resized = ImagePreProcessing.resize(tmp, int(image.shape[0] / 4))
+        gray = ImagePreProcessing.togray(resized)
+        equ = ImagePreProcessing.equaHist(gray)
+        thresh = ImagePreProcessing.otsu_binary(equ)
+        erode = ImagePreProcessing.erode(thresh)
+        binary = ImagePreProcessing.adaptiveBinnary(erode)
+        ImageDisplay.display(equ, "Process")
+
+        return thresh
+
+
+    @staticmethod
+    def process_change(imageA, imageB):
+        grayA = ImagePreProcessing.togray(imageA)
+        grayB = ImagePreProcessing.togray(imageB)
+        (score, diff) = compare_ssim(grayA, grayB, full=True)
+        diff = (diff * 255).astype("uint8")
+        thresh = ImagePreProcessing.adaptiveBinnary(diff)
+        return thresh
+
+
