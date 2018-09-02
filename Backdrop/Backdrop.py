@@ -9,7 +9,7 @@ from Caching.CacheHandler import CacheHandler
 from Network.PortScanner import PortScanner
 from Network.requestor import Request
 from camera.Camera import Camera
-from cvShapeHandler.imagedisplay import ImageDisplay
+from cvlib.CvHelper import CvHelper
 from numberplate.Numberplate import Numberplate
 from tess.tesseract import Tess
 
@@ -36,7 +36,7 @@ class Backdrop:
             for x in tmp:
                 if x not in active_ip:
                     self.add(x)
-            sleep(60)
+            sleep(10)
             self.check_alive()
             self.cleanup_cache()
             self.offline_check()
@@ -48,7 +48,7 @@ class Backdrop:
         p.start()
 
     def callback_tess(self, plate):
-        ImageDisplay.display(plate[4], "Cropped Plate")
+        CvHelper.display("Cropped Plate", plate[4])
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2], "Date:", plate[3])
         self.cache(plate)
 
