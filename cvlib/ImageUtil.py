@@ -59,8 +59,8 @@ class ImageUtil:
     @staticmethod
     def process_change(historic_images, present):
         results = []
-        tmp = present.copy()
-        resized_present = CvHelper.resize(tmp, int(present.shape[0] / 4))
+        tmp_p = present.copy()
+        resized_present = CvHelper.resize(tmp_p, int(present.shape[0] / 4))
         gray_present = CvHelper.gaussian_blur(CvHelper.greyscale(resized_present))
 
         for historic in historic_images:
@@ -69,10 +69,10 @@ class ImageUtil:
             gray_hist = CvHelper.gaussian_blur(CvHelper.greyscale(tmp))
             (score, diff) = compare_ssim(gray_hist, gray_present, full=True)
             diff = (diff * 255).astype("uint8")
-            thresh = CvHelper.resize(CvHelper.otsu_binary(diff, 240), new_width=int(present.shape[0]))
+            thresh = CvHelper.resize(CvHelper.adaptive_thresholding(diff), new_width=int(present.shape[0]))
             contours, __ = ContourHandler.find_contours(thresh, ret_mode=CvEnums.RETR_EXTERNAL)
             if len(contours) > 0:
-                rectangles, box_rectangles, angles = ContourHandler.get_rectangles(contours, tmp, area_bounds=(1, 10), min_point=(1, 1), max_point=(30, 30))
+                rectangles, box_rectangles, angles = ContourHandler.get_rectangles(contours, present, area_bounds=(1, 10), min_point=(1, 1), max_point=(60, 60))
                 if len(rectangles) > 0:
                     objs = CvHelper.draw_boxes(mat=present, arr_box_pnts=box_rectangles, colour=CvEnums.COLOUR_GREEN, thickness=5)
                     CvHelper.display("Objects", objs)
@@ -136,22 +136,28 @@ class ImageUtil:
     @staticmethod
     def process_shape_new(image):
         tmp = image.copy()
-        #resized = CvHelper.resize(tmp, int(image.shape[0]))
-        grey = CvHelper.greyscale(tmp)
-        equ = CvHelper.equalise_hist(grey, by_tile=True, tile_size=8)
-        thresh = CvHelper.canny_thresholding(equ)
-        dilate = CvHelper.dilate(thresh)
-        return dilate
+        resize = CvHelper.resize(tmp, new_width=int(image.shape[1]/4), new_height=int(image.shape[0]/4))
+        grey = CvHelper.greyscale(resize)
+        blur = CvHelper.gaussian_blur(grey)
+        equ = CvHelper.equalise_hist(blur, by_tile=True, tile_size=20)
+        lap = CvHelper.laplacian(equ)
+        thresh = CvHelper.otsu_binary(lap, 240)
+        resize = CvHelper.resize(thresh, new_width=image.shape[1], new_height=image.shape[0] / 4)
+        return resize
 
     @staticmethod
     def remove_shadows(frames):
-        bgsKNN = CvHelper.create_background_subtractor_knn(5, 0, True)
+        fgbg = CvHelper.create_background_subtractor_mog2()
+        fgbg.setDetectShadows(True)
+
         shadowless = []
         for frame in frames:
-            out = None
-            shadowless.append(bgsKNN.apply(frame, out))
+            tmp = fgbg.apply(frame)
 
-        out = bgsKNN.getBackgroundImage()
+            #tmp[tmp == 127] = 0
+            shadowless.append(fgbg.getBackgroundImage())
+
+        out = None
         return shadowless, out
 
     @staticmethod
@@ -248,9 +254,12 @@ class ImageUtil:
         for rectangle in rectangles:
             potential_plate = ImageUtil.auto_crop(tmp, rectangle)
             greyscale = CvHelper.greyscale(potential_plate)
-            blur = CvHelper.gaussian_blur(greyscale)
-            thresh = CvHelper.otsu_binary(blur)
-            contours, binary = ContourHandler.find_contours(thresh, ret_mode=CvEnums.RETR_EXTERNAL)
+            thresh = CvHelper.binarise(greyscale, 180)
+            bitwise = CvHelper.bitwise_and(greyscale, mask=thresh)
+            thresh = CvHelper.binarise(bitwise, 180)
+            dilate = CvHelper.dilate(thresh, kernel_size=3, iterations=9)
+
+            contours, binary = ContourHandler.find_contours(dilate, ret_mode=CvEnums.RETR_EXTERNAL, approx_method=CvEnums.CHAIN_APPROX_NONE)
             if len(contours) > 0:
                 rectangles, box_rectangles = ContourHandler.get_characters_roi(contours)
                 if len(rectangles) > 0:

@@ -59,7 +59,7 @@ class Request:
     @staticmethod
     def check_connectivity():
         try:
-            conn = socket.create_connection(('google.com', 8080))
+            conn = socket.create_connection(('google.com', 443))
             conn.close()
             return True
         except Exception as e:
