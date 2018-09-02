@@ -41,6 +41,7 @@ class CvHelper:
     def equalise_hist(mat, by_tile=True, tile_size=None):
         """
         Equalise the brightness of an image
+        :param tile_size:
         :param mat: greyscale image
         :param by_tile: if False it will take the whole image into account, but it creates noise.
         :return:
@@ -287,6 +288,18 @@ class CvHelper:
         return cv2.bitwise_not(mat)
 
     @staticmethod
+    def bitwise_and(mat, mask=None):
+        """
+        https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_core/py_image_arithmetics/py_image_arithmetics.html
+        :param mat:
+        :param mask:
+        :return:
+        """
+        if mask is not None:
+            return cv2.bitwise_and(mat, mat, mask=mask)
+        return cv2.bitwise_and(mat, mat)
+
+    @staticmethod
     def display(window_name, mat, size=(None, None)):
         """
         Display mat or umat
@@ -443,3 +456,7 @@ class CvHelper:
         :return:
         """
         return cv2.warpAffine(mat, input_array, out_size, flags=flags.value, borderMode=border_mode.value)
+
+    @staticmethod
+    def create_background_subtractor_mog2():
+        return cv2.createBackgroundSubtractorMOG2(128, cv2.THRESH_BINARY, 1)

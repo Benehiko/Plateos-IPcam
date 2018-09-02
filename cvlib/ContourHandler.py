@@ -44,8 +44,8 @@ class ContourHandler:
 
     @staticmethod
     def get_approx(cnt):
-        epsilon = 0.01 * cv2.arcLength(cnt, False)
-        approx = cv2.approxPolyDP(cnt, epsilon, False)
+        epsilon = 0.01 * cv2.arcLength(cnt, True)
+        approx = cv2.approxPolyDP(cnt, epsilon, True)
         return approx
 
     @staticmethod

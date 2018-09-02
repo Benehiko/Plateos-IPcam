@@ -36,7 +36,7 @@ class Backdrop:
             for x in tmp:
                 if x not in active_ip:
                     self.add(x)
-            sleep(10)
+            sleep(60)
             self.check_alive()
             self.cleanup_cache()
             self.offline_check()
@@ -71,6 +71,7 @@ class Backdrop:
         for process in tmp:
             try:
                 if process[1].is_alive() is False:
+                    print("Process died")
                     self.active.discard(process)
             except Exception as e:
                 print("Tried to remove process", e)
