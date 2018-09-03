@@ -9,6 +9,7 @@ from Caching.CacheHandler import CacheHandler
 from Network.PortScanner import PortScanner
 from Network.requestor import Request
 from camera.Camera import Camera
+from cvlib.CvHelper import CvHelper
 from numberplate.Numberplate import Numberplate
 from tess.tesseract import Tess
 
@@ -47,7 +48,7 @@ class Backdrop:
         p.start()
 
     def callback_tess(self, plate):
-        #ImageDisplay.display(plate[4], "Cropped Plate")
+        CvHelper.display("Cropped Plate", plate[4])
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2], "Date:", plate[3])
         self.cache(plate)
 
@@ -70,6 +71,7 @@ class Backdrop:
         for process in tmp:
             try:
                 if process[1].is_alive() is False:
+                    print("Process died")
                     self.active.discard(process)
             except Exception as e:
                 print("Tried to remove process", e)

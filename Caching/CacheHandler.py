@@ -50,7 +50,6 @@ class CacheHandler:
         f.close()
         return arr
 
-
     @staticmethod
     def remove(dir, filename):
         pathlib.Path(dir).mkdir(parents=False, exist_ok=True)

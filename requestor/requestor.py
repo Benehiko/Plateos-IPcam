@@ -1,11 +1,12 @@
-import netifaces
-import requests
 import logging
+import netifaces
 import socket
-import datetime
-from PIL import Image
 from io import BytesIO
-from cvShapeHandler.imgprocess import ImgProcess
+
+import requests
+from PIL import Image
+
+from cvlib.ImageUtil import ImageUtil
 
 
 class Request:
@@ -19,7 +20,7 @@ class Request:
     # http://docs.python-requests.org/en/latest/user/advanced/#post-multiple-multipart-encoded-files
     async def upload_data(self, multiple_files, backdrop, timestamp):
         if len(multiple_files) > 0:
-            if not self.check_connectivity():
+            if not Request.check_connectivity():
                 self.logger.debug("Internet may be down...caching all images just in case for later.")
                 # backdrop.cache(multiple_files)
                 return
@@ -28,7 +29,7 @@ class Request:
                 data = [('mac', self.mac), ('timestamp', timestamp)]
                 tmp_img = []
                 for nparray in multiple_files:
-                    nparray = ImgProcess.compress(nparray)
+                    nparray = ImageUtil.compress(nparray)
                     if nparray is not None:
                         image = Image.fromarray(nparray)
                         tmp = BytesIO()
@@ -55,9 +56,10 @@ class Request:
             self.logger.error("Error on post: %s", e)
             return False
 
-    def check_connectivity(self):
+    @staticmethod
+    def check_connectivity():
         try:
-            conn = socket.create_connection(('google.com', 8080))
+            conn = socket.create_connection(('google.com', 443))
             conn.close()
             return True
         except Exception as e:
