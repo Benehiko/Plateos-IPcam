@@ -28,12 +28,13 @@ class CvHelper:
         Morphological transformations are some simple operations based on the image shape. It is normally performed
         on binarise images. It needs two inputs, one is our original image, second one is called structuring element or
         kernel which decides the nature of operation. Two basic morphological operators are Erosion and Dilation
+        :param kernel_size:
         :param mat: binarise image
         :param gradient_type:
         :param kernel_shape:
         :return: morphed image
         """
-        kernel = cv2.getStructuringElement(kernel_shape, (kernel_size, kernel_size))
+        kernel = cv2.getStructuringElement(kernel_shape.value, (kernel_size, kernel_size))
         morph = cv2.morphologyEx(mat, gradient_type.value, kernel)
         return morph
 
@@ -460,3 +461,10 @@ class CvHelper:
     @staticmethod
     def create_background_subtractor_mog2():
         return cv2.createBackgroundSubtractorMOG2(128, cv2.THRESH_BINARY, 1)
+
+    @staticmethod
+    def adjust_gamma(mat, gamma=1.0):
+        inv_gamma = 1.0 / gamma
+        table = np.array([((i / 255.0) ** inv_gamma) * 255
+                          for i in np.arange(0, 256)]).astype("uint8")
+        return cv2.LUT(mat, table)

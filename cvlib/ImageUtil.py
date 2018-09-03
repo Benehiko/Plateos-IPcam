@@ -1,11 +1,8 @@
 import math
 import pathlib
-import time
-
-import numpy as np
 from datetime import datetime
 
-from skimage.measure import compare_ssim
+import numpy as np
 
 from cvlib.ContourHandler import ContourHandler
 from cvlib.CvEnums import CvEnums
@@ -37,6 +34,8 @@ class ImageUtil:
         tmp = image.copy()
         for rectangle in rectangles:
             cropped = ImageUtil.auto_crop(tmp, rectangle)
+            if cropped.shape[1] < 640 or cropped.shape[0] < 480:
+                CvHelper.resize(cropped, new_width=640, new_height=480)
             images.append(cropped)
         return images
 
@@ -56,6 +55,8 @@ class ImageUtil:
             except Exception as e:
                 pass
 
+    """
+    Too Experimental for now
     @staticmethod
     def process_change(historic_images, present):
         results = []
@@ -79,7 +80,7 @@ class ImageUtil:
                     results += rectangles
 
         return results
-
+        """
     @staticmethod
     def process_for_shape_detection(mat):
         tmp = mat.copy()
@@ -99,7 +100,7 @@ class ImageUtil:
     @staticmethod
     def process_for_shape_detection_old(mat):
         tmp = mat.copy()
-        resized = CvHelper.resize(tmp, 1080)
+        resized = CvHelper.resize(tmp, new_width=int(mat.shape[1]/4), new_height=int(mat.shape[0]/4))
         grey = CvHelper.greyscale(resized)
         thresh = CvHelper.binarise(grey, 240)
         # Convert all white pixels to black
@@ -108,41 +109,42 @@ class ImageUtil:
         erosion = CvHelper.erode(grey)
         dilate = CvHelper.dilate(erosion)
         thresh = CvHelper.adaptive_thresholding(dilate)
-        result = CvHelper.resize(thresh, mat.shape[1])
+        result = CvHelper.resize(thresh, new_width=mat.shape[1], new_height=mat.shape[0])
         return result
 
     @staticmethod
     def process_for_shape_detection_bright_backlight(image):
         img = image.copy()
         # Resize image for faster processing
-        img_resize = CvHelper.get_umat(CvHelper.resize(img, new_width=int(image.shape[1] / 2)))  # 1080
-        img_gray = CvHelper.greyscale(img_resize)
-        blur = CvHelper.gaussian_blur(img_gray)
-        thresh = CvHelper.otsu_binary(img_gray, 240)
-        # img_gray[thresh == 255] = 0
-        # erode = ImagePreProcessing.erode(thresh)
-        # dilate = ImagePreProcessing.dilate(erode)
-        inv = CvHelper.inverse(thresh)
-        binary = CvHelper.adaptive_thresholding(inv)
-        # denoise = ImagePreProcessing.denoise(inv, intensity=5)
+        #img_resize = CvHelper.get_umat(CvHelper.resize(img, new_width=int(image.shape[1] / 2)))  # 1080
+        greyscale = CvHelper.greyscale(img)
+        bright = CvHelper.adjust_gamma(greyscale, 2.5)
+        blur = CvHelper.gaussian_blur(bright, kernel_size=5)
+        thresh = CvHelper.otsu_binary(blur)
+
+        #morph = CvHelper.morph(thresh, CvEnums.MORPH_CLOSE)
+
+        # erode = CvHelper.erode(morph, iterations=1, kernel_size=3)
 
         # Resize image back to original size to keep ratio
-
-        result = CvHelper.get_mat(binary)
-        # ImageDisplay.display("Processed", result)
-        result = CvHelper.resize(result, new_width=image.shape[1])
+        result = thresh
+        #CvHelper.display("wind", result)
+        #result = CvHelper.resize(result, new_width=image.shape[1], new_height=image.shape[0])
         return result
 
     @staticmethod
     def process_shape_new(image):
         tmp = image.copy()
-        resize = CvHelper.resize(tmp, new_width=int(image.shape[1]/4), new_height=int(image.shape[0]/4))
+        resize = CvHelper.resize(tmp, new_width=int(image.shape[1]/2), new_height=int(image.shape[0]/2))
         grey = CvHelper.greyscale(resize)
-        blur = CvHelper.gaussian_blur(grey)
-        equ = CvHelper.equalise_hist(blur, by_tile=True, tile_size=20)
+        equ = CvHelper.equalise_hist(grey, by_tile=False, tile_size=20)
         lap = CvHelper.laplacian(equ)
-        thresh = CvHelper.otsu_binary(lap, 240)
-        resize = CvHelper.resize(thresh, new_width=image.shape[1], new_height=image.shape[0] / 4)
+        dilate = CvHelper.dilate(lap, 3, 1)
+        morph = CvHelper.morph(dilate, CvEnums.MORPH_GRADIENT, CvEnums.K_ELLIPSE, kernel_size=3)
+        thresh = CvHelper.otsu_binary(morph, 240)
+        canny = CvHelper.canny_thresholding(thresh)
+        resize = CvHelper.resize(canny, new_width=image.shape[1], new_height=image.shape[0] / 4)
+        CvHelper.display("Process", resize)
         return resize
 
     @staticmethod
@@ -173,14 +175,14 @@ class ImageUtil:
         image_source = CvHelper.copy_make_border(image_source, sides=(5, 5, 5, 5), border_type=CvEnums.BORDER_CONSTANT, border_colour=CvEnums.COLOUR_BLACK)
         centre, dimensions, theta = rectangle
 
-        width = int(dimensions[0])
-        height = int(dimensions[1])
+        width = int(dimensions[0]*2)
+        height = int(dimensions[1]*2)
 
         box = CvHelper.box_points(rectangle)
 
         M = CvHelper.moments(box)
-        cx = int(M['m10'] / M['m00'])
-        cy = int(M['m01'] / M['m00'])
+        cx = int(M['m10'] / M['m00']) - 5
+        cy = int(M['m01'] / M['m00']) - 5
 
         image_patch = ImageUtil.sub_image(image_source, (cx, cy), theta + 90, height, width)
         return image_patch
@@ -254,17 +256,15 @@ class ImageUtil:
         for rectangle in rectangles:
             potential_plate = ImageUtil.auto_crop(tmp, rectangle)
             greyscale = CvHelper.greyscale(potential_plate)
-            thresh = CvHelper.binarise(greyscale, 180)
+            thresh = CvHelper.otsu_binary(greyscale)
             bitwise = CvHelper.bitwise_and(greyscale, mask=thresh)
-            thresh = CvHelper.binarise(bitwise, 180)
-            dilate = CvHelper.dilate(thresh, kernel_size=3, iterations=9)
-
-            contours, binary = ContourHandler.find_contours(dilate, ret_mode=CvEnums.RETR_EXTERNAL, approx_method=CvEnums.CHAIN_APPROX_NONE)
+            thresh = CvHelper.canny_thresholding(bitwise)
+            contours, binary = ContourHandler.find_contours(thresh, ret_mode=CvEnums.RETR_EXTERNAL, approx_method=CvEnums.CHAIN_APPROX_NONE)
             if len(contours) > 0:
-                rectangles, box_rectangles = ContourHandler.get_characters_roi(contours)
+                rectangles, box_rectangles = ContourHandler.get_characters_roi(contours, potential_plate)
                 if len(rectangles) > 0:
                     out_rectangles.append(rectangle)
-        return None
+        return out_rectangles
 
     @staticmethod
     def rotate_image(img, angle):

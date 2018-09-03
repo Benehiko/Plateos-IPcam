@@ -19,9 +19,11 @@ class CacheHandler:
             np_cached = CacheHandler.load(dir, filename)
             if np_cached is not None:
                 try:
+
                     cached = np_cached[:, 0].tolist()
                     res = CompareData.compare_list_tuples(arr, cached)
                     if len(res) > 0:
+
                         r = [x[0:4] for x in res]
                         arr = np.append(arr=np.array(res, dtype=object), values=np_cached, axis=0)
                     else:

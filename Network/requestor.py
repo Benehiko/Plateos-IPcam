@@ -1,6 +1,8 @@
+import datetime
 import netifaces
 import socket
-import datetime
+from urllib.request import urlopen
+
 import requests
 
 from Caching.CacheHandler import CacheHandler
@@ -10,8 +12,7 @@ class Request:
 
     @staticmethod
     def post(data, url):
-        mac = netifaces.ifaddresses('eth0')[netifaces.AF_LINK]
-        mac = mac[0].get('addr')
+        mac = Request.get_mac()
         out = []
 
         for x in data:
@@ -48,3 +49,17 @@ class Request:
 
         return False
 
+    @staticmethod
+    def ping_location(url):
+        device_ip = urlopen('http://ip.42.pl/raw').read()
+        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        d = [('mac', Request.get_mac()), ('ip', device_ip), ('timestamp', now)]
+        j = dict(d)
+        print("Posting:", j)
+        Request.send(url, j)
+
+    @staticmethod
+    def get_mac():
+        mac = netifaces.ifaddresses('eth0')[netifaces.AF_LINK]
+        mac = mac[0].get('addr')
+        return mac

@@ -44,8 +44,8 @@ class ContourHandler:
 
     @staticmethod
     def get_approx(cnt):
-        epsilon = 0.01 * cv2.arcLength(cnt, True)
-        approx = cv2.approxPolyDP(cnt, epsilon, True)
+        epsilon = 0.01 * cv2.arcLength(cnt, False)
+        approx = cv2.approxPolyDP(cnt, epsilon, False)
         return approx
 
     @staticmethod
@@ -101,7 +101,7 @@ class ContourHandler:
         (__, (w, h), angle) = rect
         ratio_w_h = (w / h)
         ratio_h_w = (h / w)
-        return 0.1 <= ratio_w_h <= 10 or 0.1 <= ratio_h_w <= 10
+        return 0.1 <= ratio_w_h <= 5 or 0.1 <= ratio_h_w <= 1
 
     @staticmethod
     def get_rectangles(contours, mat, area_bounds=(0.5, 5), min_point=(10, 10), max_point=(60, 60)):
@@ -148,16 +148,33 @@ class ContourHandler:
         return rect_arr, box_corrected, angles
 
     @staticmethod
-    def get_characters_roi(contours):
+    def get_characters_roi(contours, mat):
         rect_array = []
         box_rect = []
+
+        cnt_cache = []
         for cnt in contours:
+            approx = ContourHandler.get_approx(cnt)
+            area = cv2.contourArea(approx)
+            rect = ContourHandler.get_rotated_rect(approx)
+
+            if ContourHandler.in_scope_percentage(rect, area, mat, area_bounds=(1, 5), min_point=(1, 1),
+                                                  max_point=(40, 40)):
+                cnt_cache.append(cnt)
+
+        # Keep element if it is not False
+        cnt_cache = [x for x in cnt_cache if
+                     not ContourHandler.polygon_test(cnt_cache,
+                                                     ContourHandler.get_rotated_rect(ContourHandler.get_approx(x)))]
+
+        for cnt in cnt_cache:
             approx = ContourHandler.get_approx(cnt)
             rect = ContourHandler.get_rotated_rect(approx)
             rect_array.append(rect)
             box = cv2.boxPoints(rect)
             box = np.int0(box)
             box_rect.append(box)
+
         return rect_array, box_rect
 
     @staticmethod

@@ -50,21 +50,22 @@ class Numberplate:
     @staticmethod
     def improve(plates):
         tmp = Numberplate.remove_duplicates(plates)
-        out = []
-        while True:
-            highest = Numberplate.get_highest(tmp)
-
-            if highest is not None:
-                result, remainder = Numberplate.split_plates(tmp, highest)
-                if result is not None:
-                    out.append(result)
-                if len(remainder) < 1:
-                    break
+        if tmp is not None:
+            out = []
+            while True:
+                highest = Numberplate.get_highest(tmp)
+                if highest is not None:
+                    result, remainder = Numberplate.split_plates(tmp, highest)
+                    if result is not None:
+                        out.append(result)
+                    if len(remainder) < 1:
+                        break
+                    else:
+                        tmp = remainder
                 else:
-                    tmp = remainder
-            else:
-                break
-        return out
+                    break
+            return out
+        return None
 
     @staticmethod
     def sanitise(text):
@@ -141,8 +142,8 @@ class Numberplate:
                     result = "Limpopo"
                     confidence = 0.5
 
-        if text[1] in provinces_post:
-            if text[1].isalpha():
+        if text[0:] in provinces_post:
+            if text[0:].isalpha():
                 if text[0] == "C":
                     result = "Western Cape"
                 elif text[0] == "N":
@@ -192,18 +193,21 @@ class Numberplate:
         """Remove duplicates using set then convert back to list"""
         # gen = (random.choice(tuple(g)) for _, g in groupby(l, key=lambda x: x[0]))
         # plates = list(islice(gen, 4))
-        plates, counts = CompareData.del_duplicates_list_tuples(l)
-        #print("Non-duplicate", plates)
-        for x in range(0, len(plates)):
-            (pl, pr, con, t, img) = plates[x]
-            con = round(con + (counts[x] / 100), 2)
-            plates[x] = (pl, pr, con, t, img)
+        if len(l) > 0:
+            plates, counts = CompareData.del_duplicates_list_tuples(l)
+            #print("Non-duplicate", plates)
+            for x in range(0, len(plates)-1):
+                (pl, pr, con, t, img) = plates[x]
+                con = round(con + (counts[x] / 100), 2)
+                plates[x] = (pl, pr, con, t, img)
 
-        return plates
+            return plates
+        return None
 
     """Get the highest confidence value"""
     @staticmethod
     def get_highest(l):
+        #print(l)
         if len(l) > 0:
             highest = l[0]
             for x in l:
@@ -223,7 +227,7 @@ class Numberplate:
     def split_plates(plates, highest):
         remainder = []
         similar = []
-        if len(plates) > 0:
+        if len(plates) > 0 and len(highest) > 0:
             for x in plates:
                 if SequenceMatcher(None, highest[0], x[0]).ratio() * 100 > 80:
                     similar.append(x)
