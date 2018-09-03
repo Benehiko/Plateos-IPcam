@@ -3,6 +3,6 @@ import asyncio
 
 args = ("admin", ***REMOVED***)
 url = "http://104.40.251.46:8080/Plateos/db/addplate"
-runner = Backdrop(args=args, iprange="192.168.1.100-192.168.1.200", url=url)
+runner = Backdrop(args=args, iprange="192.168.1.2-192.168.1.200", url=url)
 loop = asyncio.get_event_loop()
 loop.run_until_complete(runner.scan())

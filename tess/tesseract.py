@@ -1,14 +1,13 @@
+import asyncio
+import os
 from datetime import datetime
 from tesserocr import PyTessBaseAPI, PSM, OEM
 
-from cvShapeHandler.imagedisplay import ImageDisplay
-from cvShapeHandler.imageprocessing import ImagePreProcessing
-from numberplate.Numberplate import Numberplate
+import numpy as np
 from PIL import Image
 
-import os
-import numpy as np
-import asyncio
+from cvlib.ImageUtil import ImageUtil
+from numberplate.Numberplate import Numberplate
 
 
 class Tess:
@@ -35,9 +34,9 @@ class Tess:
         text = Numberplate.sanitise(self.t.GetUTF8Text())
         plate_type, confidence = Numberplate.validate(text, use_provinces=True)
         if plate_type is not None and confidence > 0:
-            image = ImagePreProcessing.cv_resize_compress(image, max_w=200)
+            image = ImageUtil.compress(image, max_w=200)
             now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            return (text, plate_type, confidence, now, image)
+            return ((text, plate_type, confidence, now, image))
         return None
 
     def multi(self, images):
@@ -46,14 +45,13 @@ class Tess:
         asyncio.set_event_loop(loop)
         for image in images:
             if image is not None:
-                #ImageDisplay.display(window_name="Cropped", img=image)
                 pool.append(asyncio.ensure_future(self.runner(image), loop=loop))
 
         results = loop.run_until_complete(asyncio.gather(*pool))
+        results = [x for x in results if x is not None]
         loop.close()
         for result in results:
-            if result is not None:
-                self.backdrop.callback_tess(result)
+            self.backdrop.callback_tess(result)
 
     def process(self, image):
         if image is not None:
@@ -62,7 +60,7 @@ class Tess:
             text = Numberplate.sanitise(self.t.GetUTF8Text())
             plate_type, confidence = Numberplate.validate(text, use_provinces=True)
             if plate_type is not None and confidence > 0:
-                image = ImagePreProcessing.cv_resize_compress(image, max_w=200)
+                image = ImageUtil.compress(image, max_w=200)
                 now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 self.backdrop.callback_tess((text, plate_type, confidence, now, image))
 
@@ -86,7 +84,6 @@ class Tess:
             result, confidence = Numberplate.validate(text, use_provinces=True)
             if result is not None:
                 self.backdrop.callback_tess((text, image))
-
 
     def download(self):
         pass
