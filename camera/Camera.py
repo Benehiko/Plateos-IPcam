@@ -1,15 +1,13 @@
-import asyncio
 import random
 import string
+import time
 from threading import Thread
-from time import sleep
 from urllib.request import urlopen
 
 import cv2
 import numpy as np
 
 from Helper.ProcessHelper import ProcessHelper
-from cvlib.CvHelper import CvHelper
 
 
 class Camera:
@@ -26,14 +24,14 @@ class Camera:
         while True:
             try:
                 frames = []
-                for i in range(0, 20):
+                for i in range(0, 10):
                     reader = urlopen(self.url, timeout=10)
                     if reader.status == 200:
                         b = bytearray(reader.read())
                         npy = np.array(b, dtype=np.uint8)
                         img = cv2.imdecode(npy, -1)
                         frames.append(img)
-                        #CvHelper.display("Frame", img)
+                    time.sleep(0.1)
 
                 cropped_array = ProcessHelper.analyse_frames(frames)
 
@@ -41,7 +39,7 @@ class Camera:
                     if len(cropped_array) > 0:
                         t = Thread(target=self.tess.multi(cropped_array))
                         t.start()
-                        t.join(5)
+                        t.join(10)
 
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     cv2.destroyWindow(self.ip)

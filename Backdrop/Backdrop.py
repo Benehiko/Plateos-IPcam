@@ -9,7 +9,6 @@ from Caching.CacheHandler import CacheHandler
 from Network.PortScanner import PortScanner
 from Network.requestor import Request
 from camera.Camera import Camera
-from cvlib.CvHelper import CvHelper
 from numberplate.Numberplate import Numberplate
 from tess.tesseract import Tess
 
@@ -40,6 +39,7 @@ class Backdrop:
             self.check_alive()
             self.cleanup_cache()
             self.offline_check()
+            self.ping_location()
 
     def add(self, a):
         tmp = Camera(username=self.username, password=self.password, ip=a, tess=self.tess, backdrop=self)
@@ -48,18 +48,19 @@ class Backdrop:
         p.start()
 
     def callback_tess(self, plate):
-        CvHelper.display("Cropped Plate", plate[4])
+        #CvHelper.display("Cropped Plate", plate[4])
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2], "Date:", plate[3])
         self.cache(plate)
 
     def cache(self, plate):
         self.cached.append(plate)
-        if len(self.cached) > 20:
+        if len(self.cached) >= 20:
             today = datetime.datetime.now().strftime('%Y-%m-%d %H')
             self.cached = Numberplate.improve(self.cached)
-            res = CacheHandler.save("cache/", today, self.cached)
-            if res is not None:
-                self.upload_dataset(res)
+            if self.cached is not None:
+                res = CacheHandler.save("cache/", today, self.cached)
+                if res is not None:
+                    self.upload_dataset(res)
             self.cached = []
 
     def callback_camera(self, ip):
@@ -77,7 +78,11 @@ class Backdrop:
                 print("Tried to remove process", e)
 
     def upload_dataset(self, data):
-        Request.post(data, self.url)
+        try:
+            url = self.url+"db/addplate"
+            Request.post(data, url)
+        except:
+            pass
 
     def cleanup_cache(self):
         try:
@@ -101,3 +106,12 @@ class Backdrop:
                         CacheHandler.remove("offline/", x)
             except:
                 pass
+
+    def ping_location(self):
+        try:
+            if Request.check_connectivity():
+                url = self.url+"db/addlocation"
+                Request.ping_location(url)
+        except:
+            pass
+

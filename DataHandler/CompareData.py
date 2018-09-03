@@ -16,6 +16,5 @@ class CompareData:
     def del_duplicates_list_tuples(l, tuple_elem=0):
         counts = list(Counter([x[tuple_elem] for x in l]).values())
         gen = (random.choice(tuple(g)) for _, g in groupby(l, key=lambda x: x[tuple_elem]))
-        out = list(islice(gen, len(l[0])-1))
-        #print(out)
+        out = list(islice(gen, 4))
         return out, counts
