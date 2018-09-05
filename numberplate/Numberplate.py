@@ -142,8 +142,8 @@ class Numberplate:
                     result = "Limpopo"
                     confidence = 0.5
 
-        if text[0:] in provinces_post:
-            if text[0:].isalpha():
+        if text[0] in provinces_post:
+            if text[0:2].isalpha():
                 if text[0] == "C":
                     result = "Western Cape"
                 elif text[0] == "N":

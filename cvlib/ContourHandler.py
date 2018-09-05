@@ -195,6 +195,7 @@ class ContourHandler:
         :param mat:
         :return:
         """
-        img_height, img_width, img_channels = mat.shape
+        img_height = mat.shape[0]
+        img_width = mat.shape[1]
         img_area = img_height * img_width
         return img_area, img_width, img_height

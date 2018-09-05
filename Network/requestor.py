@@ -1,6 +1,7 @@
 import datetime
 import netifaces
 import socket
+from urllib.error import URLError
 from urllib.request import urlopen
 
 import requests
@@ -40,8 +41,7 @@ class Request:
     @staticmethod
     def check_connectivity():
         try:
-            conn = socket.create_connection(('google.com', 443))
-            conn.close()
+            urlopen('http://google.com', timeout=1)
             return True
         except Exception as e:
             print("Testing google ping", e)
@@ -51,12 +51,15 @@ class Request:
 
     @staticmethod
     def ping_location(url):
-        device_ip = urlopen('http://ip.42.pl/raw').read()
-        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        d = [('mac', Request.get_mac()), ('ip', device_ip), ('timestamp', now)]
-        j = dict(d)
-        print("Posting:", j)
-        Request.send(url, j)
+        try:
+            device_ip = urlopen('http://ip.42.pl/raw').read()
+            now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            d = [('mac', Request.get_mac()), ('ip', device_ip), ('timestamp', now)]
+            j = dict(d)
+            print("Posting:", j)
+            Request.send(url, j)
+        except URLError as e:
+            pass
 
     @staticmethod
     def get_mac():
