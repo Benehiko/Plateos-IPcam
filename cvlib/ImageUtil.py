@@ -25,7 +25,10 @@ class ImageUtil:
         for crop in cropped_arr:
             gray = CvHelper.greyscale(crop)
             deskew = ImageUtil.deskew(gray)
-            images.append(deskew)
+            if deskew.shape[1] >= deskew.shape[0]:
+                bright = CvHelper.adjust_gamma(deskew, 2.5)
+                otsu = CvHelper.otsu_binary(bright, 240)
+                images.append(otsu)
         return images
 
     @staticmethod
@@ -35,7 +38,7 @@ class ImageUtil:
         for rectangle in rectangles:
             cropped = ImageUtil.auto_crop(tmp, rectangle)
             if cropped.shape[1] < 640 or cropped.shape[0] < 480:
-                CvHelper.resize(cropped, new_width=640, new_height=480)
+                cropped = CvHelper.resize(cropped, new_width=640, new_height=480)
             images.append(cropped)
         return images
 
@@ -44,7 +47,7 @@ class ImageUtil:
         pathlib.Path(path).mkdir(parents=True, exist_ok=True)
         if img is not None:
             try:
-                tmp = ImageUtil.compress(img, max_w=200)
+                tmp = ImageUtil.compress(img)#, max_w=200)
                 tmp = CvHelper.bgr2rgb(tmp)
                 filename = datetime.now().strftime("%Y-%m-%d-%H_%M_%S")
                 if tmp is not None:
@@ -115,22 +118,11 @@ class ImageUtil:
     @staticmethod
     def process_for_shape_detection_bright_backlight(image):
         img = image.copy()
-        # Resize image for faster processing
-        #img_resize = CvHelper.get_umat(CvHelper.resize(img, new_width=int(image.shape[1] / 2)))  # 1080
         greyscale = CvHelper.greyscale(img)
         bright = CvHelper.adjust_gamma(greyscale, 2.5)
         blur = CvHelper.gaussian_blur(bright, kernel_size=5)
         thresh = CvHelper.otsu_binary(blur)
-
-        #morph = CvHelper.morph(thresh, CvEnums.MORPH_CLOSE)
-
-        # erode = CvHelper.erode(morph, iterations=1, kernel_size=3)
-
-        # Resize image back to original size to keep ratio
-        result = thresh
-        #CvHelper.display("wind", result)
-        #result = CvHelper.resize(result, new_width=image.shape[1], new_height=image.shape[0])
-        return result
+        return thresh
 
     @staticmethod
     def process_shape_new(image):
@@ -256,13 +248,13 @@ class ImageUtil:
         for rectangle in rectangles:
             potential_plate = ImageUtil.auto_crop(tmp, rectangle)
             greyscale = CvHelper.greyscale(potential_plate)
-            thresh = CvHelper.otsu_binary(greyscale)
-            bitwise = CvHelper.bitwise_and(greyscale, mask=thresh)
-            thresh = CvHelper.canny_thresholding(bitwise)
-            contours, binary = ContourHandler.find_contours(thresh, ret_mode=CvEnums.RETR_EXTERNAL, approx_method=CvEnums.CHAIN_APPROX_NONE)
+            bright = CvHelper.adjust_gamma(greyscale, 2.5)
+            blur = CvHelper.gaussian_blur(bright, kernel_size=5)
+            otsu = CvHelper.otsu_binary(blur)
+            contours, __ = ContourHandler.find_contours(otsu, ret_mode=CvEnums.RETR_LIST, approx_method=CvEnums.CHAIN_APPROX_NONE)
             if len(contours) > 0:
-                rectangles, box_rectangles = ContourHandler.get_characters_roi(contours, potential_plate)
-                if len(rectangles) > 0:
+                rectangles, __ = ContourHandler.get_characters_roi(contours, potential_plate)
+                if len(rectangles) > 1:
                     out_rectangles.append(rectangle)
         return out_rectangles
 

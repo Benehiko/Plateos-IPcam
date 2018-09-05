@@ -2,6 +2,7 @@ import random
 import string
 import time
 from threading import Thread
+from urllib.error import URLError
 from urllib.request import urlopen
 
 import cv2
@@ -45,8 +46,7 @@ class Camera:
                     cv2.destroyWindow(self.ip)
                     break
 
-
-            except Exception as e:
+            except URLError as e:
                 print("something killed it", e)
                 break
 

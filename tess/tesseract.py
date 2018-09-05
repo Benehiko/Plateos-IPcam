@@ -15,7 +15,9 @@ class Tess:
     def __init__(self, backdrop):
         ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
         os.environ["TESSDATA_PREFIX"] = ROOT_DIR + "/tessdata"
-        self.t = PyTessBaseAPI(psm=PSM.SINGLE_BLOCK, oem=OEM.TESSERACT_LSTM_COMBINED, lang='eng')
+        self.t = PyTessBaseAPI()#psm=PSM.SINGLE_BLOCK, oem=OEM.TESSERACT_LSTM_COMBINED, lang='eng')
+        self.t.SetVariable("psm", "13")
+        self.t.SetVariable("oem", "2")
         self.t.SetVariable("load_system_dawg", "false")
         self.t.SetVariable("load_freq_dawg", "false")
         self.t.SetVariable("load_punc_dawg", "false")
@@ -32,6 +34,7 @@ class Tess:
         tmp = Image.fromarray(np.uint8(image))
         self.t.SetImage(tmp)
         text = Numberplate.sanitise(self.t.GetUTF8Text())
+        #print(text)
         plate_type, confidence = Numberplate.validate(text, use_provinces=True)
         if plate_type is not None and confidence > 0:
             image = ImageUtil.compress(image, max_w=200)
