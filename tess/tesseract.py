@@ -15,7 +15,7 @@ class Tess:
 
     def __init__(self, backdrop):
         locale.setlocale(locale.LC_ALL, "C")
-        self.t = PyTessBaseAPI(psm=PSM.SINGLE_BLOCK, oem=OEM.TESSERACT_LSTM_COMBINED, lang='eng')
+        self.t = PyTessBaseAPI(psm=PSM.SINGLE_BLOCK, oem=OEM.TESSERACT_LSTM_COMBINED)
         #self.t.SetVariable("psm", "13")
         #self.t.SetVariable("oem", "2")
         self.t.SetVariable("load_system_dawg", "false")
