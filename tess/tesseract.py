@@ -13,8 +13,6 @@ from numberplate.Numberplate import Numberplate
 class Tess:
 
     def __init__(self, backdrop):
-        ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-        os.environ["TESSDATA_PREFIX"] = ROOT_DIR + "/tessdata"
         self.t = PyTessBaseAPI(psm=PSM.SINGLE_BLOCK, oem=OEM.TESSERACT_LSTM_COMBINED, lang='eng')
         #self.t.SetVariable("psm", "13")
         #self.t.SetVariable("oem", "2")
