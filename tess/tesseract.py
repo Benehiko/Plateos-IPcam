@@ -1,5 +1,6 @@
 import asyncio
-import os
+import locale
+
 from datetime import datetime
 from tesserocr import PyTessBaseAPI, PSM, OEM
 
@@ -13,7 +14,8 @@ from numberplate.Numberplate import Numberplate
 class Tess:
 
     def __init__(self, backdrop):
-        self.t = PyTessBaseAPI(psm=PSM.SINGLE_BLOCK, oem=OEM.TESSERACT_LSTM_COMBINED, lang='eng', path="/usr/share/tesseract-ocr/4.00/tessdata/")
+        locale.setlocale(locale.LC_ALL, "C")
+        self.t = PyTessBaseAPI(psm=PSM.SINGLE_BLOCK, oem=OEM.TESSERACT_LSTM_COMBINED, lang='eng')
         #self.t.SetVariable("psm", "13")
         #self.t.SetVariable("oem", "2")
         self.t.SetVariable("load_system_dawg", "false")
