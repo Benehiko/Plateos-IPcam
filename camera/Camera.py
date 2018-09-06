@@ -1,52 +1,56 @@
-import cv2, datetime
-import threading
-from tess.tesseract import Tess
-from cvShapeHandler.process import Process
-from cvShapeHandler.imageprocessing import ImagePreProcessing
+import random
+import string
+import time
+from threading import Thread
+from urllib.error import URLError
+from urllib.request import urlopen
+
+import cv2
+import numpy as np
+
+from Helper.ProcessHelper import ProcessHelper
 
 
-class Camera(threading.Thread):
+class Camera:
 
-    def __init__(self, ip, username, password):
-        threading.Thread.__init__(self)
-        self.url = "rtmp://"+ip+"/bcs/channel0_main.bcs?channel=0&stream=0&user="+username+"&password="+password
-        self.tess = Tess()
-        self.process = Process(draw_enable=True)
-        #cv2.namedWindow(self.url, cv2.WINDOW_NORMAL)
+    def __init__(self, ip, username, password, tess, backdrop):
+        randomcmd = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+        self.url = "http://" + ip + "/cgi-bin/api.cgi?cmd=Snap&channel=0&rs=" + randomcmd + "&user=" + username + "&password=" + password
+        self.tess = tess
+        self.ip = ip
+        self.backdrop = backdrop
 
-        try:
-            self.camera = cv2.VideoCapture(self.url)
-        except Exception as e:
-            print(e)
+    def start(self):
+        print("Starting camera", self.ip)
+        while True:
+            try:
+                frames = []
+                for i in range(0, 5):
+                    reader = urlopen(self.url, timeout=10)
+                    if reader.status == 200:
+                        b = bytearray(reader.read())
+                        npy = np.array(b, dtype=np.uint8)
+                        img = cv2.imdecode(npy, -1)
+                        frames.append(img)
+                    time.sleep(0.1)
 
-    def run(self):
-        print("Starting camera")
-        try:
-            counter = 0
-            while self.camera.isOpened():
-                if counter == 100:
-                    counter = 0
-                    ret, frame = self.camera.read()
-                    if ret:
-                        drawn, rectangles = self.process.process(frame)
-                        if drawn is not None:
-                            cropped = self.process.process_for_tess(frame, rectangles)
-                            cv2.imshow(self.url, cv2.resize(drawn, (1296, 768)))
-                            print(self.tess.process(cropped, self))
+                cropped_array = ProcessHelper.analyse_frames(frames)
 
-                counter += 1
+                if cropped_array is not None:
+                    if len(cropped_array) > 0:
+                        t = Thread(target=self.tess.multi(cropped_array))
+                        t.start()
+                        t.join()
 
                 if cv2.waitKey(25) & 0xFF == ord('q'):
-                    cv2.destroyWindow(self.url)
+                    cv2.destroyWindow(self.ip)
                     break
 
-        except Exception as e:
-            print(e)
+            except URLError as e:
+                print("something killed it", e)
+                break
 
-        finally:
-            self.camera.release()
+            finally:
+                pass
 
-
-    def callback(self, img):
-        filename = "cache/" + datetime.datetime.now().strftime("%Y-%m-%d")
-        ImagePreProcessing.save(img, filename)
+        self.backdrop.callback_camera(self.ip)
