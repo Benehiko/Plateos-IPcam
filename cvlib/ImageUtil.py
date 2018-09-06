@@ -22,13 +22,18 @@ class ImageUtil:
     def process_for_tess(image, rectangles):
         images = []
         cropped_arr = ImageUtil.get_sub_images(image, rectangles)
+
         for crop in cropped_arr:
-            gray = CvHelper.greyscale(crop)
-            deskew = ImageUtil.deskew(gray)
-            if deskew.shape[1] >= deskew.shape[0]:
-                bright = CvHelper.adjust_gamma(deskew, 2.5)
-                otsu = CvHelper.otsu_binary(bright, 240)
-                images.append(otsu)
+            grey = CvHelper.greyscale(crop)
+            deskew = ImageUtil.deskew(grey)
+            umat = CvHelper.get_umat(deskew)
+            bright = CvHelper.adjust_gamma(umat, 2.0)
+            dilate = CvHelper.dilate(bright, kernel_size=3, iterations=0)
+            morph = CvHelper.morph(dilate, gradient_type=CvEnums.MORPH_OPEN, kernel_size=3,
+                                   kernel_shape=CvEnums.K_ELLIPSE)
+            otsu = CvHelper.get_mat(CvHelper.otsu_binary(morph, 240))
+            images.append(otsu)
+
         return images
 
     @staticmethod
@@ -117,11 +122,11 @@ class ImageUtil:
 
     @staticmethod
     def process_for_shape_detection_bright_backlight(image):
-        img = image.copy()
+        img = CvHelper.get_umat(image.copy())
         greyscale = CvHelper.greyscale(img)
         bright = CvHelper.adjust_gamma(greyscale, 2.5)
         blur = CvHelper.gaussian_blur(bright, kernel_size=5)
-        thresh = CvHelper.otsu_binary(blur)
+        thresh = CvHelper.get_mat(CvHelper.otsu_binary(blur))
         return thresh
 
     @staticmethod
@@ -247,15 +252,20 @@ class ImageUtil:
 
         for rectangle in rectangles:
             potential_plate = ImageUtil.auto_crop(tmp, rectangle)
-            greyscale = CvHelper.greyscale(potential_plate)
-            bright = CvHelper.adjust_gamma(greyscale, 2.5)
-            blur = CvHelper.gaussian_blur(bright, kernel_size=5)
-            otsu = CvHelper.otsu_binary(blur)
-            contours, __ = ContourHandler.find_contours(otsu, ret_mode=CvEnums.RETR_LIST, approx_method=CvEnums.CHAIN_APPROX_NONE)
+            umat = CvHelper.get_umat(potential_plate)
+            greyscale = CvHelper.greyscale(umat)
+            bright = CvHelper.adjust_gamma(greyscale, 2.0)
+            dilate = CvHelper.dilate(bright, kernel_size=3, iterations=0)
+            morph = CvHelper.morph(dilate, gradient_type=CvEnums.MORPH_OPEN, kernel_size=3,
+                                   kernel_shape=CvEnums.K_ELLIPSE)
+            otsu = CvHelper.get_mat(CvHelper.otsu_binary(morph, 240))
+            contours, __ = ContourHandler.find_contours(otsu, ret_mode=CvEnums.RETR_LIST,
+                                                        approx_method=CvEnums.CHAIN_APPROX_NONE)
             if len(contours) > 0:
-                rectangles, __ = ContourHandler.get_characters_roi(contours, potential_plate)
-                if len(rectangles) > 1:
+                r, boxs = ContourHandler.get_characters_roi(contours, potential_plate)
+                if 2 <= len(r) <= 10:
                     out_rectangles.append(rectangle)
+
         return out_rectangles
 
     @staticmethod
