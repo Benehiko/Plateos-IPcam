@@ -62,6 +62,6 @@ class Request:
 
     @staticmethod
     def get_mac():
-        mac = netifaces.ifaddresses('enp0s20f0u1')[netifaces.AF_LINK]
+        mac = netifaces.ifaddresses('eth0')[netifaces.AF_LINK]
         mac = mac[0].get('addr')
         return mac

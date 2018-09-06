@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Plateos-IPcam.iml" filepath="$PROJECT_DIR$/.idea/Plateos-IPcam.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Plateos.iml" filepath="$PROJECT_DIR$/.idea/Plateos.iml" />
     </modules>
   </component>
 </project>
