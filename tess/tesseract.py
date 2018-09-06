@@ -13,7 +13,7 @@ from numberplate.Numberplate import Numberplate
 class Tess:
 
     def __init__(self, backdrop):
-        self.t = PyTessBaseAPI(psm=PSM.SINGLE_BLOCK, oem=OEM.TESSERACT_LSTM_COMBINED, lang='eng')
+        self.t = PyTessBaseAPI(psm=PSM.SINGLE_BLOCK, oem=OEM.TESSERACT_LSTM_COMBINED, lang='eng', path="/usr/share/tesseract-ocr/4.00/tessdata/")
         #self.t.SetVariable("psm", "13")
         #self.t.SetVariable("oem", "2")
         self.t.SetVariable("load_system_dawg", "false")
