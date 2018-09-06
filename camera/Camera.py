@@ -25,7 +25,7 @@ class Camera:
         while True:
             try:
                 frames = []
-                for i in range(0, 10):
+                for i in range(0, 5):
                     reader = urlopen(self.url, timeout=10)
                     if reader.status == 200:
                         b = bytearray(reader.read())
@@ -40,7 +40,7 @@ class Camera:
                     if len(cropped_array) > 0:
                         t = Thread(target=self.tess.multi(cropped_array))
                         t.start()
-                        t.join(10)
+                        t.join()
 
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     cv2.destroyWindow(self.ip)

@@ -15,9 +15,9 @@ class Tess:
     def __init__(self, backdrop):
         ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
         os.environ["TESSDATA_PREFIX"] = ROOT_DIR + "/tessdata"
-        self.t = PyTessBaseAPI()#psm=PSM.SINGLE_BLOCK, oem=OEM.TESSERACT_LSTM_COMBINED, lang='eng')
-        self.t.SetVariable("psm", "13")
-        self.t.SetVariable("oem", "2")
+        self.t = PyTessBaseAPI(psm=PSM.SINGLE_BLOCK, oem=OEM.TESSERACT_LSTM_COMBINED, lang='eng')
+        #self.t.SetVariable("psm", "13")
+        #self.t.SetVariable("oem", "2")
         self.t.SetVariable("load_system_dawg", "false")
         self.t.SetVariable("load_freq_dawg", "false")
         self.t.SetVariable("load_punc_dawg", "false")
@@ -25,22 +25,21 @@ class Tess:
         self.t.SetVariable("load_unambig_dawg", "false")
         self.t.SetVariable("load_bigram_dawg", "false")
         self.t.SetVariable("load_fixed_length_dawgs", "false")
-        self.t.SetVariable("tessedit_create_hocr", "0")
+        self.t.SetVariable("tessedit_create_hocr", "1")
+        self.t.SetVariable("textord_force_make_prop_words", "false")
         self.t.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
         self.backdrop = backdrop
 
-    @asyncio.coroutine
-    def runner(self, image):
+    async def runner(self, image):
         tmp = Image.fromarray(np.uint8(image))
         self.t.SetImage(tmp)
         text = Numberplate.sanitise(self.t.GetUTF8Text())
-        #print(text)
         plate_type, confidence = Numberplate.validate(text, use_provinces=True)
         if plate_type is not None and confidence > 0:
             image = ImageUtil.compress(image, max_w=200)
             now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            return ((text, plate_type, confidence, now, image))
-        return None
+            plate = ((text, plate_type, confidence, now, image))
+            self.backdrop.callback_tess(plate)
 
     def multi(self, images):
         pool = []
@@ -50,11 +49,8 @@ class Tess:
             if image is not None:
                 pool.append(asyncio.ensure_future(self.runner(image), loop=loop))
 
-        results = loop.run_until_complete(asyncio.gather(*pool))
-        results = [x for x in results if x is not None]
+        loop.run_until_complete(asyncio.gather(*pool))
         loop.close()
-        for result in results:
-            self.backdrop.callback_tess(result)
 
     def process(self, image):
         if image is not None:

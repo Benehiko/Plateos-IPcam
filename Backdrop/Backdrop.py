@@ -53,15 +53,19 @@ class Backdrop:
         self.cache(plate)
 
     def cache(self, plate):
-        self.cached.append(plate)
-        if len(self.cached) >= 20:
-            today = datetime.datetime.now().strftime('%Y-%m-%d %H')
-            self.cached = Numberplate.improve(self.cached)
-            if self.cached is not None:
-                res = CacheHandler.save("cache/", today, self.cached)
-                if res is not None:
-                    self.upload_dataset(res)
-            self.cached = []
+        try:
+            self.cached.append(plate)
+            if len(self.cached) >= 10:
+                today = datetime.datetime.now().strftime('%Y-%m-%d %H')
+                self.cached = Numberplate.improve(self.cached)
+                if self.cached is not None:
+                    res = CacheHandler.save("cache/", today, self.cached)
+                    if res is not None:
+                        self.upload_dataset(res)
+                self.cached = []
+        except Exception as e:
+            print(e)
+            pass
 
     def callback_camera(self, ip):
         print("Removing camera", ip)
