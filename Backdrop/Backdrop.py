@@ -94,7 +94,7 @@ class Backdrop:
             file_last_date = datetime.datetime.strptime(max(files), "%Y-%m-%d %H")
             now = datetime.datetime.now()
             diff = now - file_last_date
-            if datetime.timedelta(days=30) < diff:
+            if datetime.timedelta(days=90) < diff:
                 CacheHandler.remove("cache/", file_last_date.strftime("%Y-%m-%d %H"))
         except:
             pass

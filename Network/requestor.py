@@ -51,9 +51,11 @@ class Request:
     @staticmethod
     def ping_location(url):
         try:
-            device_ip = urlopen('http://ip.42.pl/raw').read()
+            list_ip = netifaces.ifaddresses('eth0')[netifaces.AF_INET]
+            ip = list_ip[len(list_ip) - 1]['addr']
+            #device_ip = urlopen('http://ip.42.pl/raw').read()
             now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            d = [('mac', Request.get_mac()), ('ip', device_ip), ('timestamp', now)]
+            d = [('mac', Request.get_mac()), ('ip', ip), ('timestamp', now)]
             j = dict(d)
             print("Posting:", j)
             Request.send(url, j)
