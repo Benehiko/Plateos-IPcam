@@ -1,6 +1,5 @@
 import asyncio
 import locale
-
 from datetime import datetime
 from tesserocr import PyTessBaseAPI, PSM, OEM
 
