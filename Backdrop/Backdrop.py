@@ -1,6 +1,7 @@
 import asyncio
 import datetime
 from multiprocessing import Process
+from threading import Thread
 from os import listdir
 from os.path import isfile, join
 from time import sleep
@@ -42,10 +43,13 @@ class Backdrop:
             self.ping_location()
 
     def add(self, a):
-        tmp = Camera(username=self.username, password=self.password, ip=a, tess=self.tess, backdrop=self)
-        p = Process(target=tmp.start)
-        self.active.add((a, p))
-        p.start()
+        try:
+            tmp = Camera(username=self.username, password=self.password, ip=a, tess=self.tess, backdrop=self)
+            p = Thread(target=tmp.start)
+            self.active.add((a, p))
+            p.start()
+        except:
+            pass
 
     def callback_tess(self, plate):
         #CvHelper.display("Cropped Plate", plate[4])

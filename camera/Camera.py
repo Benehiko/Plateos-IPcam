@@ -25,7 +25,7 @@ class Camera:
         while True:
             try:
                 frames = []
-                for i in range(0, 5):
+                for i in range(0, 10):
                     reader = urlopen(self.url, timeout=10)
                     if reader.status == 200:
                         b = bytearray(reader.read())
@@ -46,11 +46,11 @@ class Camera:
                     cv2.destroyWindow(self.ip)
                     break
 
-            except URLError as e:
+            except Exception as e:
                 print("something killed it", e)
                 break
 
             finally:
                 pass
 
-        self.backdrop.callback_camera(self.ip)
+        #self.backdrop.callback_camera(self.ip)
