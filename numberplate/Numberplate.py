@@ -108,7 +108,7 @@ class Numberplate:
                         result = "Gauteng"
                         confidence = 0.8
 
-            elif len(text) > 2:
+            if len(result) == 0 and len(text) > 2:
                 if text[0].isalnum():
                     if pre == "MP":
                         result = "Mpumalanga"
@@ -137,17 +137,26 @@ class Numberplate:
                     elif text[-1:] == "L":
                         result = "Limpopo"
                         confidence = 0.5
-            elif len(text) == 2:
+            elif len(result) == 0 and len(text) == 2:
                 if text[-1:] == "L":
                     result = "Limpopo"
                     confidence = 0.5
 
-        if text[0] in provinces_post:
-            if text[0:2].isalpha():
-                if text[0] == "C":
-                    result = "Western Cape"
-                elif text[0] == "N":
-                    result = "KwaZulu-Natal"
+        elif text[0] in provinces_post:
+            if text[0:2].isalpha() and len(text) > 2:
+                post = False
+
+                if text[3].isalpha():
+                    if text[3:].isnumeric():
+                        post = True
+                elif text[2:].isnumeric():
+                    post = True
+
+                if post:
+                    if text[0] == "C":
+                        result = "Western Cape"
+                    elif text[0] == "N":
+                        result = "KwaZulu-Natal"
 
                 if len(result) > 0:
                     confidence = 0.6
