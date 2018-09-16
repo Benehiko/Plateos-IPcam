@@ -13,7 +13,7 @@ from numberplate.Numberplate import Numberplate
 class Tess:
 
     def __init__(self, backdrop):
-        locale.setlocale(locale.LC_ALL, "C")
+        #locale.setlocale(locale.LC_ALL, "C")
         self.t = PyTessBaseAPI(psm=PSM.SINGLE_BLOCK, oem=OEM.TESSERACT_LSTM_COMBINED, lang='eng')
         #self.t.SetVariable("psm", "13")
         #self.t.SetVariable("oem", "2")
@@ -24,7 +24,7 @@ class Tess:
         self.t.SetVariable("load_unambig_dawg", "false")
         self.t.SetVariable("load_bigram_dawg", "false")
         self.t.SetVariable("load_fixed_length_dawgs", "false")
-        self.t.SetVariable("tessedit_create_hocr", "1")
+        self.t.SetVariable("tessedit_create_hocr", "0")
         self.t.SetVariable("textord_force_make_prop_words", "false")
         self.t.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
         self.backdrop = backdrop
