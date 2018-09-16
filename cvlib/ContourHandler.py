@@ -54,13 +54,13 @@ class ContourHandler:
         return rect
 
     @staticmethod
-    def in_scope_percentage(rect, rect_area, mat, area_bounds=(0.5, 5), min_point=(10, 10), max_point=(60, 60)):
+    def in_scope_percentage(rect, rect_area, size, area_bounds=(0.5, 5), min_point=(10, 10), max_point=(60, 60)):
         """
         Check rectangle size against image
+        :param size: tuple
         :param max_point:
         :param min_point:
         :param area_bounds:
-        :param mat:
         :param rect:
         :param rect_area:
         :return:
@@ -70,7 +70,7 @@ class ContourHandler:
         width_max, height_max = max_point
 
         (__, (w, h), angle) = rect
-        img_area, img_width, img_height = ContourHandler.get_area_width_height(mat)
+        img_area, img_width, img_height = ContourHandler.get_area_width_height(size)
         r_area = (rect_area * 100) / img_area
         r_width = w * 100 / img_width
         r_height = h * 100 / img_height
@@ -104,7 +104,7 @@ class ContourHandler:
         return 0.8 <= ratio_w_h <= 20 or 0.1 <= ratio_h_w <= 1.5
 
     @staticmethod
-    def get_rectangles(contours, mat, area_bounds=(0.5, 5), min_point=(10, 10), max_point=(60, 60)):
+    def get_rectangles(contours, mat_width, mat_height, area_bounds=(0.5, 5), min_point=(10, 10), max_point=(60, 60)):
         """
         Get rectangles from contours
         :param contours:
@@ -121,7 +121,7 @@ class ContourHandler:
             area = cv2.contourArea(approx)
             rect = ContourHandler.get_rotated_rect(approx)
 
-            if ContourHandler.in_scope_percentage(rect, area, mat, area_bounds=area_bounds, min_point=min_point, max_point=max_point):
+            if ContourHandler.in_scope_percentage(rect, area, size=(mat_width, mat_height), area_bounds=area_bounds, min_point=min_point, max_point=max_point):
                 cnt_cache.append(cnt)
 
         #Keep element if it is not False
@@ -134,7 +134,7 @@ class ContourHandler:
             approx = ContourHandler.get_approx(cnt)
             rect = ContourHandler.get_rotated_rect(approx)
             angle = ContourHandler.in_correct_angle(rect)
-            if angle > -80 or angle < -100 or angle < -150:
+            if angle > -30 or angle < -100 or angle < -150:
                 box = cv2.boxPoints(rect)
                 box = np.int0(box)
                 if ContourHandler.correct_ratio(rect):
@@ -148,7 +148,7 @@ class ContourHandler:
         return rect_arr, box_corrected, angles
 
     @staticmethod
-    def get_characters_roi(contours, mat):
+    def get_characters_roi(contours, mat_width, mat_height):
         rect_array = []
         box_rect = []
 
@@ -158,7 +158,7 @@ class ContourHandler:
             area = cv2.contourArea(approx)
             rect = ContourHandler.get_rotated_rect(approx)
 
-            if ContourHandler.in_scope_percentage(rect, area, mat, area_bounds=(0.5, 5), min_point=(1, 1),
+            if ContourHandler.in_scope_percentage(rect, area, size=(mat_width, mat_height), area_bounds=(0.5, 10), min_point=(1, 1),
                                                   max_point=(80, 80)):
                 cnt_cache.append(cnt)
 
@@ -187,13 +187,12 @@ class ContourHandler:
             return box == tmp
 
     @staticmethod
-    def get_area_width_height(mat):
+    def get_area_width_height(size):
         """
         Get the area, width, height of a mat image
         :param mat:
         :return:
         """
-        img_height = mat.shape[0]
-        img_width = mat.shape[1]
+        img_width, img_height = size
         img_area = img_height * img_width
         return img_area, img_width, img_height

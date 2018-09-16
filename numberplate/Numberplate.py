@@ -143,10 +143,9 @@ class Numberplate:
                     confidence = 0.5
 
         elif text[0] in provinces_post:
-            if text[0:2].isalpha() and len(text) > 2:
+            if text[0:2].isalpha() and len(text) > 3:
                 post = False
-
-                if text[3].isalpha():
+                if text[3].isalpha() and len(text) > 4:
                     if text[3:].isnumeric():
                         post = True
                 elif text[2:].isnumeric():

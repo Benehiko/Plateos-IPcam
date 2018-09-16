@@ -317,6 +317,7 @@ class CvHelper:
         cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
         cv2.imshow(window_name, tmp)
 
+
     @staticmethod
     def destroy_window(window_name):
         """
@@ -346,6 +347,13 @@ class CvHelper:
         """
         tmp = mat.copy()
         cv2.drawContours(tmp, arr_box_pnts, -1, colour.value, thickness)
+        return tmp
+
+    @staticmethod
+    def draw_text(mat, text, position, colour=CvEnums.COLOUR_GREEN, thickness=5, scale=1):
+        tmp = mat.copy()
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cv2.putText(tmp, text, position, font, scale, colour.value, thickness, cv2.LINE_AA)
         return tmp
 
     @staticmethod
