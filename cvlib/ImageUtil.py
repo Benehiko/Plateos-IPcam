@@ -13,28 +13,40 @@ class ImageUtil:
 
     @staticmethod
     def compress(mat, max_w=1270, max_h=720, quality=65):
-            resized = CvHelper.resize(mat, new_width=max_w, new_height=max_h, interpolation=CvEnums.MAT_INTER_AREA)
-            encoded = CvHelper.mat_encode(resized, quality)
-            decoded = CvHelper.mat_decode(encoded)
-            return decoded
+        resized = CvHelper.resize(mat, new_width=max_w, new_height=max_h, interpolation=CvEnums.MAT_INTER_AREA)
+        encoded = CvHelper.mat_encode(resized, quality)
+        decoded = CvHelper.mat_decode(encoded)
+        return decoded
 
     @staticmethod
-    def process_for_tess(image, rectangles):
-        images = []
-        cropped_arr = ImageUtil.get_sub_images(image, rectangles)
+    async def process_for_tess(mat, data):
+        tmp = mat.copy()
+        rectangle, chars = data
 
-        for crop in cropped_arr:
-            grey = CvHelper.greyscale(crop)
-            deskew = ImageUtil.deskew(grey)
-            umat = CvHelper.get_umat(deskew)
-            bright = CvHelper.adjust_gamma(umat, 2.0)
-            dilate = CvHelper.dilate(bright, kernel_size=3, iterations=0)
-            morph = CvHelper.morph(dilate, gradient_type=CvEnums.MORPH_OPEN, kernel_size=3,
-                                   kernel_shape=CvEnums.K_ELLIPSE)
-            otsu = CvHelper.get_mat(CvHelper.otsu_binary(morph, 240))
-            images.append(otsu)
+        cropped = ImageUtil.auto_crop(tmp, rectangle)
+        grey = CvHelper.greyscale(cropped)
+        deskew = ImageUtil.deskew(grey)
+        umat = CvHelper.get_umat(deskew)
+        bright = CvHelper.adjust_gamma(umat, 1.5)
+        dilate = CvHelper.dilate(bright, kernel_size=3, iterations=0)
+        morph = CvHelper.morph(dilate, gradient_type=CvEnums.MORPH_OPEN, kernel_size=3, kernel_shape=CvEnums.K_ELLIPSE)
+        otsu = CvHelper.get_mat(CvHelper.otsu_binary(morph, 240))
+        blank_image = np.empty_like(otsu) #otsu.copy()
+        blank_image[:] = 255
 
-        return images
+        for r in chars:
+            (x, y), (w, h), angle = r
+            x = math.ceil(x)
+            y = math.ceil(y)
+            w = math.ceil(w)
+            h = math.ceil(h)
+            roi = otsu[y:y+h, x:x+w]
+            blank_image[y:y+h, x:x+w] = roi
+
+        ImageUtil.save(blank_image, 'blanks')
+            #ImageUtil.save(blank_image, 'blanks')
+        #ImageUtil.save(otsu, 'otsu')
+        return otsu
 
     @staticmethod
     def get_sub_images(image, rectangles):
@@ -126,8 +138,9 @@ class ImageUtil:
         greyscale = CvHelper.greyscale(img)
         bright = CvHelper.adjust_gamma(greyscale, 2.5)
         blur = CvHelper.gaussian_blur(bright, kernel_size=5)
-        thresh = CvHelper.get_mat(CvHelper.otsu_binary(blur))
-        return thresh
+        thresh = CvHelper.get_mat(CvHelper.adaptive_thresholding(blur, CvEnums.THRESH_MEAN))
+        otsu = CvHelper.binarise(thresh, 127)
+        return otsu
 
     @staticmethod
     def process_shape_new(image):
@@ -245,28 +258,25 @@ class ImageUtil:
         return CvHelper.warp_affine(image, mapping, (width, height), flags=CvEnums.MAT_WARP_INVERSE_MAP,
                               border_mode=CvEnums.BORDER_REPLICATE)
 
+
     @staticmethod
-    def char_roi(mat, rectangles):
+    async def char_roi(mat, rectangle):
         tmp = mat.copy()
-        out_rectangles = []
-
-        for rectangle in rectangles:
-            potential_plate = ImageUtil.auto_crop(tmp, rectangle)
-            umat = CvHelper.get_umat(potential_plate)
-            greyscale = CvHelper.greyscale(umat)
-            bright = CvHelper.adjust_gamma(greyscale, 2.0)
-            dilate = CvHelper.dilate(bright, kernel_size=3, iterations=0)
-            morph = CvHelper.morph(dilate, gradient_type=CvEnums.MORPH_OPEN, kernel_size=3,
-                                   kernel_shape=CvEnums.K_ELLIPSE)
-            otsu = CvHelper.get_mat(CvHelper.otsu_binary(morph, 240))
-            contours, __ = ContourHandler.find_contours(otsu, ret_mode=CvEnums.RETR_LIST,
-                                                        approx_method=CvEnums.CHAIN_APPROX_NONE)
-            if len(contours) > 0:
-                r, boxs = ContourHandler.get_characters_roi(contours, potential_plate)
-                if 2 <= len(r) <= 10:
-                    out_rectangles.append(rectangle)
-
-        return out_rectangles
+        results = []
+        potential_plate = ImageUtil.auto_crop(tmp, rectangle)
+        umat = CvHelper.get_umat(potential_plate.copy())
+        greyscale = CvHelper.greyscale(umat)
+        bright = CvHelper.adjust_gamma(greyscale, 2.0)
+        dilate = CvHelper.dilate(bright, kernel_size=3, iterations=0)
+        morph = CvHelper.morph(dilate, gradient_type=CvEnums.MORPH_OPEN, kernel_size=3, kernel_shape=CvEnums.K_ELLIPSE)
+        otsu = CvHelper.get_mat(CvHelper.otsu_binary(morph, 240))
+        contours, __ = ContourHandler.find_contours(otsu, ret_mode=CvEnums.RETR_LIST, approx_method=CvEnums.CHAIN_APPROX_SIMPLE)
+        if len(contours) > 0:
+            height, width, __ = potential_plate.shape
+            roi, boxs = ContourHandler.get_characters_roi(contours, mat_width=width, mat_height=height)
+            if 2 <= len(roi) <= 10:
+                results.append((rectangle, roi))
+        return results
 
     @staticmethod
     def rotate_image(img, angle):
