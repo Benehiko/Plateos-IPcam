@@ -19,10 +19,9 @@ class ImageUtil:
         return decoded
 
     @staticmethod
-    async def process_for_tess(mat, data):
+    def process_for_tess(mat, data):
         tmp = mat.copy()
         rectangle, chars = data
-
         cropped = ImageUtil.auto_crop(tmp, rectangle)
         grey = CvHelper.greyscale(cropped)
         deskew = ImageUtil.deskew(grey)
@@ -31,21 +30,6 @@ class ImageUtil:
         dilate = CvHelper.dilate(bright, kernel_size=3, iterations=0)
         morph = CvHelper.morph(dilate, gradient_type=CvEnums.MORPH_OPEN, kernel_size=3, kernel_shape=CvEnums.K_ELLIPSE)
         otsu = CvHelper.get_mat(CvHelper.otsu_binary(morph, 240))
-        blank_image = np.empty_like(otsu) #otsu.copy()
-        blank_image[:] = 255
-
-        for r in chars:
-            (x, y), (w, h), angle = r
-            x = math.ceil(x)
-            y = math.ceil(y)
-            w = math.ceil(w)
-            h = math.ceil(h)
-            roi = otsu[y:y+h, x:x+w]
-            blank_image[y:y+h, x:x+w] = roi
-
-        ImageUtil.save(blank_image, 'blanks')
-            #ImageUtil.save(blank_image, 'blanks')
-        #ImageUtil.save(otsu, 'otsu')
         return otsu
 
     @staticmethod
@@ -64,7 +48,7 @@ class ImageUtil:
         pathlib.Path(path).mkdir(parents=True, exist_ok=True)
         if img is not None:
             try:
-                tmp = ImageUtil.compress(img)#, max_w=200)
+                tmp = ImageUtil.compress(img)
                 tmp = CvHelper.bgr2rgb(tmp)
                 filename = datetime.now().strftime("%Y-%m-%d-%H_%M_%S")
                 if tmp is not None:
@@ -258,11 +242,10 @@ class ImageUtil:
         return CvHelper.warp_affine(image, mapping, (width, height), flags=CvEnums.MAT_WARP_INVERSE_MAP,
                               border_mode=CvEnums.BORDER_REPLICATE)
 
-
     @staticmethod
-    async def char_roi(mat, rectangle):
-        tmp = mat.copy()
+    def char_roi(mat, rectangle):
         results = []
+        tmp = mat.copy()
         potential_plate = ImageUtil.auto_crop(tmp, rectangle)
         umat = CvHelper.get_umat(potential_plate.copy())
         greyscale = CvHelper.greyscale(umat)

@@ -52,14 +52,13 @@ class Backdrop:
             pass
 
     def callback_tess(self, plate):
-        #CvHelper.display("Cropped Plate", plate[4])
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2], "Date:", plate[3])
         self.cache(plate)
 
     def cache(self, plate):
         try:
             self.cached.append(plate)
-            if len(self.cached) >= 10:
+            if len(self.cached) >= 3:
                 today = datetime.datetime.now().strftime('%Y-%m-%d %H')
                 self.cached = Numberplate.improve(self.cached)
                 if self.cached is not None:

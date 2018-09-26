@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-
+import multiprocessing as mp
 from cvlib.CvEnums import CvEnums
 
 
@@ -120,32 +120,39 @@ class ContourHandler:
             approx = ContourHandler.get_approx(cnt)
             area = cv2.contourArea(approx)
             rect = ContourHandler.get_rotated_rect(approx)
-
             if ContourHandler.in_scope_percentage(rect, area, size=(mat_width, mat_height), area_bounds=area_bounds, min_point=min_point, max_point=max_point):
                 cnt_cache.append(cnt)
 
-        #Keep element if it is not False
+        # Keep element if it is not False
         cnt_cache = [x for x in cnt_cache if
                      not ContourHandler.polygon_test(cnt_cache, ContourHandler.get_rotated_rect(ContourHandler.get_approx(x)))]
 
+
         box_corrected = []
         angles = []
-        for cnt in cnt_cache:
-            approx = ContourHandler.get_approx(cnt)
-            rect = ContourHandler.get_rotated_rect(approx)
-            angle = ContourHandler.in_correct_angle(rect)
-            if angle > -30 or angle < -100 or angle < -150:
-                box = cv2.boxPoints(rect)
-                box = np.int0(box)
-                if ContourHandler.correct_ratio(rect):
-                    rect_arr.append(rect)
-                    box_corrected.append(box)
-                    ((x, y), __, __) = rect
-                    x = int(x)
-                    y = int(y)
-                    angles.append((angle, (x, y)))
+        pool = mp.Pool(processes=len(cnt_cache))
+        [pool.apply_async(ContourHandler.contour_helper(cnt, rect_arr, box_corrected, angles)) for cnt in cnt_cache]
+        pool.close()
+        pool.join()
 
         return rect_arr, box_corrected, angles
+
+    @staticmethod
+    def contour_helper(cnt, rect_arr, box_corrected, angles):
+        approx = ContourHandler.get_approx(cnt)
+        rect = ContourHandler.get_rotated_rect(approx)
+        angle = ContourHandler.in_correct_angle(rect)
+        if angle > -30 or angle < -100 or angle < -150:
+            box = cv2.boxPoints(rect)
+            box = np.int0(box)
+            if ContourHandler.correct_ratio(rect):
+                rect_arr.append(rect)
+                box_corrected.append(box)
+                ((x, y), __, __) = rect
+                x = int(x)
+                y = int(y)
+                angles.append((angle, (x, y)))
+        #return rect_arr, box_corrected, angles
 
     @staticmethod
     def get_characters_roi(contours, mat_width, mat_height):
