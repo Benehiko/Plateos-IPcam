@@ -43,6 +43,7 @@ class ImageUtil:
             images.append(cropped)
         return images
 
+    # noinspection PyBroadException
     @staticmethod
     def save(img, path):
         pathlib.Path(path).mkdir(parents=True, exist_ok=True)
@@ -56,7 +57,7 @@ class ImageUtil:
                     CvHelper.write_mat(tmp, d)
                 else:
                     print("Could not save none type")
-            except Exception as e:
+            except Exception:
                 pass
 
     """

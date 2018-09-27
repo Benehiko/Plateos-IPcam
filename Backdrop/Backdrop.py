@@ -1,10 +1,8 @@
 import asyncio
 import datetime
-from multiprocessing import Process
-from threading import Thread
 from os import listdir
 from os.path import isfile, join
-from time import sleep
+from threading import Thread
 
 from Caching.CacheHandler import CacheHandler
 from Network.PortScanner import PortScanner
@@ -14,6 +12,7 @@ from numberplate.Numberplate import Numberplate
 from tess.tesseract import Tess
 
 
+# noinspection PyBroadException
 class Backdrop:
 
     def __init__(self, args, iprange, url):
@@ -27,8 +26,7 @@ class Backdrop:
         self.url = url
         self.last_upload = None
 
-    @asyncio.coroutine
-    def scan(self):
+    async def scan(self):
         while True:
             print("Current Active cameras", self.active)
             tmp = self.scanner.scan(self.iprange)
@@ -36,7 +34,7 @@ class Backdrop:
             for x in tmp:
                 if x not in active_ip:
                     self.add(x)
-            sleep(60)
+            await asyncio.sleep(60)
             self.check_alive()
             self.cleanup_cache()
             self.offline_check()
@@ -91,6 +89,7 @@ class Backdrop:
         except:
             pass
 
+    # noinspection PyMethodMayBeStatic
     def cleanup_cache(self):
         try:
             files = [f.replace('.npy.gz', '') for f in listdir("cache") if isfile(join("cache", f))]

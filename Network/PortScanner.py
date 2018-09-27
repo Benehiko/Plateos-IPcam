@@ -2,6 +2,7 @@ import threading
 import socket
 
 
+# noinspection PyMethodMayBeStatic
 class PortScanner(threading.Thread):
 
     def __init__(self):
@@ -50,6 +51,7 @@ class PortScanner(threading.Thread):
         TCPsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         TCPsock.settimeout(delay)
         subip = int(ip[ip.rfind(".") + 1:])
+        # noinspection PyBroadException
         try:
             TCPsock.connect((ip, port_number))
             output[subip] = True

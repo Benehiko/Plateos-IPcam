@@ -107,8 +107,9 @@ class ContourHandler:
     def get_rectangles(contours, mat_width, mat_height, area_bounds=(0.5, 5), min_point=(10, 10), max_point=(60, 60)):
         """
         Get rectangles from contours
+        :param mat_height:
+        :param mat_width:
         :param contours:
-        :param mat:
         :param area_bounds: tuple indicating the (min, max) of the acceptable area
         :param min_point: tuple of minimum threshold for (width_min, height_min)
         :param max_point: tuple of maximum threshold for (width_max, height_max)
@@ -197,7 +198,7 @@ class ContourHandler:
     def get_area_width_height(size):
         """
         Get the area, width, height of a mat image
-        :param mat:
+        :param size:
         :return:
         """
         img_width, img_height = size
