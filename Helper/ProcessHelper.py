@@ -48,8 +48,5 @@ class ProcessHelper:
                     results = [item for item in results if item is not None]
                     pool.close()
                     pool.join()
-            else:
-                pool.close()
-                pool.join()
 
         return results
