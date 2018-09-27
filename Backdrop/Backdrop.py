@@ -39,6 +39,7 @@ class Backdrop:
             self.cleanup_cache()
             self.offline_check()
             self.ping_location()
+            self.cache()
 
     def add(self, a):
         try:
@@ -51,12 +52,11 @@ class Backdrop:
 
     def callback_tess(self, plate):
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2], "Date:", plate[3])
-        self.cache(plate)
+        self.cached.append(plate)
 
-    def cache(self, plate):
+    def cache(self):
         try:
-            self.cached.append(plate)
-            if len(self.cached) >= 3:
+            if len(self.cached) >= 1:
                 today = datetime.datetime.now().strftime('%Y-%m-%d %H')
                 self.cached = Numberplate.improve(self.cached)
                 if self.cached is not None:
