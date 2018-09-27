@@ -29,7 +29,7 @@ class ProcessHelper:
                                                                   min_point=(0.2, 0.2), max_point=(5, 5))
 
         if len(rectangles) > 0:
-            drawn = CvHelper.draw_boxes(frame, boxes, CvEnums.COLOUR_GREEN, 5)
+            # drawn = CvHelper.draw_boxes(frame, boxes, CvEnums.COLOUR_GREEN, 5)
 
             pool = mp.Pool(processes=len(rectangles))
             output = [pool.apply_async(ImageUtil.char_roi, args=(tmp, r)) for r in rectangles]
@@ -39,7 +39,7 @@ class ProcessHelper:
                 pool.close()
                 pool.join()
 
-                CvHelper.display("Drawn", drawn, size=(640, 480))
+                # CvHelper.display("Drawn", drawn, size=(640, 480))
 
                 if len(potential_plates) > 0:
                     pool = mp.Pool(processes=len(potential_plates))
