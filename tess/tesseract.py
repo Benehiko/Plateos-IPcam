@@ -14,7 +14,7 @@ from numberplate.Numberplate import Numberplate
 class Tess:
 
     def __init__(self, backdrop):
-        self.t = PyTessBaseAPI(psm=PSM.SINGLE_BLOCK, oem=OEM.TESSERACT_LSTM_COMBINED)
+        self.t = PyTessBaseAPI(psm=PSM.CIRCLE_WORD, oem=OEM.TESSERACT_LSTM_COMBINED)
         self.t.SetVariable("load_system_dawg", "false")
         self.t.SetVariable("load_freq_dawg", "false")
         self.t.SetVariable("load_punc_dawg", "false")
@@ -29,21 +29,23 @@ class Tess:
 
     def runner(self, image):
         if image is not None:
-            tmp = Image.fromarray(np.uint8(image))
-            self.t.SetImage(tmp)
-            text = Numberplate.sanitise(self.t.GetUTF8Text())
-            plate_type, confidence = Numberplate.validate(text, use_provinces=True)
-            if plate_type is not None and confidence > 0:
-                image = ImageUtil.compress(image, max_w=200)
-                now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                plate = (text, plate_type, confidence, now, image)
-                self.backdrop.callback_tess(plate)
+            if not isinstance(image, list):
+                tmp = Image.fromarray(np.uint8(image))
+                self.t.SetImage(tmp)
+                text = Numberplate.sanitise(self.t.GetUTF8Text())
+                plate_type, confidence = Numberplate.validate(text, use_provinces=True)
+                if plate_type is not None and confidence > 0:
+                    image = ImageUtil.compress(image, max_w=200)
+                    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    plate = (text, plate_type, confidence, now, image)
+                    self.backdrop.callback_tess(plate)
 
     def multi(self, images):
-        pool = mp.Pool(processes=len(images))
-        [pool.apply_async(self.runner(i)) for i in images]
-        pool.close()
-        pool.join()
+        if len(images) > 0:
+            pool = mp.Pool(processes=len(images))
+            [pool.apply_async(self.runner(i)) for i in images]
+            pool.close()
+            pool.join()
 
     def process(self, image):
         if image is not None:

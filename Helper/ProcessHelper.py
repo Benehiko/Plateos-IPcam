@@ -25,11 +25,11 @@ class ProcessHelper:
         contours, __ = ContourHandler.find_contours(f, ret_mode=CvEnums.RETR_LIST)
         height, width, __ = tmp.shape
         rectangles, boxes, angles = ContourHandler.get_rectangles(contours, mat_width=width, mat_height=height,
-                                                                  area_bounds=(0.02, 0.5),
+                                                                  area_bounds=(0.035, 0.5),
                                                                   min_point=(0.2, 0.2), max_point=(5, 5))
 
         if len(rectangles) > 0:
-            # drawn = CvHelper.draw_boxes(frame, boxes, CvEnums.COLOUR_GREEN, 5)
+            drawn = CvHelper.draw_boxes(frame, boxes, CvEnums.COLOUR_GREEN, 5)
 
             pool = mp.Pool(processes=len(rectangles))
             output = [pool.apply_async(ImageUtil.char_roi, args=(tmp, r)) for r in rectangles]
@@ -38,13 +38,13 @@ class ProcessHelper:
             pool.close()
             pool.join()
 
-            # CvHelper.display("Drawn", drawn, size=(640, 480))
+            CvHelper.display("Drawn", drawn, size=(640, 480))
 
             if len(potential_plates) > 0:
                 pool = mp.Pool(processes=len(potential_plates))
                 out = [pool.apply_async(ImageUtil.process_for_tess, args=(tmp, p)) for p in potential_plates]
                 results = [p.get() for p in out]
-                results = [item for item in results if len(item) > 0]
+                results = [item for item in results if item is not None]
                 pool.close()
                 pool.join()
 
