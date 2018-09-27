@@ -1,7 +1,5 @@
-import asyncio
-import locale
-from datetime import datetime
 import multiprocessing as mp
+from datetime import datetime
 from tesserocr import PyTessBaseAPI, PSM, OEM
 
 import numpy as np
@@ -14,6 +12,7 @@ from numberplate.Numberplate import Numberplate
 class Tess:
 
     def __init__(self, backdrop):
+        # noinspection PyArgumentList,PyArgumentList
         self.t = PyTessBaseAPI(psm=PSM.CIRCLE_WORD, oem=OEM.TESSERACT_LSTM_COMBINED)
         self.t.SetVariable("load_system_dawg", "false")
         self.t.SetVariable("load_freq_dawg", "false")
@@ -41,11 +40,12 @@ class Tess:
                     self.backdrop.callback_tess(plate)
 
     def multi(self, images):
-        if len(images) > 0:
-            pool = mp.Pool(processes=len(images))
-            [pool.apply_async(self.runner(i)) for i in images]
-            pool.close()
-            pool.join()
+        if images is not None:
+            if len(images) > 0:
+                pool = mp.Pool(processes=len(images))
+                [pool.apply_async(self.runner(i)) for i in images]
+                pool.close()
+                pool.join()
 
     def process(self, image):
         if image is not None:

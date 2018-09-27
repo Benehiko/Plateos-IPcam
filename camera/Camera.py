@@ -1,8 +1,5 @@
 import random
 import string
-import time
-from threading import Thread
-from urllib.error import URLError
 from urllib.request import urlopen
 
 import cv2

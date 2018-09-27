@@ -1,10 +1,9 @@
-import asyncio
+import multiprocessing as mp
 
 from cvlib.ContourHandler import ContourHandler
 from cvlib.CvEnums import CvEnums
 from cvlib.CvHelper import CvHelper
 from cvlib.ImageUtil import ImageUtil
-import multiprocessing as mp
 
 
 class ProcessHelper:
@@ -13,8 +12,9 @@ class ProcessHelper:
     def analyse_frames(frame):
         if frame is not None:
             results = ProcessHelper.get_numberplate(frame)
-            results = [x for x in results if x is not None]
-            return results
+            if results is not None:
+                results = [x for x in results if x is not None]
+                return results
         return None
 
     @staticmethod
@@ -33,18 +33,22 @@ class ProcessHelper:
 
             pool = mp.Pool(processes=len(rectangles))
             output = [pool.apply_async(ImageUtil.char_roi, args=(tmp, r)) for r in rectangles]
-            results = [o.get() for o in output]
-            potential_plates = [item[0] for item in results if len(item) > 0]
-            pool.close()
-            pool.join()
+            if output is not None:
+                results = [o.get() for o in output]
+                potential_plates = [item[0] for item in results if len(item) > 0]
+                pool.close()
+                pool.join()
 
-            CvHelper.display("Drawn", drawn, size=(640, 480))
+                CvHelper.display("Drawn", drawn, size=(640, 480))
 
-            if len(potential_plates) > 0:
-                pool = mp.Pool(processes=len(potential_plates))
-                out = [pool.apply_async(ImageUtil.process_for_tess, args=(tmp, p)) for p in potential_plates]
-                results = [p.get() for p in out]
-                results = [item for item in results if item is not None]
+                if len(potential_plates) > 0:
+                    pool = mp.Pool(processes=len(potential_plates))
+                    out = [pool.apply_async(ImageUtil.process_for_tess, args=(tmp, p)) for p in potential_plates]
+                    results = [p.get() for p in out]
+                    results = [item for item in results if item is not None]
+                    pool.close()
+                    pool.join()
+            else:
                 pool.close()
                 pool.join()
 
