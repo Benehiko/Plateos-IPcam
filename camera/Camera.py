@@ -32,11 +32,12 @@ class Camera:
                         b = bytearray(reader.read())
                         npy = np.array(b, dtype=np.uint8)
                         img = cv2.imdecode(npy, -1)
-                        cropped_array = ProcessHelper.analyse_frames(img)
+                        if img is not None:
+                            cropped_array = ProcessHelper.analyse_frames(img)
 
-                        if cropped_array is not None:
-                            if len(cropped_array) > 0:
-                                self.tess.multi(cropped_array)
+                            if cropped_array is not None:
+                                if len(cropped_array) > 0:
+                                    self.tess.multi(cropped_array)
                     counter += 1
 
             except Exception as e:
