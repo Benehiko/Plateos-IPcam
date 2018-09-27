@@ -97,13 +97,13 @@
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="pstat" value="6" />
-          <entry key="py" value="58" />
+          <entry key="py" value="59" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="Profiler Session" value="6" />
-          <entry key="Python" value="58" />
+          <entry key="Python" value="59" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages" />
@@ -122,11 +122,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Backdrop/Backdrop.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="86">
-              <caret line="58" column="36" selection-start-line="58" selection-start-column="36" selection-end-line="58" selection-end-column="36" />
+            <state relative-caret-position="-199">
+              <caret line="25" column="22" lean-forward="true" selection-start-line="25" selection-start-column="22" selection-end-line="25" selection-end-column="22" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -137,10 +137,22 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../Scratch Folder/VideoProcess.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="19">
-              <caret line="10" column="10" lean-forward="true" selection-start-line="10" selection-start-column="10" selection-end-line="10" selection-end-column="10" />
+            <state relative-caret-position="342">
+              <caret line="27" column="54" lean-forward="true" selection-start-line="27" selection-start-column="54" selection-end-line="27" selection-end-column="54" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Helper/ProcessHelper.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="513">
+              <caret line="49" column="31" selection-start-line="49" selection-start-column="31" selection-end-line="49" selection-end-column="31" />
+              <folding>
+                <element signature="e#0#28#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -226,9 +238,9 @@
         <option value="$PROJECT_DIR$/numberplate/Numberplate.py" />
         <option value="$PROJECT_DIR$/Caching/CacheHandler.py" />
         <option value="$PROJECT_DIR$/camera/Camera.py" />
-        <option value="$PROJECT_DIR$/Helper/ProcessHelper.py" />
         <option value="$PROJECT_DIR$/tess/tesseract.py" />
         <option value="$PROJECT_DIR$/Backdrop/Backdrop.py" />
+        <option value="$PROJECT_DIR$/Helper/ProcessHelper.py" />
       </list>
     </option>
   </component>
@@ -238,9 +250,9 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="583" />
-    <option name="y" value="131" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="510" />
+    <option name="y" value="93" />
     <option name="width" value="1337" />
     <option name="height" value="949" />
   </component>
@@ -552,16 +564,16 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="583" y="131" width="1337" height="949" extended-state="0" />
+    <frame x="67" y="27" width="1853" height="1053" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4943182" visible="true" weight="0.2672347" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4943182" visible="true" weight="0.19092418" />
       <window_info id="Structure" order="1" sideWeight="0.5056818" side_tool="true" weight="0.20732464" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Inspection Results" order="0" weight="0.32889965" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" weight="0.26732674" />
-      <window_info anchor="bottom" id="Run" order="3" visible="true" weight="0.28778717" />
+      <window_info anchor="bottom" id="Run" order="3" visible="true" weight="0.2556391" />
       <window_info anchor="bottom" id="Debug" order="4" weight="0.3982684" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
@@ -782,15 +794,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Helper/ProcessHelper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/numberplate/Numberplate.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="689">
@@ -798,22 +801,32 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Backdrop/Backdrop.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-199">
+          <caret line="25" column="22" lean-forward="true" selection-start-line="25" selection-start-column="22" selection-end-line="25" selection-end-column="22" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/../Scratch Folder/VideoProcess.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19">
-          <caret line="10" column="10" lean-forward="true" selection-start-line="10" selection-start-column="10" selection-end-line="10" selection-end-column="10" />
+        <state relative-caret-position="342">
+          <caret line="27" column="54" lean-forward="true" selection-start-line="27" selection-start-column="54" selection-end-line="27" selection-end-column="54" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Backdrop/Backdrop.py">
+    <entry file="file://$PROJECT_DIR$/Helper/ProcessHelper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="86">
-          <caret line="58" column="36" selection-start-line="58" selection-start-column="36" selection-end-line="58" selection-end-column="36" />
+        <state relative-caret-position="513">
+          <caret line="49" column="31" selection-start-line="49" selection-start-column="31" selection-end-line="49" selection-end-column="31" />
           <folding>
-            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#0#28#0" expanded="true" />
           </folding>
         </state>
       </provider>
