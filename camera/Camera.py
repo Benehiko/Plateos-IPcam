@@ -22,7 +22,6 @@ class Camera:
         print("Starting camera", self.ip)
         while True:
             try:
-                print(self.url)
                 reader = urlopen(self.url, timeout=5)
                 if reader.status == 200:
                         b = bytearray(reader.read())
