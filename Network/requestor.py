@@ -59,7 +59,7 @@ class Request:
             j = dict(d)
             print("Posting:", j)
             Request.send(url, j)
-        except URLError as e:
+        except URLError:
             pass
 
     @staticmethod

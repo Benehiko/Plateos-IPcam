@@ -1,6 +1,8 @@
+import asyncio
+
 import cv2
 import numpy as np
-
+import multiprocessing as mp
 from cvlib.CvEnums import CvEnums
 
 
@@ -107,8 +109,9 @@ class ContourHandler:
     def get_rectangles(contours, mat_width, mat_height, area_bounds=(0.5, 5), min_point=(10, 10), max_point=(60, 60)):
         """
         Get rectangles from contours
+        :param mat_height:
+        :param mat_width:
         :param contours:
-        :param mat:
         :param area_bounds: tuple indicating the (min, max) of the acceptable area
         :param min_point: tuple of minimum threshold for (width_min, height_min)
         :param max_point: tuple of maximum threshold for (width_max, height_max)
@@ -120,32 +123,54 @@ class ContourHandler:
             approx = ContourHandler.get_approx(cnt)
             area = cv2.contourArea(approx)
             rect = ContourHandler.get_rotated_rect(approx)
-
             if ContourHandler.in_scope_percentage(rect, area, size=(mat_width, mat_height), area_bounds=area_bounds, min_point=min_point, max_point=max_point):
                 cnt_cache.append(cnt)
 
-        #Keep element if it is not False
+        # Keep element if it is not False
         cnt_cache = [x for x in cnt_cache if
                      not ContourHandler.polygon_test(cnt_cache, ContourHandler.get_rotated_rect(ContourHandler.get_approx(x)))]
 
+
         box_corrected = []
         angles = []
-        for cnt in cnt_cache:
-            approx = ContourHandler.get_approx(cnt)
-            rect = ContourHandler.get_rotated_rect(approx)
-            angle = ContourHandler.in_correct_angle(rect)
-            if angle > -30 or angle < -100 or angle < -150:
-                box = cv2.boxPoints(rect)
-                box = np.int0(box)
-                if ContourHandler.correct_ratio(rect):
-                    rect_arr.append(rect)
-                    box_corrected.append(box)
-                    ((x, y), __, __) = rect
-                    x = int(x)
-                    y = int(y)
-                    angles.append((angle, (x, y)))
+
+        event_loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(event_loop)
+        pool = [asyncio.ensure_future(ContourHandler.contour_helper(cnt), loop=event_loop) for cnt in cnt_cache]
+
+        resultset = event_loop.run_until_complete(asyncio.gather(*pool))
+        for r in resultset:
+            rect, box, ang = r
+            rect_arr.append(rect)
+            box_corrected.append(box)
+            angles.append(ang)
+
+        rect_arr = [x for x in rect_arr if x is not None]
+        box_corrected = [x for x in box_corrected if x is not None]
+        angles = [x for x in angles if x is not None]
+        event_loop.close()
+        # pool = mp.Pool(processes=len(cnt_cache))
+        # [pool.apply_async(ContourHandler.contour_helper(cnt, rect_arr, box_corrected, angles)) for cnt in cnt_cache]
+        # pool.close()
+        # pool.join()
 
         return rect_arr, box_corrected, angles
+
+    @staticmethod
+    async def contour_helper(cnt):
+        approx = ContourHandler.get_approx(cnt)
+        rect = ContourHandler.get_rotated_rect(approx)
+        angle = ContourHandler.in_correct_angle(rect)
+        if angle > -30 or angle < -100 or angle < -150:
+            box = cv2.boxPoints(rect)
+            box = np.int0(box)
+            if ContourHandler.correct_ratio(rect):
+                ((x, y), __, __) = rect
+                x = int(x)
+                y = int(y)
+                return rect, box, (angle, (x, y))
+        return None, None, None
+        #return rect_arr, box_corrected, angles
 
     @staticmethod
     def get_characters_roi(contours, mat_width, mat_height):
@@ -190,7 +215,7 @@ class ContourHandler:
     def get_area_width_height(size):
         """
         Get the area, width, height of a mat image
-        :param mat:
+        :param size:
         :return:
         """
         img_width, img_height = size
