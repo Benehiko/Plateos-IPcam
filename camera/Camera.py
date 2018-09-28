@@ -37,9 +37,8 @@ class Camera:
                                     self.tess.multi(cropped_array)
                     counter += 1
 
-            except Exception as e:
-                print("something killed it", e)
-                break
+            except:
+                pass
 
             finally:
                 pass
