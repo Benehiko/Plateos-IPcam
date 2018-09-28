@@ -56,7 +56,8 @@ class CacheHandler:
     @staticmethod
     def remove(directory, filename):
         pathlib.Path(directory).mkdir(parents=False, exist_ok=True)
-        fi = Path(directory + filename + ".npy.gz")
 
-        if fi.exists():
-            os.remove(str(fi.resolve()))
+        with Path(directory + filename + ".npy.gz") as fi:
+            if fi.exists():
+                os.remove(str(fi.resolve()))
+                os.close()

@@ -1,43 +1,29 @@
-import threading
+import asyncio
 import socket
 
 
 # noinspection PyMethodMayBeStatic
-class PortScanner(threading.Thread):
-
-    def __init__(self):
-        threading.Thread.__init__(self)
+class PortScanner:
 
     def scan(self, iprange):
         print("Scanning for IP Camera's...")
 
         data = iprange.split("-")
         start = data[0]
-        start = int(start[start.rfind(".")+1:])
+        start = int(start[start.rfind(".") + 1:])
 
         end = data[1]
-        end = int(end[end.rfind(".")+1:])
+        end = int(end[end.rfind(".") + 1:])
 
-        subip = iprange[:data[0].rfind(".")+1]
+        subip = iprange[:data[0].rfind(".") + 1]
 
-        output = {}
-        threads = []
-        active =[]
+        active = []
+        event_loop = asyncio.get_event_loop()
+        for i in range(start, end + 1):
+            ip = subip + str(i)
+            asyncio.ensure_future(self.TCP_connect(ip, 1935, 3, output=active), loop=event_loop)
 
-        for i in range(start, end+1):
-            ip = subip+str(i)
-            t = threading.Thread(target=self.TCP_connect, args=(ip, 1935, 3, output))
-            threads.append(t)
-
-        for x in range(0, len(threads)):
-            threads[x].start()
-
-        for t in range(0, len(threads)):
-            threads[t].join()
-
-        for i in range(start, end+1):
-            if output[i]:
-                active.append(subip+str(i))
+        active = [x for x in active if x is not None]
 
         if len(active) > 0:
             print("Found: ", active)
@@ -46,7 +32,7 @@ class PortScanner(threading.Thread):
 
         return active
 
-    def TCP_connect(self, ip, port_number, delay, output):
+    async def TCP_connect(self, ip, port_number, delay, output):
         TCPsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         TCPsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         TCPsock.settimeout(delay)
@@ -54,6 +40,7 @@ class PortScanner(threading.Thread):
         # noinspection PyBroadException
         try:
             TCPsock.connect((ip, port_number))
-            output[subip] = True
+            output.append(subip)
         except:
-            output[subip] = False
+            pass
+

@@ -1,3 +1,4 @@
+import asyncio
 import multiprocessing as mp
 
 from cvlib.ContourHandler import ContourHandler
@@ -29,21 +30,31 @@ class ProcessHelper:
                                                                   min_point=(0.2, 0.2), max_point=(5, 5))
 
         if len(rectangles) > 0:
-            # drawn = CvHelper.draw_boxes(frame, boxes, CvEnums.COLOUR_GREEN, 5)
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            pool = []
+            for r in rectangles:
+                pool.append(asyncio.ensure_future(ImageUtil.char_roi(tmp, r), loop=loop))
 
-            pool = mp.Pool(processes=len(rectangles))
-            output = [pool.apply_async(ImageUtil.char_roi, args=(tmp, r)) for r in rectangles]
-            if output is not None:
-                results = [o.get() for o in output]
-                potential_plates = [item[0] for item in results if len(item) > 0]
-                pool.close()
-                pool.join()
+            potential_plates = loop.run_until_complete(asyncio.gather(*pool))
 
-                # CvHelper.display("Drawn", drawn, size=(640, 480))
+            potential_plates = [item[0] for item in potential_plates if len(item) > 0]
+            #drawn = CvHelper.draw_boxes(frame, boxes, CvEnums.COLOUR_GREEN, 5)
 
-                if len(potential_plates) > 0:
-                    pool = mp.Pool(processes=len(potential_plates))
-                    out = [pool.apply_async(ImageUtil.process_for_tess, args=(tmp, p)) for p in potential_plates]
+            # pool = mp.Pool(processes=len(rectangles))
+            # output = [pool.apply_async(ImageUtil.char_roi, args=(tmp, r)) for r in rectangles]
+            # if output is not None:
+            #     results = [o.get() for o in output]
+            #     potential_plates = [item[0] for item in results if len(item) > 0]
+            #     pool.close()
+            #     pool.join()
+
+            #CvHelper.display("Drawn", drawn, size=(640, 480))
+
+            if len(potential_plates) > 0:
+                pool = mp.Pool(processes=len(potential_plates))
+                out = [pool.apply_async(ImageUtil.process_for_tess, args=(tmp, p)) for p in potential_plates]
+                if out is not None:
                     results = [p.get() for p in out]
                     results = [item for item in results if item is not None]
                     pool.close()
