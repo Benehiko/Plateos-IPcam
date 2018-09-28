@@ -7,7 +7,7 @@ from PIL import Image
 
 from cvlib.ImageUtil import ImageUtil
 from numberplate.Numberplate import Numberplate
-
+import asyncio
 
 class Tess:
 
@@ -26,7 +26,7 @@ class Tess:
         self.t.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
         self.backdrop = backdrop
 
-    def runner(self, image):
+    async def runner(self, image):
         if image is not None:
             if not isinstance(image, list):
                 tmp = Image.fromarray(np.uint8(image))
@@ -42,7 +42,12 @@ class Tess:
     def multi(self, images):
         if images is not None:
             if len(images) > 0:
-                pool = mp.Pool(processes=len(images))
-                [pool.apply_async(self.runner(i)) for i in images]
-                pool.close()
-                pool.join()
+                event_loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(event_loop)
+                pool = [asyncio.ensure_future(self.runner(i)) for i in images]
+                event_loop.run_until_complete(asyncio.gather(*pool))
+                event_loop.close()
+                # pool = mp.Pool(processes=len(images))
+                # [pool.apply_async(self.runner(i)) for i in images]
+                # pool.close()
+                # pool.join()
