@@ -20,7 +20,7 @@ class Backdrop:
     def __init__(self, args, iprange, url):
         self.iprange = iprange
         self.camera = []
-        self.tess = Tess(backdrop=self)
+        self.tess = Tess()#backdrop=self)
         self.active = set()
         self.scanner = PortScanner()
         self.username, self.password = args
