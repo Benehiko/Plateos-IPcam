@@ -40,7 +40,7 @@ class PortScanner:
         # noinspection PyBroadException
         try:
             TCPsock.connect((ip, port_number))
-            return subip
+            return ip
         except:
             pass
 
