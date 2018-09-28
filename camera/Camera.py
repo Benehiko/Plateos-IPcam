@@ -36,7 +36,11 @@ class Camera:
 
                             if cropped_array is not None:
                                 if len(cropped_array) > 0:
-                                    self.tess.multi(cropped_array)
+                                    result = self.tess.multi(cropped_array)
+                                    if result is not None:
+                                        if len(result) > 0:
+                                            for r in result:
+                                                self.backdrop.callback_tess(r)
                     counter += 1
 
             except:
