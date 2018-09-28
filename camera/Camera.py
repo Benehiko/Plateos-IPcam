@@ -26,7 +26,7 @@ class Camera:
             try:
                 reader = urlopen(self.url, timeout=2)
                 if reader.status == 200:
-                    if counter > 5:
+                    if counter > 2:
                         counter = 0
                         b = bytearray(reader.read())
                         npy = np.array(b, dtype=np.uint8)
@@ -37,6 +37,7 @@ class Camera:
                             if cropped_array is not None:
                                 if len(cropped_array) > 0:
                                     result = self.tess.multi(cropped_array)
+                                    print(result)
                                     if result is not None:
                                         if len(result) > 0:
                                             for r in result:
@@ -47,4 +48,4 @@ class Camera:
                 pass
 
             finally:
-                sleep(2)
+                pass
