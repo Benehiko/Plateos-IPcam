@@ -11,7 +11,7 @@ class Backdrop:
     def __init__(self, args, iprange, url):
         self.backdrophandler = BackdropHandler(self, scanner=PortScanner(), iprange=iprange, args=args, url=url)
 
-    async def scan(self):
+    def scan(self):
         while True:
             try:
                 p = Process(target=self.backdrophandler.start())
