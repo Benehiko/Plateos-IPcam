@@ -21,7 +21,7 @@ class Backdrop:
     def __init__(self, args, iprange, url):
         self.iprange = iprange
         self.camera = []
-        self.tess = Tess()#backdrop=self)
+        self.tess = Tess(backdrop=self)
         self.active = set()
         self.scanner = PortScanner()
         self.username, self.password = args
@@ -36,7 +36,7 @@ class Backdrop:
 
     def add(self, a):
         try:
-            tmp = Camera(username=self.username, password=self.password, ip=a, tess=self.tess, backdrop=self)
+            tmp = Camera(username=self.username, password=self.password, ip=a, tess=self.tess)
             p = Thread(target=tmp.start)
             self.active.add((a, p))
             p.start()
