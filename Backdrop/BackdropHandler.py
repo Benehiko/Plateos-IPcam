@@ -25,6 +25,7 @@ class BackdropHandler:
         self.url = url
 
     def start(self):
+        count = 0
         while True:
             active = self.active
             print("Current Active cameras", active)
@@ -35,10 +36,13 @@ class BackdropHandler:
                     self.add(x)
             sleep(60)
             self.check_alive()
-            self.cleanup_cache()
+            if count > 60:
+                self.cleanup_cache()
+                count = 0
             self.offline_check()
             self.ping_location()
             self.cache()
+            count += 1
 
     def callback_tess(self, plate):
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2], "Date:", plate[3])

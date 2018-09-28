@@ -37,7 +37,8 @@ class Camera:
 
                     counter += 1
 
-            except:
+            except Exception as e:
+                print(e)
                 pass
 
             finally:

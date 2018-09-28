@@ -244,7 +244,7 @@ class ImageUtil:
                               border_mode=CvEnums.BORDER_REPLICATE)
 
     @staticmethod
-    def char_roi(mat, rectangle):
+    async def char_roi(mat, rectangle):
         results = []
         tmp = mat.copy()
         potential_plate = ImageUtil.auto_crop(tmp, rectangle)
