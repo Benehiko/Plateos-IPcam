@@ -44,16 +44,15 @@ class BackdropHandler:
             self.check_alive()
             if count > 60:
                 self.cleanup_cache()
+                self.offline_check()
                 count = 0
-            self.offline_check()
-            self.ping_location()
+                self.ping_location()
             self.cache()
             count += 1
 
     def callback_tess(self, plate):
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2], "Date:", plate[3])
         self.cached.append(plate)
-        return
 
     def add(self, a):
         try:
@@ -68,13 +67,14 @@ class BackdropHandler:
     def cache(self):
         cached = self.cached
         try:
-            if len(cached) >= 1:
+            if len(cached) > 0:
                 today = datetime.datetime.now().strftime('%Y-%m-%d %H')
                 cached = Numberplate.improve(cached)
                 if cached is not None:
-                    res = CacheHandler.save("cache/", today, cached)
-                    if res is not None:
-                        self.upload_dataset(res)
+                    if len(cached) > 0:
+                        res = CacheHandler.save("cache/", today, cached)
+                        if res is not None:
+                            self.upload_dataset(res)
                 self.cached = []
         except Exception as e:
             print(e)
