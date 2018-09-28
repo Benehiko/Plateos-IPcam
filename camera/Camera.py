@@ -1,6 +1,7 @@
 import random
 import string
 from threading import Thread
+from urllib.error import URLError
 from urllib.request import urlopen
 
 import cv2
@@ -22,7 +23,8 @@ class Camera:
         counter = 0
         while True:
             try:
-                reader = urlopen(self.url, timeout=2)
+                print(self.url)
+                reader = urlopen(self.url, timeout=5)
                 if reader.status == 200:
                     if counter > 2:
                         counter = 0
@@ -40,7 +42,7 @@ class Camera:
 
                     counter += 1
 
-            except Exception as e:
+            except URLError as e:
                 print(e)
                 pass
 
