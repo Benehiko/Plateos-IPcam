@@ -31,11 +31,12 @@ class Backdrop:
         self.backdrophandler = BackdropHandler(self, scanner=PortScanner(), iprange=iprange)
 
     async def scan(self):
-        Thread(target=self.backdrophandler.start()).start()
+        t = Thread(target=self.backdrophandler.start()).start()
+        t.join()
 
     def add(self, a):
         try:
-            tmp = Camera(username=self.username, password=self.password, ip=a, tess=self.tess)
+            tmp = Camera(username=self.username, password=self.password, ip=a, tess=self.tess, backdrop=self)
             p = Thread(target=tmp.start)
             self.active.add((a, p))
             p.start()
