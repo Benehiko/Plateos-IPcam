@@ -19,7 +19,7 @@ class ImageUtil:
         return decoded
 
     @staticmethod
-    def process_for_tess(mat, data):
+    async def process_for_tess(mat, data):
         tmp = mat.copy()
         rectangle, chars = data
         cropped = ImageUtil.auto_crop(tmp, rectangle)

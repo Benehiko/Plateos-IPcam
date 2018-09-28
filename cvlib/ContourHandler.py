@@ -144,7 +144,7 @@ class ContourHandler:
             rect_arr.append(rect)
             box_corrected.append(box)
             angles.append(ang)
-            
+
         rect_arr = [x for x in rect_arr if x is not None]
         box_corrected = [x for x in box_corrected if x is not None]
         angles = [x for x in angles if x is not None]
