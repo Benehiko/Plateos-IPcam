@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import sys
 from os import listdir
 from os.path import isfile, join
 from threading import Thread
@@ -88,7 +89,8 @@ class Backdrop:
             diff = now - file_last_date
             if datetime.timedelta(days=90) < diff:
                 CacheHandler.remove("cache/", file_last_date.strftime("%Y-%m-%d %H"))
-        except:
+        except Exception as e:
+            print(e)
             pass
 
     def offline_check(self):
@@ -100,7 +102,8 @@ class Backdrop:
                         tmp = CacheHandler.load("offline/", x).tolist()
                         Request.post(tmp, self.url)
                         CacheHandler.remove("offline/", x)
-            except:
+            except Exception as e:
+                print(e)
                 pass
 
     def ping_location(self):
