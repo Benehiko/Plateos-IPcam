@@ -32,7 +32,7 @@
     <SUITE FILE_PATH="coverage/Plateos$scratch_5.coverage" NAME="scratch_5 Coverage Results" MODIFIED="1534029078903" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_11.coverage" NAME="scratch_11 Coverage Results" MODIFIED="1534969954513" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$Camera.coverage" NAME="Camera Coverage Results" MODIFIED="1538113670336" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/camera" />
-    <SUITE FILE_PATH="coverage/Plateos$run.coverage" NAME="run Coverage Results" MODIFIED="1538121715423" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Plateos$run.coverage" NAME="run Coverage Results" MODIFIED="1538121831755" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_19.coverage" NAME="scratch_19 Coverage Results" MODIFIED="1537098407071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$tesseract.coverage" NAME="tesseract Coverage Results" MODIFIED="1538111699311" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tess" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_8.coverage" NAME="scratch_8 Coverage Results" MODIFIED="1534726771215" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
@@ -112,20 +112,20 @@
       <usages-collector id="statistics.vcs.git.usages" />
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="6627" />
+          <entry key="py" value="6634" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.js.language.service.starts" />
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="6627" />
+          <entry key="Python" value="6634" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Backdrop/Backdrop.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="190">
@@ -164,14 +164,14 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Network/PortScanner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="481">
-              <caret line="34" column="54" selection-start-line="34" selection-start-column="54" selection-end-line="34" selection-end-column="54" />
+            <state relative-caret-position="209">
+              <caret line="41" column="28" selection-start-line="41" selection-start-column="28" selection-end-line="41" selection-end-column="28" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
-                <marker date="1538121396167" expanded="true" signature="84:90" ph="..." />
+                <marker date="1538121825329" expanded="true" signature="84:90" ph="..." />
               </folding>
             </state>
           </provider>
@@ -306,10 +306,10 @@
         <option value="$PROJECT_DIR$/camera/Camera.py" />
         <option value="$PROJECT_DIR$/tess/tesseract.py" />
         <option value="$PROJECT_DIR$/Helper/ProcessHelper.py" />
-        <option value="$PROJECT_DIR$/Network/PortScanner.py" />
         <option value="$PROJECT_DIR$/Backdrop/BackdropHandler.py" />
         <option value="$PROJECT_DIR$/run.py" />
         <option value="$PROJECT_DIR$/Backdrop/Backdrop.py" />
+        <option value="$PROJECT_DIR$/Network/PortScanner.py" />
       </list>
     </option>
   </component>
@@ -320,8 +320,8 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="197" />
-    <option name="y" value="175" />
+    <option name="x" value="470" />
+    <option name="y" value="158" />
     <option name="width" value="1239" />
     <option name="height" value="812" />
   </component>
@@ -635,7 +635,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="197" y="175" width="1239" height="812" extended-state="0" />
+    <frame x="470" y="158" width="1239" height="812" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4935065" visible="true" weight="0.2925398" />
@@ -903,17 +903,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Network/PortScanner.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="481">
-          <caret line="34" column="54" selection-start-line="34" selection-start-column="54" selection-end-line="34" selection-end-column="54" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-            <marker date="1538121396167" expanded="true" signature="84:90" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Backdrop/BackdropHandler.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="228">
@@ -950,6 +939,17 @@
           <caret line="16" column="27" selection-start-line="16" selection-start-column="27" selection-end-line="16" selection-end-column="27" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Network/PortScanner.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="41" column="28" selection-start-line="41" selection-start-column="28" selection-end-line="41" selection-end-column="28" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+            <marker date="1538121825329" expanded="true" signature="84:90" ph="..." />
           </folding>
         </state>
       </provider>
