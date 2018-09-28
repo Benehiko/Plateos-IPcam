@@ -4,7 +4,6 @@ import pathlib
 from multiprocessing import Process
 from os import listdir
 from os.path import isfile, join
-from threading import Thread
 from time import sleep
 
 from Caching.CacheHandler import CacheHandler
@@ -91,10 +90,10 @@ class BackdropHandler:
 
     def upload_dataset(self, data):
         try:
-            url = self.url
-            url = url+"db/addplate"
+            url = self.url+"db/addplate"
             Request.post(data, url)
-        except:
+        except Exception as e:
+            print(e)
             pass
 
     # noinspection PyMethodMayBeStatic
@@ -127,8 +126,7 @@ class BackdropHandler:
     def ping_location(self):
         try:
             if Request.check_connectivity():
-                url = self.url
-                url = url+"db/addlocation"
+                url = self.url+"db/addlocation"
                 Request.ping_location(url)
         except:
             pass

@@ -40,7 +40,7 @@ class Request:
     @staticmethod
     def check_connectivity():
         try:
-            urlopen('http://google.com', timeout=1)
+            urlopen('http://google.com', timeout=3)
             return True
         except Exception as e:
             print("Testing google ping", e)
