@@ -20,14 +20,11 @@ class Camera:
 
     def start(self):
         print("Starting camera", self.ip)
-        counter = 0
         while True:
             try:
                 print(self.url)
                 reader = urlopen(self.url, timeout=5)
                 if reader.status == 200:
-                    if counter > 2:
-                        counter = 0
                         b = bytearray(reader.read())
                         npy = np.array(b, dtype=np.uint8)
                         img = cv2.imdecode(npy, -1)
@@ -38,13 +35,7 @@ class Camera:
                                 if len(cropped_array) > 0:
                                     t = Thread(self.tess.multi(cropped_array))
                                     t.start()
-                                    t.join()
+                                    t.join(timeout=10)
 
-                    counter += 1
-
-            except URLError as e:
-                print(e)
-                pass
-
-            finally:
+            except:
                 pass

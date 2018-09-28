@@ -1,3 +1,5 @@
+import asyncio
+
 import cv2
 import numpy as np
 import multiprocessing as mp
@@ -131,15 +133,31 @@ class ContourHandler:
 
         box_corrected = []
         angles = []
-        pool = mp.Pool(processes=len(cnt_cache))
-        [pool.apply_async(ContourHandler.contour_helper(cnt, rect_arr, box_corrected, angles)) for cnt in cnt_cache]
-        pool.close()
-        pool.join()
+
+        event_loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(event_loop)
+        pool = [asyncio.ensure_future(ContourHandler.contour_helper(cnt), loop=event_loop) for cnt in cnt_cache]
+
+        resultset = event_loop.run_until_complete(asyncio.gather(*pool))
+        for r in resultset:
+            rect, box, ang = r
+            rect_arr.append(rect)
+            box_corrected.append(box)
+            angles.append(ang)
+            
+        rect_arr = [x for x in rect_arr if x is not None]
+        box_corrected = [x for x in box_corrected if x is not None]
+        angles = [x for x in angles if x is not None]
+        event_loop.close()
+        # pool = mp.Pool(processes=len(cnt_cache))
+        # [pool.apply_async(ContourHandler.contour_helper(cnt, rect_arr, box_corrected, angles)) for cnt in cnt_cache]
+        # pool.close()
+        # pool.join()
 
         return rect_arr, box_corrected, angles
 
     @staticmethod
-    def contour_helper(cnt, rect_arr, box_corrected, angles):
+    async def contour_helper(cnt):
         approx = ContourHandler.get_approx(cnt)
         rect = ContourHandler.get_rotated_rect(approx)
         angle = ContourHandler.in_correct_angle(rect)
@@ -147,12 +165,11 @@ class ContourHandler:
             box = cv2.boxPoints(rect)
             box = np.int0(box)
             if ContourHandler.correct_ratio(rect):
-                rect_arr.append(rect)
-                box_corrected.append(box)
                 ((x, y), __, __) = rect
                 x = int(x)
                 y = int(y)
-                angles.append((angle, (x, y)))
+                return rect, box, (angle, (x, y))
+        return None, None, None
         #return rect_arr, box_corrected, angles
 
     @staticmethod
