@@ -1,6 +1,7 @@
 import asyncio
 import datetime
 import pathlib
+from multiprocessing import Process
 from os import listdir
 from os.path import isfile, join
 from threading import Thread
@@ -57,7 +58,7 @@ class BackdropHandler:
     def add(self, a):
         try:
             tmp = Camera(username=self.username, password=self.password, ip=a, tess=self.tess)
-            p = Thread(target=tmp.start)
+            p = Process(target=tmp.start)
             self.active.add((a, p))
             p.start()
         except Exception as e:

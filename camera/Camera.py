@@ -1,5 +1,6 @@
 import random
 import string
+from threading import Thread
 from urllib.request import urlopen
 
 import cv2
@@ -33,7 +34,9 @@ class Camera:
 
                             if cropped_array is not None:
                                 if len(cropped_array) > 0:
-                                    self.tess.multi(cropped_array)
+                                    t = Thread(self.tess.multi(cropped_array))
+                                    t.start()
+                                    t.join()
 
                     counter += 1
 
