@@ -1,5 +1,6 @@
 import random
 import string
+import sys
 from urllib.request import urlopen
 
 import cv2
