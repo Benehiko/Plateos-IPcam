@@ -12,12 +12,12 @@ from Helper.ProcessHelper import ProcessHelper
 
 class Camera:
 
-    def __init__(self, ip, username, password, tess):
+    def __init__(self, ip, username, password, tess, backdrop):
         randomcmd = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
         self.url = "http://" + ip + "/cgi-bin/api.cgi?cmd=Snap&channel=0&rs=" + randomcmd + "&user=" + username + "&password=" + password
         self.tess = tess
         self.ip = ip
-
+        self.backdrop = backdrop
 
     def start(self):
         print("Starting camera", self.ip)
