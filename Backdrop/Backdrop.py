@@ -4,6 +4,7 @@ from os import listdir
 from os.path import isfile, join
 from threading import Thread
 
+from Backdrop.BackdropHandler import BackdropHandler
 from Caching.CacheHandler import CacheHandler
 from Network.PortScanner import PortScanner
 from Network.requestor import Request
@@ -25,21 +26,10 @@ class Backdrop:
         self.cached = []
         self.url = url
         self.last_upload = None
+        self.backdrophandler = BackdropHandler(self, scanner=PortScanner(), iprange=iprange)
 
     async def scan(self):
-        while True:
-            print("Current Active cameras", self.active)
-            tmp = self.scanner.scan(self.iprange)
-            active_ip = [x[0] for x in self.active]
-            for x in tmp:
-                if x not in active_ip:
-                    self.add(x)
-            await asyncio.sleep(60)
-            self.check_alive()
-            self.cleanup_cache()
-            self.offline_check()
-            self.ping_location()
-            self.cache()
+        Thread(target=self.backdrophandler.start()).start()
 
     def add(self, a):
         try:
@@ -121,3 +111,6 @@ class Backdrop:
         except:
             pass
 
+
+    def getActive(self):
+        return self.active
