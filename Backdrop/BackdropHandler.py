@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import pathlib
 from os import listdir
@@ -24,12 +25,16 @@ class BackdropHandler:
         self.active = set()
         self.url = url
 
+
     def start(self):
         count = 0
         while True:
+            event_loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(event_loop)
             active = self.active
             print("Current Active cameras", active)
-            tmp = self.scanner.scan(self.iprange)
+            tmp = self.scanner.scan(self.iprange, event_loop=event_loop)
+            event_loop.close()
             active_ip = [x[0] for x in active]
             for x in tmp:
                 if x not in active_ip:
