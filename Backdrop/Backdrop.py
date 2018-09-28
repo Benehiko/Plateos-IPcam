@@ -1,8 +1,8 @@
+from multiprocessing import Process
 from threading import Thread
 
 from Backdrop.BackdropHandler import BackdropHandler
 from Network.PortScanner import PortScanner
-from tess.tesseract import Tess
 
 
 # noinspection PyBroadException
@@ -13,5 +13,10 @@ class Backdrop:
 
     async def scan(self):
         while True:
-            t = Thread(target=self.backdrophandler.start()).start()
-            t.join()
+            try:
+                p = Process(target=self.backdrophandler.start())
+                p.start()
+                p.join()
+            except Exception as e:
+                print(e)
+                pass

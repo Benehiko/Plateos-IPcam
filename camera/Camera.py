@@ -1,7 +1,5 @@
 import random
 import string
-import sys
-from time import sleep
 from urllib.request import urlopen
 
 import cv2
