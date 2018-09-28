@@ -1,6 +1,7 @@
 import random
 import string
 import sys
+from time import sleep
 from urllib.request import urlopen
 
 import cv2
@@ -42,4 +43,4 @@ class Camera:
                 pass
 
             finally:
-                pass
+                sleep(2)
