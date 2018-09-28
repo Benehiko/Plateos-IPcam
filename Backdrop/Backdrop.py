@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import pathlib
 import sys
 from os import listdir
 from os.path import isfile, join
@@ -44,6 +45,7 @@ class Backdrop:
     def callback_tess(self, plate):
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2], "Date:", plate[3])
         self.cached.append(plate)
+        return
 
     def cache(self):
         try:
@@ -96,6 +98,7 @@ class Backdrop:
     def offline_check(self):
         if Request.check_connectivity():
             try:
+                pathlib.Path("offline").mkdir(parents=False, exist_ok=True)
                 files = [f.replace('.npy.gz', '') for f in listdir("offline") if isfile(join("offline", f))]
                 if len(files) > 0:
                     for x in files:
