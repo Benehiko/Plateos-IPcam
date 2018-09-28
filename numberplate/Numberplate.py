@@ -231,6 +231,8 @@ class Numberplate:
         Returns The best plate (confidence level highest)
         Returns the remainder that was not similar
     """
+
+    # noinspection PyShadowingNames
     @staticmethod
     def split_plates(plates, highest):
         remainder = []

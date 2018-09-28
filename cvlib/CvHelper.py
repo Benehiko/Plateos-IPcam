@@ -164,10 +164,8 @@ class CvHelper:
             b. If a pixel gradient value is below the lower threshold, then it is rejected.
             c. If the pixel gradient is between the two thresholds, then it will be accepted only if it is connected to a pixel that is above the upper threshold.
         Canny recommended a upper:lower ratio between 2:1 and 3:1.
-        :param mat_src: Source image to apply mask
         :param mat_grey: Grey image
         :param ratio: ratio should either be 2 or 3
-        :param mat:
         :param lower_threshold: between 0 and 255
         :return:
         """
