@@ -39,6 +39,7 @@ class ProcessHelper:
             potential_plates = loop.run_until_complete(asyncio.gather(*pool))
 
             potential_plates = [item[0] for item in potential_plates if len(item) > 0]
+            loop.close()
             #drawn = CvHelper.draw_boxes(frame, boxes, CvEnums.COLOUR_GREEN, 5)
 
             # pool = mp.Pool(processes=len(rectangles))
@@ -52,12 +53,17 @@ class ProcessHelper:
             #CvHelper.display("Drawn", drawn, size=(640, 480))
 
             if len(potential_plates) > 0:
-                pool = mp.Pool(processes=len(potential_plates))
-                out = [pool.apply_async(ImageUtil.process_for_tess, args=(tmp, p)) for p in potential_plates]
-                if out is not None:
-                    results = [p.get() for p in out]
-                    results = [item for item in results if item is not None]
-                    pool.close()
-                    pool.join()
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                pool = [asyncio.ensure_future(ImageUtil.process_for_tess(tmp, p), loop=loop) for p in potential_plates]
+                results = loop.run_until_complete(asyncio.gather(*pool))
+                loop.close()
+                # pool = mp.Pool(processes=len(potential_plates))
+                # out = [pool.apply_async(ImageUtil.process_for_tess, args=(tmp, p)) for p in potential_plates]
+                # if out is not None:
+                #     results = [p.get() for p in out]
+                #     results = [item for item in results if item is not None]
+                #     pool.close()
+                #     pool.join()
 
         return results
