@@ -41,18 +41,17 @@ class BackdropHandler:
                     self.add(x)
             sleep(60)
             self.check_alive()
+            self.cache()
             if count > 60:
                 self.cleanup_cache()
                 self.offline_check()
                 count = 0
                 self.ping_location()
-            self.cache()
             count += 1
 
     def callback_tess(self, plate):
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2], "Date:", plate[3])
         self.cached.append(plate)
-        print('Cached List Raw', self.cached)
 
     def add(self, a):
         try:
@@ -85,7 +84,6 @@ class BackdropHandler:
         for process in tmp:
             try:
                 if process[1].is_alive() is False:
-                    print("Process died")
                     self.active.discard(process)
             except Exception as e:
                 print("Tried to remove process", e)
