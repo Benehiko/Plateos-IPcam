@@ -65,11 +65,10 @@ class BackdropHandler:
             pass
 
     def cache(self):
-        cached = self.cached
         try:
-            if len(cached) > 0:
+            if len(self.cached) > 2:
                 today = datetime.datetime.now().strftime('%Y-%m-%d %H')
-                cached = Numberplate.improve(cached)
+                cached = Numberplate.improve(self.cached)
                 if cached is not None:
                     if len(cached) > 0:
                         res = CacheHandler.save("cache/", today, cached)

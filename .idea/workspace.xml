@@ -112,13 +112,13 @@
       <usages-collector id="statistics.vcs.git.usages" />
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="7559" />
+          <entry key="py" value="7576" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.js.language.service.starts" />
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="7559" />
+          <entry key="Python" value="7576" />
         </counts>
       </usages-collector>
     </session>
@@ -128,13 +128,13 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Backdrop/BackdropHandler.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="54" column="33" selection-start-line="54" selection-start-column="33" selection-end-line="54" selection-end-column="33" />
+            <state relative-caret-position="191">
+              <caret line="68" column="35" selection-start-line="68" selection-start-column="35" selection-end-line="68" selection-end-column="35" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
-                <marker date="1538128254298" expanded="true" signature="412:413" ph="..." />
-                <marker date="1538128254298" expanded="true" signature="412:414" ph="..." />
-                <marker date="1538128254298" expanded="true" signature="412:418" ph="..." />
+                <marker date="1538128718738" expanded="true" signature="412:413" ph="..." />
+                <marker date="1538128718738" expanded="true" signature="412:414" ph="..." />
+                <marker date="1538128718738" expanded="true" signature="412:418" ph="..." />
               </folding>
             </state>
           </provider>
@@ -143,8 +143,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/numberplate/Numberplate.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="50" column="8" selection-start-line="50" selection-start-column="8" selection-end-line="50" selection-end-column="8" />
+            <state relative-caret-position="156">
+              <caret line="50" column="24" selection-start-line="50" selection-start-column="24" selection-end-line="50" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -314,7 +314,6 @@
         <option value="$PROJECT_DIR$/cvlib/CvTess.py" />
         <option value="$PROJECT_DIR$/cvlib/CvHelper.py" />
         <option value="$PROJECT_DIR$/Network/requestor.py" />
-        <option value="$PROJECT_DIR$/numberplate/Numberplate.py" />
         <option value="$PROJECT_DIR$/Caching/CacheHandler.py" />
         <option value="$PROJECT_DIR$/../Scratch Folder/VideoProcess.py" />
         <option value="$PROJECT_DIR$/run.py" />
@@ -325,6 +324,7 @@
         <option value="$PROJECT_DIR$/cvlib/ImageUtil.py" />
         <option value="$PROJECT_DIR$/tess/tesseract.py" />
         <option value="$PROJECT_DIR$/camera/Camera.py" />
+        <option value="$PROJECT_DIR$/numberplate/Numberplate.py" />
         <option value="$PROJECT_DIR$/Backdrop/BackdropHandler.py" />
       </list>
     </option>
@@ -335,9 +335,9 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="681" />
-    <option name="y" value="268" />
+    <option name="y" value="27" />
     <option name="width" value="1239" />
     <option name="height" value="812" />
   </component>
@@ -651,16 +651,16 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="681" y="268" width="1239" height="812" extended-state="0" />
+    <frame x="67" y="27" width="1853" height="1053" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4935065" visible="true" weight="0.2925398" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4935065" visible="true" weight="0.1931378" />
       <window_info id="Structure" order="1" sideWeight="0.5064935" side_tool="true" weight="0.1931378" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Inspection Results" order="0" weight="0.32889965" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" weight="0.26666668" />
-      <window_info active="true" anchor="bottom" id="Run" order="3" visible="true" weight="0.34492755" />
+      <window_info active="true" anchor="bottom" id="Run" order="3" visible="true" weight="0.2556391" />
       <window_info anchor="bottom" id="Debug" order="4" weight="0.396348" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
@@ -952,20 +952,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/numberplate/Numberplate.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="50" column="8" selection-start-line="50" selection-start-column="8" selection-end-line="50" selection-end-column="8" />
+        <state relative-caret-position="156">
+          <caret line="50" column="24" selection-start-line="50" selection-start-column="24" selection-end-line="50" selection-end-column="24" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Backdrop/BackdropHandler.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="54" column="33" selection-start-line="54" selection-start-column="33" selection-end-line="54" selection-end-column="33" />
+        <state relative-caret-position="191">
+          <caret line="68" column="35" selection-start-line="68" selection-start-column="35" selection-end-line="68" selection-end-column="35" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
-            <marker date="1538128254298" expanded="true" signature="412:413" ph="..." />
-            <marker date="1538128254298" expanded="true" signature="412:414" ph="..." />
-            <marker date="1538128254298" expanded="true" signature="412:418" ph="..." />
+            <marker date="1538128718738" expanded="true" signature="412:413" ph="..." />
+            <marker date="1538128718738" expanded="true" signature="412:414" ph="..." />
+            <marker date="1538128718738" expanded="true" signature="412:418" ph="..." />
           </folding>
         </state>
       </provider>
