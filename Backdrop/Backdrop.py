@@ -34,7 +34,7 @@ class Backdrop:
 
     def add(self, a):
         try:
-            tmp = Camera(username=self.username, password=self.password, ip=a, tess=self.tess, backdrop=self)
+            tmp = Camera(username=self.username, password=self.password, ip=a, tess=self.tess)
             p = Thread(target=tmp.start)
             self.active.add((a, p))
             p.start()
