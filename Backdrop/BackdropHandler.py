@@ -52,6 +52,7 @@ class BackdropHandler:
     def callback_tess(self, plate):
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2], "Date:", plate[3])
         self.cached.append(plate)
+        print('Cached List Raw', self.cached)
 
     def add(self, a):
         try:
@@ -68,6 +69,7 @@ class BackdropHandler:
             if len(self.cached) > 2:
                 today = datetime.datetime.now().strftime('%Y-%m-%d %H')
                 cached = Numberplate.improve(self.cached)
+                print('Cached raw', cached)
                 if cached is not None:
                     if len(cached) > 0:
                         res = CacheHandler.save("cache/", today, cached)
