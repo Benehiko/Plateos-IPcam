@@ -1,7 +1,7 @@
 import random
 import string
 from threading import Thread
-from urllib.error import URLError
+from time import sleep
 from urllib.request import urlopen
 
 import cv2
@@ -34,7 +34,8 @@ class Camera:
                                 if len(cropped_array) > 0:
                                     t = Thread(self.tess.multi(cropped_array))
                                     t.start()
-                                    t.join(timeout=10)
+                                    t.join()
 
             except:
+                sleep(1)
                 pass
