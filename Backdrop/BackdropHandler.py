@@ -51,7 +51,8 @@ class BackdropHandler:
             p = Thread(target=tmp.start)
             self.active.add((a, p))
             p.start()
-        except:
+        except Exception as e:
+            print(e)
             pass
 
     def cache(self):
