@@ -25,12 +25,9 @@ class ImageUtil:
         cropped = ImageUtil.auto_crop(tmp, rectangle)
         grey = CvHelper.greyscale(cropped)
         deskew = ImageUtil.deskew(grey)
-        umat = CvHelper.get_umat(deskew)
-        bright = CvHelper.adjust_gamma(umat, 1.5)
-        dilate = CvHelper.dilate(bright, kernel_size=3, iterations=0)
-        morph = CvHelper.morph(dilate, gradient_type=CvEnums.MORPH_OPEN, kernel_size=3, kernel_shape=CvEnums.K_ELLIPSE)
-        otsu = CvHelper.get_mat(CvHelper.otsu_binary(morph, 240))
-        return otsu
+        binary = CvHelper.otsu_binary(deskew, 240)
+        inv = CvHelper.inverse(binary)
+        return inv
 
     @staticmethod
     def get_sub_images(image, rectangles):

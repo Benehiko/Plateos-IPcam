@@ -75,19 +75,21 @@ class CvHelper:
         return cv2.threshold(mat, thresh, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]  # 1
 
     @staticmethod
-    def dilate(mat, kernel_size=5, iterations=1):
+    def dilate(mat, kernel_shape=CvEnums.K_RECTANGLE, kernel_size=5, iterations=1):
         """
         It is just opposite of erosion. Here, a pixel element is ‘1’ if atleast one pixel under the kernel is ‘1’. So
         it increases the white region in the image or size of foreground object increases. Normally, in cases like
         noise removal, erosion is followed by dilation. Because, erosion removes white noises, but it also shrinks
         our object. So we dilate it. Since noise is gone, they won’t come back, but our object area increases. It is
         also useful in joining broken parts of an object.
+        :param kernel_shape:
         :param mat:
         :param kernel_size:
         :param iterations:
         :return:
         """
-        kernel = np.ones((kernel_size, kernel_size), np.uint8)
+        kernel = cv2.getStructuringElement(kernel_shape.value, (kernel_size, kernel_size))
+        # kernel = np.ones((kernel_size, kernel_size), np.uint8)
         dilate = cv2.dilate(mat, kernel, iterations=iterations)
         return dilate
 
@@ -298,6 +300,10 @@ class CvHelper:
         if mask is not None:
             return cv2.bitwise_and(mat, mat, mask=mask)
         return cv2.bitwise_and(mat, mat)
+
+    @staticmethod
+    def bitwise_or(mat, mask):
+        return np.bitwise_or(mat, mask)
 
     @staticmethod
     def display(window_name, mat, size=(None, None)):

@@ -57,7 +57,8 @@ class Numberplate:
                 if highest is not None:
                     result, remainder = Numberplate.split_plates(tmp, highest)
                     if result is not None:
-                        out.append(result)
+                        if (0.6 > result[2] > 0.56) or (0.8 > result[2] > 0.66) or result[2] > 0.8:
+                            out.append(result)
                     if len(remainder) < 1:
                         break
                     else:

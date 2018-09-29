@@ -40,7 +40,7 @@ class ProcessHelper:
 
             potential_plates = [item[0] for item in potential_plates if len(item) > 0]
             loop.close()
-            #drawn = CvHelper.draw_boxes(frame, boxes, CvEnums.COLOUR_GREEN, 5)
+            drawn = CvHelper.draw_boxes(frame, boxes, CvEnums.COLOUR_GREEN, 5)
 
             # pool = mp.Pool(processes=len(rectangles))
             # output = [pool.apply_async(ImageUtil.char_roi, args=(tmp, r)) for r in rectangles]
@@ -50,7 +50,7 @@ class ProcessHelper:
             #     pool.close()
             #     pool.join()
 
-            #CvHelper.display("Drawn", drawn, size=(640, 480))
+            CvHelper.display("Drawn", drawn, size=(640, 480))
 
             if len(potential_plates) > 0:
                 loop = asyncio.new_event_loop()
