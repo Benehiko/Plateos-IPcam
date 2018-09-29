@@ -9,6 +9,7 @@ from cvlib.ImageUtil import ImageUtil
 from numberplate.Numberplate import Numberplate
 import asyncio
 
+
 class Tess:
 
     def __init__(self, backdrop):
