@@ -1,4 +1,4 @@
-import multiprocessing as mp
+import asyncio
 from datetime import datetime
 from tesserocr import PyTessBaseAPI, PSM, OEM
 
@@ -7,7 +7,6 @@ from PIL import Image
 
 from cvlib.ImageUtil import ImageUtil
 from numberplate.Numberplate import Numberplate
-import asyncio
 
 
 class Tess:
@@ -48,7 +47,3 @@ class Tess:
                 pool = [asyncio.ensure_future(self.runner(i)) for i in images]
                 event_loop.run_until_complete(asyncio.gather(*pool))
                 event_loop.close()
-                # pool = mp.Pool(processes=len(images))
-                # [pool.apply_async(self.runner(i)) for i in images]
-                # pool.close()
-                # pool.join()

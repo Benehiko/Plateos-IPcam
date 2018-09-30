@@ -1,6 +1,4 @@
 import math
-import pathlib
-from datetime import datetime
 
 import numpy as np
 
@@ -19,43 +17,10 @@ class ImageUtil:
         return decoded
 
     @staticmethod
-    async def process_for_tess(mat, data):
-        tmp = mat.copy()
-        rectangle, chars = data
-        cropped = ImageUtil.auto_crop(tmp, rectangle)
-        grey = CvHelper.greyscale(cropped)
-        deskew = ImageUtil.deskew(grey)
-        binary = CvHelper.otsu_binary(deskew, 240)
-        inv = CvHelper.inverse(binary)
-        return inv
+    async def process_for_tess(data):
+        result = CvHelper.inverse(data.copy())
+        return result
 
-    @staticmethod
-    def get_sub_images(image, rectangles):
-        images = []
-        tmp = image.copy()
-        for rectangle in rectangles:
-            cropped = ImageUtil.auto_crop(tmp, rectangle)
-            if cropped.shape[1] < 640 or cropped.shape[0] < 480:
-                cropped = CvHelper.resize(cropped, new_width=640, new_height=480)
-            images.append(cropped)
-        return images
-
-    # noinspection PyBroadException
-    @staticmethod
-    def save(img, path):
-        pathlib.Path(path).mkdir(parents=True, exist_ok=True)
-        if img is not None:
-            try:
-                tmp = ImageUtil.compress(img)
-                tmp = CvHelper.bgr2rgb(tmp)
-                filename = datetime.now().strftime("%Y-%m-%d-%H_%M_%S")
-                if tmp is not None:
-                    d = path + "/" + filename + ".jpg"
-                    CvHelper.write_mat(tmp, d)
-                else:
-                    print("Could not save none type")
-            except Exception:
-                pass
 
     """
     Too Experimental for now
@@ -83,36 +48,6 @@ class ImageUtil:
 
         return results
         """
-    @staticmethod
-    def process_for_shape_detection(mat):
-        tmp = mat.copy()
-        # Resize image for faster processing
-        resized = CvHelper.resize(tmp, 1080)
-        grey = CvHelper.greyscale(resized)
-
-        # Inverse the colours and make foreground pixels white and background black
-        inv = CvHelper.inverse(grey)
-        thresh = CvHelper.otsu_binary(inv)
-        erosion = CvHelper.erode(thresh)
-
-        # Resize image back to original size to keep ratio
-        result = CvHelper.resize(erosion, mat.shape[1])
-        return result
-
-    @staticmethod
-    def process_for_shape_detection_old(mat):
-        tmp = mat.copy()
-        resized = CvHelper.resize(tmp, new_width=int(mat.shape[1]/4), new_height=int(mat.shape[0]/4))
-        grey = CvHelper.greyscale(resized)
-        thresh = CvHelper.binarise(grey, 240)
-        # Convert all white pixels to black
-        grey[thresh == 255] = 0
-        # Remove noise
-        erosion = CvHelper.erode(grey)
-        dilate = CvHelper.dilate(erosion)
-        thresh = CvHelper.adaptive_thresholding(dilate)
-        result = CvHelper.resize(thresh, new_width=mat.shape[1], new_height=mat.shape[0])
-        return result
 
     @staticmethod
     def process_for_shape_detection_bright_backlight(image):
@@ -123,36 +58,6 @@ class ImageUtil:
         thresh = CvHelper.get_mat(CvHelper.adaptive_thresholding(blur, CvEnums.THRESH_MEAN))
         otsu = CvHelper.binarise(thresh, 127)
         return otsu
-
-    @staticmethod
-    def process_shape_new(image):
-        tmp = image.copy()
-        resize = CvHelper.resize(tmp, new_width=int(image.shape[1]/2), new_height=int(image.shape[0]/2))
-        grey = CvHelper.greyscale(resize)
-        equ = CvHelper.equalise_hist(grey, by_tile=False, tile_size=20)
-        lap = CvHelper.laplacian(equ)
-        dilate = CvHelper.dilate(lap, 3, 1)
-        morph = CvHelper.morph(dilate, CvEnums.MORPH_GRADIENT, CvEnums.K_ELLIPSE, kernel_size=3)
-        thresh = CvHelper.otsu_binary(morph, 240)
-        canny = CvHelper.canny_thresholding(thresh)
-        resize = CvHelper.resize(canny, new_width=image.shape[1], new_height=image.shape[0] / 4)
-        CvHelper.display("Process", resize)
-        return resize
-
-    @staticmethod
-    def remove_shadows(frames):
-        fgbg = CvHelper.create_background_subtractor_mog2()
-        fgbg.setDetectShadows(True)
-
-        shadowless = []
-        for frame in frames:
-            tmp = fgbg.apply(frame)
-
-            #tmp[tmp == 127] = 0
-            shadowless.append(fgbg.getBackgroundImage())
-
-        out = None
-        return shadowless, out
 
     @staticmethod
     def auto_crop(image_source, rectangle):
@@ -190,7 +95,7 @@ class ImageUtil:
         # are greater than zero, then use these coordinates to
         # compute a rotated bounding box that contains all
         # coordinates
-        inverse = CvHelper.inverse(mat)
+        inverse = CvHelper.inverse(mat.copy())
         thresh = CvHelper.otsu_binary(inverse)
 
         coords = np.column_stack(np.where(thresh > 0))
@@ -242,22 +147,19 @@ class ImageUtil:
 
     @staticmethod
     async def char_roi(mat, rectangle):
-        results = []
         tmp = mat.copy()
         potential_plate = ImageUtil.auto_crop(tmp, rectangle)
-        umat = CvHelper.get_umat(potential_plate.copy())
-        greyscale = CvHelper.greyscale(umat)
-        bright = CvHelper.adjust_gamma(greyscale, 2.0)
-        dilate = CvHelper.dilate(bright, kernel_size=3, iterations=0)
-        morph = CvHelper.morph(dilate, gradient_type=CvEnums.MORPH_OPEN, kernel_size=3, kernel_shape=CvEnums.K_ELLIPSE)
-        otsu = CvHelper.get_mat(CvHelper.otsu_binary(morph, 240))
-        contours, __ = ContourHandler.find_contours(otsu, ret_mode=CvEnums.RETR_LIST, approx_method=CvEnums.CHAIN_APPROX_SIMPLE)
+        greyscale = CvHelper.greyscale(potential_plate)
+        deskew = CvHelper.get_umat(ImageUtil.deskew(greyscale))
+        otsu = CvHelper.get_mat(CvHelper.otsu_binary(deskew, 240))
+        contours, __ = ContourHandler.find_contours(otsu.copy(), ret_mode=CvEnums.RETR_LIST, approx_method=CvEnums.CHAIN_APPROX_SIMPLE)
         if len(contours) > 0:
             height, width, __ = potential_plate.shape
             roi, boxs = ContourHandler.get_characters_roi(contours, mat_width=width, mat_height=height)
             if 2 <= len(roi) <= 10:
-                results.append((rectangle, roi))
-        return results
+                #results.append((rectangle, roi))
+                return otsu
+        return None
 
     @staticmethod
     def rotate_image(img, angle):
