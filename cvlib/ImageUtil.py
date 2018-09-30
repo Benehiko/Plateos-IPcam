@@ -18,7 +18,11 @@ class ImageUtil:
 
     @staticmethod
     async def process_for_tess(data):
-        result = CvHelper.inverse(data.copy())
+        data = data.copy()
+        #(h, w) = data.shape[:2]
+        # if h < 760 or w < 1296:
+        #     data = CvHelper.resize(data, new_width=1296, new_height=760)
+        result = CvHelper.inverse(data)
         return result
 
 
@@ -155,7 +159,7 @@ class ImageUtil:
         contours, __ = ContourHandler.find_contours(otsu.copy(), ret_mode=CvEnums.RETR_LIST, approx_method=CvEnums.CHAIN_APPROX_SIMPLE)
         if len(contours) > 0:
             height, width, __ = potential_plate.shape
-            roi, boxs = ContourHandler.get_characters_roi(contours, mat_width=width, mat_height=height)
+            roi, boxs = ContourHandler().get_characters_roi(contours, mat_width=width, mat_height=height)
             if 2 <= len(roi) <= 10:
                 #results.append((rectangle, roi))
                 return otsu
