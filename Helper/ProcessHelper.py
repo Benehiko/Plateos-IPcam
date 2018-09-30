@@ -24,9 +24,9 @@ class ProcessHelper:
         f = ImageUtil.process_for_shape_detection_bright_backlight(tmp)
         contours, __ = ContourHandler.find_contours(f, ret_mode=CvEnums.RETR_LIST)
         height, width, __ = tmp.shape
-        rectangles, boxes, angles = ContourHandler.get_rectangles(contours, mat_width=width, mat_height=height,
-                                                                  area_bounds=(0.038, 0.5),
-                                                                  min_point=(0.2, 0.2), max_point=(5, 5))
+        rectangles, boxes, angles = ContourHandler().get_rectangles(contours, mat_width=width, mat_height=height,
+                                                                    area_bounds=(0.038, 0.5),
+                                                                    min_point=(0.2, 0.2), max_point=(5, 5))
 
         if len(rectangles) > 0:
             loop = asyncio.new_event_loop()
@@ -39,8 +39,8 @@ class ProcessHelper:
             potential_plates = [item for item in potential_plates if item is not None]
             loop.close()
 
-            #drawn = CvHelper.draw_boxes(frame, boxes, CvEnums.COLOUR_GREEN, 5)
-            #CvHelper.display("Drawn", drawn, size=(640, 480))
+            # drawn = CvHelper.draw_boxes(frame, boxes, CvEnums.COLOUR_GREEN, 5)
+            # CvHelper.display("Drawn", drawn, size=(640, 480))
 
             if len(potential_plates) > 0:
                 loop = asyncio.new_event_loop()

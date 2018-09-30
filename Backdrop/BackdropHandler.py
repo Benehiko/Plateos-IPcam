@@ -52,6 +52,7 @@ class BackdropHandler:
     def callback_tess(self, plate):
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2], "Date:", plate[3])
         self.cached.append(plate)
+        return
 
     def add(self, a):
         try:
