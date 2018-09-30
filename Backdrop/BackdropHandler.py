@@ -68,13 +68,12 @@ class BackdropHandler:
             if len(self.cached) > 2:
                 today = datetime.datetime.now().strftime('%Y-%m-%d %H')
                 cached = Numberplate.improve(self.cached)
-                print('Cached raw', cached)
                 if cached is not None:
                     if len(cached) > 0:
                         res = CacheHandler.save("cache/", today, cached)
                         if res is not None:
                             self.upload_dataset(res)
-                self.cached = []
+                        self.cached = []
         except Exception as e:
             print(e)
             pass
@@ -100,11 +99,12 @@ class BackdropHandler:
     def cleanup_cache(self):
         try:
             files = [f.replace('.npy.gz', '') for f in listdir("cache") if isfile(join("cache", f))]
-            file_last_date = datetime.datetime.strptime(max(files), "%Y-%m-%d %H")
-            now = datetime.datetime.now()
-            diff = now - file_last_date
-            if datetime.timedelta(days=90) < diff:
-                CacheHandler.remove("cache/", file_last_date.strftime("%Y-%m-%d %H"))
+            if len(files) > 0:
+                file_last_date = datetime.datetime.strptime(max(files), "%Y-%m-%d %H")
+                now = datetime.datetime.now()
+                diff = now - file_last_date
+                if datetime.timedelta(days=90) < diff:
+                    CacheHandler.remove("cache/", file_last_date.strftime("%Y-%m-%d %H"))
         except Exception as e:
             print(e)
             pass

@@ -286,8 +286,7 @@ class CvHelper:
         :param mat: greyscale image or binary.
         :return:
         """
-        tmp = mat.copy()
-        return cv2.bitwise_not(tmp, tmp)
+        return cv2.bitwise_not(mat, mat)
 
     @staticmethod
     def bitwise_and(mat, mask=None):
