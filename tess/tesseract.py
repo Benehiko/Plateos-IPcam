@@ -31,14 +31,15 @@ class Tess:
             if not isinstance(nparray, list):
                 image = Image.fromarray(np.uint8(nparray))
                 temp = BytesIO()
-                image.save(temp, "PNG", dpi=(300, 300))
+                image.save(temp, "JPEG", dpi=(600, 600))
                 temp.seek(0)
                 image = Image.open(temp)
                 self.t.SetImage(image)
                 raw_text = self.t.GetUTF8Text()
+
                 tess_confidence = self.t.AllWordConfidences()
                 if any(item >= 70 for item in tess_confidence):
-                    text = Numberplate.sanitise(raw_text) #self.t.GetUTF8Text())
+                    text = Numberplate.sanitise(raw_text)
                     plate_type, confidence = Numberplate.validate(text, use_provinces=True)
                     if plate_type is not None and confidence > 0:
                         image = ImageUtil.compress(nparray, max_w=200)

@@ -8,6 +8,10 @@ from cvlib.CvEnums import CvEnums
 class CvHelper:
 
     @staticmethod
+    def blend_mat(mat, mat2, alpha=1.0, beta=0.0, gamma=1.0):
+        return cv2.addWeighted(src1=mat, alpha=alpha, src2=mat2, beta=beta, gamma=gamma)
+
+    @staticmethod
     def erode(mat, kernel_shape=CvEnums.K_ELLIPSE, kernel_size=5, iterations=1):
         """
         https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_morphological_ops/py_morphological_ops.html
@@ -107,14 +111,14 @@ class CvHelper:
         return np.uint8(abs_mat)
 
     @staticmethod
-    def laplacian(mat):
+    def laplacian(mat, kernel_size=11):
         """
         https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_gradients/py_gradients.html
         :param mat: Needs to be source image
         :return:
         """
 
-        laplacian = cv2.Laplacian(mat, cv2.CV_64F)
+        laplacian = cv2.Laplacian(mat, cv2.CV_8U, ksize=kernel_size)
         abs_mat = np.absolute(laplacian)
         return np.uint8(abs_mat)
 

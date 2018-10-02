@@ -1,3 +1,4 @@
+import datetime
 import math
 
 import numpy as np
@@ -22,6 +23,7 @@ class ImageUtil:
         #(h, w) = data.shape[:2]
         # if h < 760 or w < 1296:
         #     data = CvHelper.resize(data, new_width=1296, new_height=760)
+        #darken = CvHelper.adjust_gamma(data, 2.5)
         result = CvHelper.inverse(data)
         return result
 
@@ -155,12 +157,17 @@ class ImageUtil:
         potential_plate = ImageUtil.auto_crop(tmp, rectangle)
         greyscale = CvHelper.greyscale(potential_plate)
         deskew = CvHelper.get_umat(ImageUtil.deskew(greyscale))
+        now = datetime.datetime.now().strftime('%H')
+        if '19' > now < '06':
+            deskew = CvHelper.adjust_gamma(deskew, gamma=2.5)
         otsu = CvHelper.get_mat(CvHelper.otsu_binary(deskew, 240))
-        contours, __ = ContourHandler.find_contours(otsu.copy(), ret_mode=CvEnums.RETR_LIST, approx_method=CvEnums.CHAIN_APPROX_SIMPLE)
+        canny = CvHelper.canny_thresholding(otsu.copy())
+        contours, __ = ContourHandler.find_contours(canny.copy(), ret_mode=CvEnums.RETR_LIST, approx_method=CvEnums.CHAIN_APPROX_SIMPLE)
+
         if len(contours) > 0:
             height, width, __ = potential_plate.shape
             roi, boxs = ContourHandler().get_characters_roi(contours, mat_width=width, mat_height=height)
-            if 2 <= len(roi) <= 10:
+            if 2 <= len(roi) <= 12:
                 #results.append((rectangle, roi))
                 return otsu
         return None
