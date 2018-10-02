@@ -13,7 +13,7 @@ class Tess:
 
     def __init__(self, backdrop):
         # noinspection PyArgumentList,PyArgumentList
-        self.t = PyTessBaseAPI(psm=PSM.CIRCLE_WORD, oem=OEM.TESSERACT_LSTM_COMBINED)
+        self.t = PyTessBaseAPI(psm=PSM.SINGLE_BLOCK, oem=OEM.TESSERACT_LSTM_COMBINED)
         self.t.SetVariable("load_system_dawg", "false")
         self.t.SetVariable("load_freq_dawg", "false")
         self.t.SetVariable("load_punc_dawg", "false")
@@ -53,7 +53,6 @@ class Tess:
     def multi(self, images):
         if images is not None:
             if len(images) > 0:
-                print("Numberplates found: ", len(images))
                 event_loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(event_loop)
                 pool = [asyncio.ensure_future(self.runner(i)) for i in images]
