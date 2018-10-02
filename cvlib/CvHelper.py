@@ -139,7 +139,7 @@ class CvHelper:
         :param mat: greyscale image
         :return: Histogram
         """
-        return cv2.calcHist([mat], [0], None, [256], [0, 256])
+        return cv2.calcHist(mat, [0, 1], None, [30, 32], [0, 256])
 
     @staticmethod
     def adaptive_thresholding(mat, thresh_type=CvEnums.THRESH_GAUSSIAN):

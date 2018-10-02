@@ -157,9 +157,9 @@ class ImageUtil:
         potential_plate = ImageUtil.auto_crop(tmp, rectangle)
         greyscale = CvHelper.greyscale(potential_plate)
         deskew = CvHelper.get_umat(ImageUtil.deskew(greyscale))
-        now = datetime.datetime.now().strftime('%H')
-        if '19' > now < '06':
-            deskew = CvHelper.adjust_gamma(deskew, gamma=2.5)
+        # now = datetime.datetime.now().strftime('%H')
+        # if '19' > now < '06':
+        #     deskew = CvHelper.adjust_gamma(deskew, gamma=2.5)
         otsu = CvHelper.get_mat(CvHelper.otsu_binary(deskew, 240))
         canny = CvHelper.canny_thresholding(otsu.copy())
         contours, __ = ContourHandler.find_contours(canny.copy(), ret_mode=CvEnums.RETR_LIST, approx_method=CvEnums.CHAIN_APPROX_SIMPLE)
