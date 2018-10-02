@@ -30,10 +30,10 @@ class Tess:
         if nparray is not None:
             if not isinstance(nparray, list):
                 image = Image.fromarray(np.uint8(nparray))
-                temp = BytesIO()
-                image.save(temp, "PNG", dpi=(300, 300))
-                temp.seek(0)
-                image = Image.open(temp)
+                # temp = BytesIO()
+                # image.save(temp, "PNG", dpi=(300, 300))
+                # temp.seek(0)
+                # image = Image.open(temp)
                 self.t.SetImage(image)
                 raw_text = self.t.GetUTF8Text()
 
