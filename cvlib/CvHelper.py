@@ -43,7 +43,7 @@ class CvHelper:
         return morph
 
     @staticmethod
-    def equalise_hist(mat, by_tile=True, tile_size=None):
+    def equalise_hist(mat, by_tile=False, tile_size=None):
         """
         Equalise the brightness of an image
         :param tile_size:

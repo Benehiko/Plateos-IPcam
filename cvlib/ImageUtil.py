@@ -157,7 +157,6 @@ class ImageUtil:
         potential_plate = ImageUtil.auto_crop(tmp, rectangle)
         greyscale = CvHelper.greyscale(potential_plate)
         deskew = CvHelper.get_umat(ImageUtil.deskew(greyscale))
-        #deskew = CvHelper.adjust_gamma(deskew, gamma=2.5)
         # now = datetime.datetime.now().strftime('%H')
         # if '19' > now < '06':
         #     deskew = CvHelper.adjust_gamma(deskew, gamma=2.5)

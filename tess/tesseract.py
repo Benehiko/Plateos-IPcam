@@ -40,7 +40,6 @@ class Tess:
                 tess_confidence = self.t.AllWordConfidences()
                 if any(item >= 70 for item in tess_confidence):
                     text = Numberplate.sanitise(raw_text)
-                    print("Raw output", text)
                     plate_type, confidence = Numberplate.validate(text, use_provinces=True)
                     if plate_type is not None and confidence > 0:
                         image = ImageUtil.compress(nparray, max_w=200)
@@ -54,6 +53,7 @@ class Tess:
     def multi(self, images):
         if images is not None:
             if len(images) > 0:
+                print("Numberplates found: ", len(images))
                 event_loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(event_loop)
                 pool = [asyncio.ensure_future(self.runner(i)) for i in images]
