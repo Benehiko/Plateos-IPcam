@@ -13,7 +13,7 @@ class Tess:
 
     def __init__(self, backdrop):
         # noinspection PyArgumentList,PyArgumentList
-        self.t = PyTessBaseAPI(psm=PSM.CIRCLE_WORD, oem=OEM.LSTM_ONLY)
+        self.t = PyTessBaseAPI(psm=PSM.CIRCLE_WORD, oem=OEM.TESSERACT_LSTM_COMBINED)
         self.t.SetVariable("load_system_dawg", "false")
         self.t.SetVariable("load_freq_dawg", "false")
         self.t.SetVariable("load_punc_dawg", "false")
@@ -31,7 +31,7 @@ class Tess:
             if not isinstance(nparray, list):
                 image = Image.fromarray(np.uint8(nparray))
                 temp = BytesIO()
-                image.save(temp, "JPEG", dpi=(300, 300))
+                image.save(temp, "PNG", dpi=(300, 300))
                 temp.seek(0)
                 image = Image.open(temp)
                 self.t.SetImage(image)
