@@ -13,7 +13,7 @@ class Tess:
 
     def __init__(self, backdrop):
         # noinspection PyArgumentList,PyArgumentList
-        self.t = PyTessBaseAPI(psm=PSM.CIRCLE_WORD, oem=OEM.LSTM_ONLY, lang="eng")
+        self.t = PyTessBaseAPI(psm=PSM.CIRCLE_WORD, oem=OEM.LSTM_ONLY)
         self.t.SetVariable("load_system_dawg", "false")
         self.t.SetVariable("load_freq_dawg", "false")
         self.t.SetVariable("load_punc_dawg", "false")
@@ -31,7 +31,7 @@ class Tess:
             if not isinstance(nparray, list):
                 image = Image.fromarray(np.uint8(nparray))
                 temp = BytesIO()
-                image.save(temp, "JPEG", dpi=(600, 600))
+                image.save(temp, "JPEG", dpi=(300, 300))
                 temp.seek(0)
                 image = Image.open(temp)
                 self.t.SetImage(image)
@@ -40,6 +40,7 @@ class Tess:
                 tess_confidence = self.t.AllWordConfidences()
                 if any(item >= 70 for item in tess_confidence):
                     text = Numberplate.sanitise(raw_text)
+                    print("Raw output", text)
                     plate_type, confidence = Numberplate.validate(text, use_provinces=True)
                     if plate_type is not None and confidence > 0:
                         image = ImageUtil.compress(nparray, max_w=200)
