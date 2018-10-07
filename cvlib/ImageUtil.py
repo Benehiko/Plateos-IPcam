@@ -21,17 +21,10 @@ class ImageUtil:
     @staticmethod
     async def process_for_tess(data):
         d = data.copy()
-        avg = np.average(d)
         morph = CvHelper.morph(d, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_RECTANGLE, kernel_size=(9, 9), iterations=1)
         diff = CvHelper.subtract(morph, d)
-        #kernel = np.ones((3, 3), np.uint8)
-        #dilate = cv2.dilate(diff, kernel=kernel, iterations=1)
         diff = CvHelper.inverse(diff)
-        #print("Avg Light", avg)
-        #now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M%S.%f")
-        #CvHelper.write_mat(text, "tesseract/", now+".jpg")
-
-        CvHelper.display("Tess", diff)
+        #CvHelper.display("Tess", diff)
         return diff
 
 
