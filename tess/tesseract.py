@@ -33,13 +33,13 @@ class Tess:
             if not isinstance(nparray, list):
                 image = Image.fromarray(np.uint8(nparray))
                 temp = BytesIO()
-                image.save(temp, "JPEG", dpi=(300, 300))
+                image.save(temp, "JPEG", dpi=(600, 400))
                 temp.seek(0)
                 image = Image.open(temp)
                 self.t.SetImage(image)
                 raw_text = self.t.GetUTF8Text()
                 tess_confidence = self.t.AllWordConfidences()
-                if any(item >= 80 for item in tess_confidence):
+                if any(item >= 70 for item in tess_confidence):
                     text = Numberplate.sanitise(raw_text)
                     plate_type, confidence = Numberplate.validate(text, use_provinces=True)
                     if plate_type is not None and confidence > 0:
@@ -66,7 +66,7 @@ class Tess:
 
                 now = datetime.now()
                 diff = now - self.then
-                if timedelta(seconds=30) < diff:
+                if timedelta(minutes=1) < diff:
                     if len(self.cached) > 0:
                         self.backdrop.cache(self.cached)
                         self.cached = []
