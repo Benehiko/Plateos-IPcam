@@ -204,13 +204,15 @@ class Numberplate:
         # plates = list(islice(gen, 4))
         if len(l) > 0:
             plates, counts = CompareData.del_duplicates_list_tuples(l)
-            #print("Non-duplicate", plates)
-            for x in range(0, len(plates)):
-                (pl, pr, con, t, img) = plates[x]
-                con = round(con + (counts[x] / 100), 2)
-                plates[x] = (pl, pr, con, t, img)
+            print("plates len", len(plates), "counts len", len(counts))
+            if plates is not None or counts is not None:
+                #print("Non-duplicate", plates)
+                for x in range(0, len(counts)):
+                    (pl, pr, con, t, img) = plates[x]
+                    con = round(con + (counts[x] / 100), 2)
+                    plates[x] = (pl, pr, con, t, img)
 
-            return plates
+                return plates
         return None
 
     """Get the highest confidence value"""
