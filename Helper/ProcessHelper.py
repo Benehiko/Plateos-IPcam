@@ -42,8 +42,8 @@ class ProcessHelper:
             potential_plates = [item for item in potential_plates if item is not None]
             loop.close()
 
-            # display = CvHelper.draw_boxes(tmp.copy(), boxes, CvEnums.COLOUR_GREEN, 5)
-            # CvHelper.display("Drawn", display, size=(640, 480))
+            display = CvHelper.draw_boxes(tmp.copy(), boxes, CvEnums.COLOUR_GREEN, 5)
+            CvHelper.display("Drawn", display, size=(640, 480))
 
             if len(potential_plates) > 0:
                 loop = asyncio.new_event_loop()
