@@ -28,8 +28,8 @@ class ProcessHelper:
         contours = sorted(contours, key=cv2.contourArea, reverse=True)[:]
         height, width, __ = tmp.shape
         rectangles, boxes, angles = ContourHandler().get_rectangles(contours, mat_width=width, mat_height=height,
-                                                                    area_bounds=(0.03, 0.4),
-                                                                    min_point=(1, 1), max_point=(8, 4))
+                                                                    area_bounds=(0.028, 0.45),
+                                                                    min_point=(0.1, 0.1), max_point=(8, 4))
 
         if len(rectangles) > 0:
             loop = asyncio.new_event_loop()

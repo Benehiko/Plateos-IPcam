@@ -185,7 +185,7 @@ class ContourHandler:
         rect_array = []
         box_rect = []
 
-        self.area_bounds = (0.5, 1.5)
+        self.area_bounds = (0.3, 4)
         img_area, img_width, img_height = ContourHandler.get_area_width_height((mat_width, mat_height))
         self.img_area = img_area
         self.img_width = img_width
@@ -197,7 +197,7 @@ class ContourHandler:
             area = cv2.contourArea(approx)
             rect = ContourHandler.get_rotated_rect(approx)
 
-            if self.in_scope_percentage(rect, area, min_point=(1, 10), max_point=(10, 80)):
+            if self.in_scope_percentage(rect, area, min_point=(5, 26), max_point=(40, 60)):
                 cnt_cache.append(cnt)
 
         # Keep element if it is not False

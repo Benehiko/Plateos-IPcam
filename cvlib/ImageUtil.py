@@ -64,11 +64,12 @@ class ImageUtil:
 
     @staticmethod
     def process_for_shape_detection_bright_backlight(image):
-        img = CvHelper.greyscale(image.copy())
+        illum = ImageUtil.illumination_correction(image.copy())
+        img = CvHelper.greyscale(illum)
         blur = CvHelper.gaussian_blur(img, kernel_size=5)
         sobelx = CvHelper.sobel(blur, kernel_size=3)
         otsu = CvHelper.otsu_binary(sobelx, 0)
-        morph = CvHelper.morph(otsu, CvEnums.MORPH_CLOSE, kernel_size=(20, 5), kernel_shape=CvEnums.K_RECTANGLE, iterations=2)
+        morph = CvHelper.morph(otsu, CvEnums.MORPH_CLOSE, kernel_size=(20, 8), kernel_shape=CvEnums.K_RECTANGLE, iterations=2)
         #CvHelper.display("ShapeDetect", morph.copy(), size=(640, 480))
         return morph
 
@@ -186,10 +187,10 @@ class ImageUtil:
     async def char_roi(mat, rectangle):
         tmp = mat.copy()
         potential_plate = ImageUtil.auto_crop(tmp, rectangle)
-        norm_illum = ImageUtil.illumination_correction(potential_plate)
+        #norm_illum = ImageUtil.illumination_correction(potential_plate)
 
         # Grey Image -> Thresh
-        greyscale = CvHelper.greyscale(norm_illum)
+        greyscale = CvHelper.greyscale(potential_plate)
         deskew = ImageUtil.deskew(greyscale)
         blur = CvHelper.gaussian_blur(deskew, kernel_size=5)
         thresh = CvHelper.otsu_binary(blur, 0)
@@ -241,15 +242,17 @@ class ImageUtil:
             height, width, __ = potential_plate.shape
             roi, boxs = ContourHandler().get_characters_roi(contours, mat_width=width, mat_height=height)
             if 2 <= len(roi) <= 12:
+                #drawn = CvHelper.draw_boxes(potential_plate, boxs, thickness=1, colour=CvEnums.COLOUR_GREEN)
+                #now = datetime.datetime.now().strftime("%y-%m-%d %H:%M%S.%f")
+                #CvHelper.write_mat(drawn, "CharROI/", now+".jpg")
                 return thresh
                 #blank_image = CvHelper.merge(letters)
                 # blank_image = np.empty_like(deskew)
                 # blank_image[:] = 255
                 # for x in roi:
                 #     blank_image = CvHelper.blend_mat(blank_image, CvHelper.get_rect_sub_pix(deskew, x))
-                #     now = datetime.datetime.now().strftime("%y-%m-%d %H:%M%S.%f")
+                #
                 #     CvHelper.write_mat(blank_image, "draw-boxes/", now + ".jpg")
-                # drawn = CvHelper.draw_boxes(otsu, boxs, thickness=1, colour=CvEnums.COLOUR_GREEN)
                 #results.append((rectangle, roi))
         return None
 
