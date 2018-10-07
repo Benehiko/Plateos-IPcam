@@ -1,6 +1,6 @@
+import cv2
+import datetime
 import math
-import pathlib
-from datetime import datetime
 
 import numpy as np
 
@@ -13,55 +13,21 @@ class ImageUtil:
 
     @staticmethod
     def compress(mat, max_w=1270, max_h=720, quality=65):
-            resized = CvHelper.resize(mat, new_width=max_w, new_height=max_h, interpolation=CvEnums.MAT_INTER_AREA)
-            encoded = CvHelper.mat_encode(resized, quality)
-            decoded = CvHelper.mat_decode(encoded)
-            return decoded
+        resized = CvHelper.resize(mat, new_width=max_w, new_height=max_h, interpolation=CvEnums.MAT_INTER_AREA)
+        encoded = CvHelper.mat_encode(resized, quality)
+        decoded = CvHelper.mat_decode(encoded)
+        return decoded
 
     @staticmethod
-    def process_for_tess(image, rectangles):
-        images = []
-        cropped_arr = ImageUtil.get_sub_images(image, rectangles)
+    async def process_for_tess(data):
+        d = data.copy()
+        grey = CvHelper.greyscale(d)
+        avg = np.average(data)
+        grad = CvHelper.morph(grey, CvEnums.MORPH_OPEN, kernel_shape=CvEnums.K_ELLIPSE, kernel_size=(3,3))
+        no = CvHelper.inverse(grad)
+        #CvHelper.display("Tess", no)
+        return no
 
-        for crop in cropped_arr:
-            grey = CvHelper.greyscale(crop)
-            deskew = ImageUtil.deskew(grey)
-            umat = CvHelper.get_umat(deskew)
-            bright = CvHelper.adjust_gamma(umat, 2.0)
-            dilate = CvHelper.dilate(bright, kernel_size=3, iterations=0)
-            morph = CvHelper.morph(dilate, gradient_type=CvEnums.MORPH_OPEN, kernel_size=3,
-                                   kernel_shape=CvEnums.K_ELLIPSE)
-            otsu = CvHelper.get_mat(CvHelper.otsu_binary(morph, 240))
-            images.append(otsu)
-
-        return images
-
-    @staticmethod
-    def get_sub_images(image, rectangles):
-        images = []
-        tmp = image.copy()
-        for rectangle in rectangles:
-            cropped = ImageUtil.auto_crop(tmp, rectangle)
-            if cropped.shape[1] < 640 or cropped.shape[0] < 480:
-                cropped = CvHelper.resize(cropped, new_width=640, new_height=480)
-            images.append(cropped)
-        return images
-
-    @staticmethod
-    def save(img, path):
-        pathlib.Path(path).mkdir(parents=True, exist_ok=True)
-        if img is not None:
-            try:
-                tmp = ImageUtil.compress(img)#, max_w=200)
-                tmp = CvHelper.bgr2rgb(tmp)
-                filename = datetime.now().strftime("%Y-%m-%d-%H_%M_%S")
-                if tmp is not None:
-                    d = path + "/" + filename + ".jpg"
-                    CvHelper.write_mat(tmp, d)
-                else:
-                    print("Could not save none type")
-            except Exception as e:
-                pass
 
     """
     Too Experimental for now
@@ -89,75 +55,40 @@ class ImageUtil:
 
         return results
         """
-    @staticmethod
-    def process_for_shape_detection(mat):
-        tmp = mat.copy()
-        # Resize image for faster processing
-        resized = CvHelper.resize(tmp, 1080)
-        grey = CvHelper.greyscale(resized)
-
-        # Inverse the colours and make foreground pixels white and background black
-        inv = CvHelper.inverse(grey)
-        thresh = CvHelper.otsu_binary(inv)
-        erosion = CvHelper.erode(thresh)
-
-        # Resize image back to original size to keep ratio
-        result = CvHelper.resize(erosion, mat.shape[1])
-        return result
-
-    @staticmethod
-    def process_for_shape_detection_old(mat):
-        tmp = mat.copy()
-        resized = CvHelper.resize(tmp, new_width=int(mat.shape[1]/4), new_height=int(mat.shape[0]/4))
-        grey = CvHelper.greyscale(resized)
-        thresh = CvHelper.binarise(grey, 240)
-        # Convert all white pixels to black
-        grey[thresh == 255] = 0
-        # Remove noise
-        erosion = CvHelper.erode(grey)
-        dilate = CvHelper.dilate(erosion)
-        thresh = CvHelper.adaptive_thresholding(dilate)
-        result = CvHelper.resize(thresh, new_width=mat.shape[1], new_height=mat.shape[0])
-        return result
 
     @staticmethod
     def process_for_shape_detection_bright_backlight(image):
-        img = CvHelper.get_umat(image.copy())
-        greyscale = CvHelper.greyscale(img)
-        bright = CvHelper.adjust_gamma(greyscale, 2.5)
-        blur = CvHelper.gaussian_blur(bright, kernel_size=5)
-        thresh = CvHelper.get_mat(CvHelper.otsu_binary(blur))
-        return thresh
+        img = CvHelper.greyscale(image.copy())
+        blur = CvHelper.gaussian_blur(img, kernel_size=5)
+        sobelx = CvHelper.sobel(blur, kernel_size=3)
+        otsu = CvHelper.otsu_binary(sobelx, 0)
+        morph = CvHelper.morph(otsu, CvEnums.MORPH_CLOSE, kernel_size=(20, 5), kernel_shape=CvEnums.K_RECTANGLE, iterations=2)
+        #CvHelper.display("ShapeDetect", morph.copy(), size=(640, 480))
+        return morph
 
     @staticmethod
-    def process_shape_new(image):
-        tmp = image.copy()
-        resize = CvHelper.resize(tmp, new_width=int(image.shape[1]/2), new_height=int(image.shape[0]/2))
-        grey = CvHelper.greyscale(resize)
-        equ = CvHelper.equalise_hist(grey, by_tile=False, tile_size=20)
-        lap = CvHelper.laplacian(equ)
-        dilate = CvHelper.dilate(lap, 3, 1)
-        morph = CvHelper.morph(dilate, CvEnums.MORPH_GRADIENT, CvEnums.K_ELLIPSE, kernel_size=3)
-        thresh = CvHelper.otsu_binary(morph, 240)
-        canny = CvHelper.canny_thresholding(thresh)
-        resize = CvHelper.resize(canny, new_width=image.shape[1], new_height=image.shape[0] / 4)
-        CvHelper.display("Process", resize)
-        return resize
-
-    @staticmethod
-    def remove_shadows(frames):
-        fgbg = CvHelper.create_background_subtractor_mog2()
-        fgbg.setDetectShadows(True)
-
-        shadowless = []
-        for frame in frames:
-            tmp = fgbg.apply(frame)
-
-            #tmp[tmp == 127] = 0
-            shadowless.append(fgbg.getBackgroundImage())
-
-        out = None
-        return shadowless, out
+    def fix_brightness(mat):
+        img = mat.copy()
+        dilate = CvHelper.dilate(img.copy(), kernel_size=3)
+        blur = CvHelper.median_blur(dilate, 21)
+        diff = 255 - CvHelper.normalise(img, blur)
+        normalised = diff.copy()
+        normalised = CvHelper.normalise(diff, normalised)
+        equ = CvHelper.equalise_hist(normalised, by_tile=True, tile_size=(1,3))
+        thresh = CvHelper.binarise(equ, 127, 0, type=CvEnums.THRESH_TRUNC)
+        norm = CvHelper.normalise(thresh, thresh)
+        #morph = CvHelper.morph(norm, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_ELLIPSE, kernel_size=(1,3))
+        blank = norm.copy()
+        blank = CvHelper.morph(blank, gradient_type=CvEnums.MORPH_ERODE, kernel_size=(5,5))
+        blank = CvHelper.binarise(blank, 240, 255, CvEnums.THRESH_BINARY)
+        inv = CvHelper.inverse(norm)
+        result = CvHelper.subtract(inv, blank)
+        equ = CvHelper.equalise_hist(result, by_tile=True, tile_size=(1,3))
+        #inv = CvHelper.inverse(inv)
+        #thresh = CvHelper.otsu_binary(result, 0)
+        #thresh = CvHelper.normalise(thresh, thresh)
+        #adaptive = CvHelper.adaptive_thresholding(thresh)
+        return equ
 
     @staticmethod
     def auto_crop(image_source, rectangle):
@@ -195,7 +126,7 @@ class ImageUtil:
         # are greater than zero, then use these coordinates to
         # compute a rotated bounding box that contains all
         # coordinates
-        inverse = CvHelper.inverse(mat)
+        inverse = CvHelper.inverse(mat.copy())
         thresh = CvHelper.otsu_binary(inverse)
 
         coords = np.column_stack(np.where(thresh > 0))
@@ -246,27 +177,36 @@ class ImageUtil:
                               border_mode=CvEnums.BORDER_REPLICATE)
 
     @staticmethod
-    def char_roi(mat, rectangles):
+    async def char_roi(mat, rectangle):
         tmp = mat.copy()
-        out_rectangles = []
+        potential_plate = ImageUtil.auto_crop(tmp, rectangle)
+        norm_illum = ImageUtil.illumination_correction(potential_plate)
+        greyscale = CvHelper.greyscale(norm_illum)
+        otsu = CvHelper.otsu_binary(greyscale)
+        #deskew = ImageUtil.deskew(greyscale)
+        #norm = ImageUtil.fix_brightness(deskew)
+        # now = datetime.datetime.now().strftime('%H')
+        # if '19' > now < '06':
+        #     deskew = CvHelper.adjust_gamma(deskew, gamma=2.5)
+        # umat = CvHelper.get_umat(deskew.copy())
+        # otsu = CvHelper.get_mat(CvHelper.otsu_binary(umat, 0))
+        # canny = CvHelper.canny_thresholding(otsu.copy())
+        contours, __ = ContourHandler.find_contours(otsu.copy(), ret_mode=CvEnums.RETR_LIST, approx_method=CvEnums.CHAIN_APPROX_NONE)
 
-        for rectangle in rectangles:
-            potential_plate = ImageUtil.auto_crop(tmp, rectangle)
-            umat = CvHelper.get_umat(potential_plate)
-            greyscale = CvHelper.greyscale(umat)
-            bright = CvHelper.adjust_gamma(greyscale, 2.0)
-            dilate = CvHelper.dilate(bright, kernel_size=3, iterations=0)
-            morph = CvHelper.morph(dilate, gradient_type=CvEnums.MORPH_OPEN, kernel_size=3,
-                                   kernel_shape=CvEnums.K_ELLIPSE)
-            otsu = CvHelper.get_mat(CvHelper.otsu_binary(morph, 240))
-            contours, __ = ContourHandler.find_contours(otsu, ret_mode=CvEnums.RETR_LIST,
-                                                        approx_method=CvEnums.CHAIN_APPROX_NONE)
-            if len(contours) > 0:
-                r, boxs = ContourHandler.get_characters_roi(contours, potential_plate)
-                if 2 <= len(r) <= 10:
-                    out_rectangles.append(rectangle)
-
-        return out_rectangles
+        if len(contours) > 0:
+            height, width, __ = potential_plate.shape
+            roi, boxs = ContourHandler().get_characters_roi(contours, mat_width=width, mat_height=height)
+            if 2 <= len(roi) <= 12:
+                # blank_image = np.empty_like(deskew)
+                # blank_image[:] = 255
+                # for x in roi:
+                #     blank_image = CvHelper.blend_mat(blank_image, CvHelper.get_rect_sub_pix(deskew, x))
+                #     now = datetime.datetime.now().strftime("%y-%m-%d %H:%M%S.%f")
+                #     CvHelper.write_mat(blank_image, "draw-boxes/", now + ".jpg")
+                # drawn = CvHelper.draw_boxes(otsu, boxs, thickness=1, colour=CvEnums.COLOUR_GREEN)
+                #results.append((rectangle, roi))
+                return potential_plate
+        return None
 
     @staticmethod
     def rotate_image(img, angle):
@@ -286,3 +226,12 @@ class ImageUtil:
 
         rotated_mat = CvHelper.warp_affine(img, rotation_mat, (bound_w, bound_h))
         return rotated_mat
+
+    @staticmethod
+    def illumination_correction(mat):
+        lab = CvHelper.bgr2lab(mat)
+        l, a, b = CvHelper.split(lab)
+        equ = CvHelper.equalise_hist(l, by_tile=True, tile_size=(4, 8))
+        img = CvHelper.merge((equ, a, b))
+        result = CvHelper.lab2bgr(img)
+        return result

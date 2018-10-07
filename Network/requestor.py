@@ -40,7 +40,7 @@ class Request:
     @staticmethod
     def check_connectivity():
         try:
-            urlopen('http://google.com', timeout=1)
+            urlopen('http://google.com', timeout=3)
             return True
         except Exception as e:
             print("Testing google ping", e)
@@ -59,11 +59,11 @@ class Request:
             j = dict(d)
             print("Posting:", j)
             Request.send(url, j)
-        except URLError as e:
+        except URLError:
             pass
 
     @staticmethod
     def get_mac():
-        mac = netifaces.ifaddresses('eth0')[netifaces.AF_LINK]
+        mac = netifaces.ifaddresses('enp2s0')[netifaces.AF_LINK]
         mac = mac[0].get('addr')
         return mac

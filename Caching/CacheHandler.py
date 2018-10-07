@@ -8,42 +8,51 @@ import numpy as np
 from DataHandler.CompareData import CompareData
 
 
+# noinspection PyTypeChecker
 class CacheHandler:
 
     @staticmethod
-    def save(dir, filename, arr):
-        pathlib.Path(dir).mkdir(parents=False, exist_ok=True)
-        fi = Path(dir+filename + ".npy.gz")
-        r = []
-        if fi.exists():
-            np_cached = CacheHandler.load(dir, filename)
-            if np_cached is not None:
-                try:
+    def save(directory, filename, arr):
+        try:
+            pathlib.Path(directory).mkdir(parents=False, exist_ok=True)
+            fi = Path(directory + filename + ".npy.gz")
+            r = []
+            if fi.exists():
+                np_cached = CacheHandler.load(directory, filename)
+                if np_cached is not None:
+                    try:
 
-                    cached = np_cached[:, 0].tolist()
-                    res = CompareData.compare_list_tuples(arr, cached)
-                    if len(res) > 0:
+                        cached = np_cached[:, 0].tolist()
+                        res, dup = CompareData.compare_list_tuples(arr, cached)
+                        if len(res) > 0:
+                            r = [x[0:4] for x in res]
+                            # arr = np.append(arr=np.array(res, dtype=object), values=np_cached, axis=0)
+                            f = gzip.GzipFile(directory + filename + ".npy.gz", "r")
+                            np.save(file=f, arr=r)
+                            f.close()
+                        if len(dup) > 0:
+                            r += [x[0:4] for x in dup]
+                    except Exception as e:
+                        print("Error on cached array", e)
 
-                        r = [x[0:4] for x in res]
-                        arr = np.append(arr=np.array(res, dtype=object), values=np_cached, axis=0)
-                    else:
-                        return
-                except Exception as e:
-                    print("Error on cached array", e)
+            else:
+                r = [x[0:4] for x in arr]
+                arr = np.array(arr, dtype=object)
+                f = gzip.GzipFile(directory + filename + ".npy.gz", "w")
+                np.save(file=f, arr=arr)
+                f.close()
 
-        else:
-            r = [x[0:4] for x in arr]
-            arr = np.array(arr, dtype=object)
+            return r
+        except Exception as e:
+            print(e)
+            pass
 
-        f = gzip.GzipFile(dir+filename + ".npy.gz", "w")
-        np.save(file=f, arr=arr)
-        f.close()
-        return r
+        return None
 
     @staticmethod
-    def load(dir, filename):
-        pathlib.Path(dir).mkdir(parents=False, exist_ok=True)
-        f = gzip.GzipFile(dir+filename + ".npy.gz", "r")
+    def load(directory, filename):
+        pathlib.Path(directory).mkdir(parents=False, exist_ok=True)
+        f = gzip.GzipFile(directory + filename + ".npy.gz", "r")
         try:
             arr = np.load(file=f)
         except Exception as e:
@@ -53,9 +62,13 @@ class CacheHandler:
         return arr
 
     @staticmethod
-    def remove(dir, filename):
-        pathlib.Path(dir).mkdir(parents=False, exist_ok=True)
-        fi = Path(dir + filename + ".npy.gz")
+    def remove(directory, filename):
+        try:
+            pathlib.Path(directory).mkdir(parents=False, exist_ok=True)
 
-        if fi.exists():
-            os.remove(str(fi.resolve()))
+            with Path(directory + filename + ".npy.gz") as fi:
+                if fi.exists():
+                    os.remove(str(fi.resolve()))
+        except Exception as e:
+            print(e)
+            pass

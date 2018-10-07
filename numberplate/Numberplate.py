@@ -57,8 +57,9 @@ class Numberplate:
                 if highest is not None:
                     result, remainder = Numberplate.split_plates(tmp, highest)
                     if result is not None:
-                        out.append(result)
-                    if len(remainder) < 1:
+                        if (0.6 > result[2] > 0.56) or (0.8 > result[2] > 0.63) or result[2] > 0.83:
+                            out.append(result)
+                    if len(remainder) == 0:
                         break
                     else:
                         tmp = remainder
@@ -108,7 +109,7 @@ class Numberplate:
                         result = "Gauteng"
                         confidence = 0.8
 
-            elif len(text) > 2:
+            if len(result) == 0 and len(text) > 2:
                 if text[0].isalnum():
                     if pre == "MP":
                         result = "Mpumalanga"
@@ -137,17 +138,25 @@ class Numberplate:
                     elif text[-1:] == "L":
                         result = "Limpopo"
                         confidence = 0.5
-            elif len(text) == 2:
+            elif len(result) == 0 and len(text) == 2:
                 if text[-1:] == "L":
                     result = "Limpopo"
                     confidence = 0.5
 
-        if text[0] in provinces_post:
-            if text[0:2].isalpha():
-                if text[0] == "C":
-                    result = "Western Cape"
-                elif text[0] == "N":
-                    result = "KwaZulu-Natal"
+        elif text[0] in provinces_post:
+            if text[0:2].isalpha() and len(text) > 3:
+                post = False
+                if text[3].isalpha() and len(text) > 4:
+                    if text[3:].isnumeric():
+                        post = True
+                elif text[2:].isnumeric():
+                    post = True
+
+                if post:
+                    if text[0] == "C":
+                        result = "Western Cape"
+                    elif text[0] == "N":
+                        result = "KwaZulu-Natal"
 
                 if len(result) > 0:
                     confidence = 0.6
@@ -196,7 +205,7 @@ class Numberplate:
         if len(l) > 0:
             plates, counts = CompareData.del_duplicates_list_tuples(l)
             #print("Non-duplicate", plates)
-            for x in range(0, len(plates)-1):
+            for x in range(0, len(plates)):
                 (pl, pr, con, t, img) = plates[x]
                 con = round(con + (counts[x] / 100), 2)
                 plates[x] = (pl, pr, con, t, img)
@@ -223,6 +232,8 @@ class Numberplate:
         Returns The best plate (confidence level highest)
         Returns the remainder that was not similar
     """
+
+    # noinspection PyShadowingNames
     @staticmethod
     def split_plates(plates, highest):
         remainder = []
