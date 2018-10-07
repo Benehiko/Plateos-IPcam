@@ -27,7 +27,7 @@ class CacheHandler:
                         if len(res) > 0:
                             r = [x[0:4] for x in res]
                             # arr = np.append(arr=np.array(res, dtype=object), values=np_cached, axis=0)
-                            f = gzip.GzipFile(directory + filename + ".npy.gz", "r")
+                            f = gzip.GzipFile(directory + filename + ".npy.gz", "a")
                             np.save(file=f, arr=r)
                             f.close()
                         if len(dup) > 0:
