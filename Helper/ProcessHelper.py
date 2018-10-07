@@ -1,4 +1,5 @@
 import asyncio
+import cv2
 
 from cvlib.ContourHandler import ContourHandler
 from cvlib.CvEnums import CvEnums
@@ -20,13 +21,15 @@ class ProcessHelper:
     @staticmethod
     def get_numberplate(frame):
         tmp = frame.copy()
+
         results = None
         f = ImageUtil.process_for_shape_detection_bright_backlight(tmp)
-        contours, __ = ContourHandler.find_contours(f, ret_mode=CvEnums.RETR_LIST)
+        contours, __ = ContourHandler.find_contours(f, ret_mode=CvEnums.RETR_EXTERNAL, approx_method=CvEnums.CHAIN_APPROX_NONE)
+        contours = sorted(contours, key=cv2.contourArea, reverse=True)[:]
         height, width, __ = tmp.shape
         rectangles, boxes, angles = ContourHandler().get_rectangles(contours, mat_width=width, mat_height=height,
-                                                                    area_bounds=(0.038, 0.5),
-                                                                    min_point=(0.2, 0.2), max_point=(5, 5))
+                                                                    area_bounds=(0.03, 0.4),
+                                                                    min_point=(1, 1), max_point=(8, 4))
 
         if len(rectangles) > 0:
             loop = asyncio.new_event_loop()
@@ -39,8 +42,8 @@ class ProcessHelper:
             potential_plates = [item for item in potential_plates if item is not None]
             loop.close()
 
-            # drawn = CvHelper.draw_boxes(frame, boxes, CvEnums.COLOUR_GREEN, 5)
-            # CvHelper.display("Drawn", drawn, size=(640, 480))
+            # display = CvHelper.draw_boxes(tmp.copy(), boxes, CvEnums.COLOUR_GREEN, 5)
+            # CvHelper.display("Drawn", display, size=(640, 480))
 
             if len(potential_plates) > 0:
                 loop = asyncio.new_event_loop()

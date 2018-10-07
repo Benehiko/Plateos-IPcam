@@ -13,34 +13,35 @@ class CacheHandler:
 
     @staticmethod
     def save(directory, filename, arr):
-
         try:
             pathlib.Path(directory).mkdir(parents=False, exist_ok=True)
             fi = Path(directory + filename + ".npy.gz")
             r = []
             if fi.exists():
-                print("File exists")
                 np_cached = CacheHandler.load(directory, filename)
                 if np_cached is not None:
                     try:
 
                         cached = np_cached[:, 0].tolist()
-                        res = CompareData.compare_list_tuples(arr, cached)
+                        res, dup = CompareData.compare_list_tuples(arr, cached)
                         if len(res) > 0:
                             r = [x[0:4] for x in res]
-                            arr = np.append(arr=np.array(res, dtype=object), values=np_cached, axis=0)
-                        else:
-                            return
+                            # arr = np.append(arr=np.array(res, dtype=object), values=np_cached, axis=0)
+                            f = gzip.GzipFile(directory + filename + ".npy.gz", "r")
+                            np.save(file=f, arr=r)
+                            f.close()
+                        if len(dup) > 0:
+                            r += [x[0:4] for x in dup]
                     except Exception as e:
                         print("Error on cached array", e)
 
             else:
                 r = [x[0:4] for x in arr]
                 arr = np.array(arr, dtype=object)
+                f = gzip.GzipFile(directory + filename + ".npy.gz", "w")
+                np.save(file=f, arr=arr)
+                f.close()
 
-            f = gzip.GzipFile(directory + filename + ".npy.gz", "w")
-            np.save(file=f, arr=arr)
-            f.close()
             return r
         except Exception as e:
             print(e)
