@@ -52,8 +52,8 @@ class ContourHandler:
 
     @staticmethod
     def get_approx(cnt):
-        epsilon = 0.01 * cv2.arcLength(cnt, False)
-        approx = cv2.approxPolyDP(cnt, epsilon, False)
+        epsilon = 0.01 * cv2.arcLength(cnt, True)
+        approx = cv2.approxPolyDP(cnt, epsilon, True)
         return approx
 
     @staticmethod
@@ -159,6 +159,7 @@ class ContourHandler:
     @staticmethod
     async def contour_helper(cnt):
         approx = ContourHandler.get_approx(cnt)
+        #if len(approx) == 4:
         rect = ContourHandler.get_rotated_rect(approx)
         angle = ContourHandler.in_correct_angle(rect)
         if angle > -30 or angle < -100 or angle < -150:
@@ -184,7 +185,7 @@ class ContourHandler:
         rect_array = []
         box_rect = []
 
-        self.area_bounds = (0.4, 2)
+        self.area_bounds = (0.5, 1.5)
         img_area, img_width, img_height = ContourHandler.get_area_width_height((mat_width, mat_height))
         self.img_area = img_area
         self.img_width = img_width
@@ -196,7 +197,7 @@ class ContourHandler:
             area = cv2.contourArea(approx)
             rect = ContourHandler.get_rotated_rect(approx)
 
-            if self.in_scope_percentage(rect, area, min_point=(0.1, 0.1), max_point=(90, 90)):
+            if self.in_scope_percentage(rect, area, min_point=(1, 10), max_point=(10, 80)):
                 cnt_cache.append(cnt)
 
         # Keep element if it is not False

@@ -41,7 +41,6 @@ class BackdropHandler:
                     self.add(x)
             sleep(60)
             self.check_alive()
-            self.cache()
             if count > 60:
                 self.cleanup_cache()
                 self.offline_check()
@@ -64,17 +63,17 @@ class BackdropHandler:
             print(e)
             pass
 
-    def cache(self):
+    def cache(self, c):
         try:
-            if len(self.cached) > 2:
-                today = datetime.datetime.now().strftime('%Y-%m-%d %H')
-                cached = Numberplate.improve(self.cached)
-                if cached is not None:
-                    if len(cached) > 0:
-                        res = CacheHandler.save("cache/", today, cached)
-                        if res is not None:
-                            self.upload_dataset(res)
-                        self.cached = []
+            today = datetime.datetime.now().strftime('%Y-%m-%d %H')
+            c = Numberplate.improve(c)
+            if c is not None:
+                if len(c) > 0:
+                    res = CacheHandler.save("cache/", today, c)
+                    if res is not None:
+                        #print("Would have posted: ", res)
+                        BackdropHandler.upload_dataset(res)
+                        # self.cached = []
         except Exception as e:
             print(e)
             pass
@@ -88,9 +87,10 @@ class BackdropHandler:
             except Exception as e:
                 print("Tried to remove process", e)
 
-    def upload_dataset(self, data):
+    @staticmethod
+    def upload_dataset(data):
         try:
-            url = self.url+"db/addplate"
+            url = "http://104.40.251.46:8080/Plateos/db/addplate"
             Request.post(data, url)
         except Exception as e:
             print(e)

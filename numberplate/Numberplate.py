@@ -57,9 +57,9 @@ class Numberplate:
                 if highest is not None:
                     result, remainder = Numberplate.split_plates(tmp, highest)
                     if result is not None:
-                        if (0.6 > result[2] > 0.53) or (0.8 > result[2] > 0.63) or result[2] > 0.8:
+                        if (0.6 > result[2] > 0.56) or (0.8 > result[2] > 0.63) or result[2] > 0.83:
                             out.append(result)
-                    if len(remainder) < 1:
+                    if len(remainder) == 0:
                         break
                     else:
                         tmp = remainder
@@ -205,7 +205,7 @@ class Numberplate:
         if len(l) > 0:
             plates, counts = CompareData.del_duplicates_list_tuples(l)
             #print("Non-duplicate", plates)
-            for x in range(0, len(plates)-1):
+            for x in range(0, len(plates)):
                 (pl, pr, con, t, img) = plates[x]
                 con = round(con + (counts[x] / 100), 2)
                 plates[x] = (pl, pr, con, t, img)

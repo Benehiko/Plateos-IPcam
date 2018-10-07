@@ -1,3 +1,6 @@
+import math
+import pathlib
+
 import cv2
 import imutils
 import numpy as np
@@ -6,6 +9,18 @@ from cvlib.CvEnums import CvEnums
 
 
 class CvHelper:
+
+    @staticmethod
+    def convert_scale_abs(mat):
+        return cv2.convertScaleAbs(mat)
+
+    @staticmethod
+    def bilateralFilter(mat):
+        return cv2.bilateralFilter(mat, 9, 75, 75)
+
+    @staticmethod
+    def subtract(mat, mat2):
+        return cv2.subtract(mat, mat2)
 
     @staticmethod
     def blend_mat(mat, mat2, alpha=1.0, beta=0.0, gamma=1.0):
@@ -22,12 +37,12 @@ class CvHelper:
         :param mat: greyscale image
         :return: eroded image
         """
-        kernel = cv2.getStructuringElement(kernel_shape.value, (kernel_size, kernel_size))
+        kernel = cv2.getStructuringElement(kernel_shape.value, kernel_size)
         erosion = cv2.erode(mat, kernel, iterations=iterations)
         return erosion
 
     @staticmethod
-    def morph(mat, gradient_type=CvEnums.MORPH_GRADIENT, kernel_shape=CvEnums.K_ELLIPSE, kernel_size=5):
+    def morph(mat, gradient_type=CvEnums.MORPH_GRADIENT, kernel_shape=CvEnums.K_ELLIPSE, kernel_size=(5, 5), iterations=1):
         """
         Morphological transformations are some simple operations based on the image shape. It is normally performed
         on binarise images. It needs two inputs, one is our original image, second one is called structuring element or
@@ -38,12 +53,12 @@ class CvHelper:
         :param kernel_shape:
         :return: morphed image
         """
-        kernel = cv2.getStructuringElement(kernel_shape.value, (kernel_size, kernel_size))
-        morph = cv2.morphologyEx(mat, gradient_type.value, kernel)
+        kernel = cv2.getStructuringElement(kernel_shape.value, kernel_size)
+        morph = cv2.morphologyEx(mat, gradient_type.value, kernel, iterations=iterations)
         return morph
 
     @staticmethod
-    def equalise_hist(mat, by_tile=True, tile_size=None):
+    def equalise_hist(mat, by_tile=False, tile_size=None):
         """
         Equalise the brightness of an image
         :param tile_size:
@@ -52,20 +67,20 @@ class CvHelper:
         :return:
         """
         if by_tile:
-            clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(tile_size, tile_size))
+            clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=tile_size)
             return clahe.apply(mat)
         else:
             return cv2.equalizeHist(mat)
 
     @staticmethod
-    def binarise(mat, thresh=127):
+    def binarise(mat, thresh=127, max=255, type=CvEnums.THRESH_TRUNC):
         """
-
+        :param type:
         :param mat: greyscale image
         :param thresh: threshold amount
         :return: binarised image
         """
-        ret, img_bin = cv2.threshold(mat, thresh, 255, 0)
+        ret, img_bin = cv2.threshold(mat, thresh, max, type=type.value)
         return img_bin
 
     @staticmethod
@@ -76,7 +91,7 @@ class CvHelper:
         :param thresh: threshold amount
         :return: binarised image
         """
-        return cv2.threshold(mat, thresh, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]  # 1
+        return cv2.threshold(mat, thresh, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]  # 1
 
     @staticmethod
     def dilate(mat, kernel_shape=CvEnums.K_RECTANGLE, kernel_size=5, iterations=1):
@@ -106,9 +121,9 @@ class CvHelper:
         :return:
 
         """
-        sobely = cv2.Sobel(mat, cv2.CV_64F, 1, 1, ksize=kernel_size)
-        abs_mat = np.absolute(sobely)
-        return np.uint8(abs_mat)
+        sobelx = cv2.Sobel(mat, cv2.CV_8U, 1, 0, ksize=kernel_size)
+        #abs_mat = np.absolute(sobely)
+        return sobelx #np.uint8(abs_mat)
 
     @staticmethod
     def laplacian(mat, kernel_size=11):
@@ -142,22 +157,25 @@ class CvHelper:
         return cv2.calcHist([mat], [0], None, [256], [0, 256])
 
     @staticmethod
-    def adaptive_thresholding(mat, thresh_type=CvEnums.THRESH_GAUSSIAN):
+    def adaptive_thresholding(mat, max_val=255, thresh_type=CvEnums.THRESH_GAUSSIAN, block_size=11, C=2):
         """
         In the previous section, we used a global value as threshold value. But it may not be good in all the
         conditions where image has different lighting conditions in different areas. In that case, we go for adaptive
         thresholding. In this, the algorithm calculate the threshold for a small regions of the image. So we get
         different thresholds for different regions of the same image and it gives us better results for images with
         varying illumination.
+        :param C:
+        :param block_size:
+        :param max_val:
         :param mat:
         :param thresh_type: CvEnums THRESH_GAUSSIAN or THRESH_MEAN
         :return:
         """
-        t = cv2.adaptiveThreshold(mat, 255, thresh_type.value, cv2.THRESH_BINARY_INV, 11, 2)
+        t = cv2.adaptiveThreshold(mat, max_val, thresh_type.value, cv2.THRESH_BINARY_INV, block_size, C)
         return t
 
     @staticmethod
-    def canny_thresholding(mat_grey, lower_threshold=100, ratio=2):
+    def canny_thresholding(mat_grey, lower_threshold=100, upper_threshold=150, ratio=2):
         """
         https://docs.opencv.org/3.4/da/d5c/tutorial_canny_detector.html
         1. Filter out any noise. The Gaussian filter is used for this purpose
@@ -236,6 +254,12 @@ class CvHelper:
         """
         kernel = (kernel_size, kernel_size)
         return cv2.blur(mat, kernel)
+
+
+    @staticmethod
+    def median_blur(mat, kernel_size=5):
+        return cv2.medianBlur(mat, kernel_size)
+
 
     @staticmethod
     def resize(mat, new_width=None, new_height=None, interpolation=CvEnums.MAT_INTER_AREA):
@@ -317,12 +341,12 @@ class CvHelper:
         :param mat: umat is also supported
         :return: None
         """
-        tmp = mat.copy()
+
         if any(size) is not None:
             width, height = size
-            tmp = CvHelper.resize(tmp, new_width=width, new_height=height)
+            mat = CvHelper.resize(mat, new_width=width, new_height=height)
         cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
-        cv2.imshow(window_name, tmp)
+        cv2.imshow(window_name, mat)
 
 
     @staticmethod
@@ -398,8 +422,9 @@ class CvHelper:
         return cv2.imdecode(image, flag)
 
     @staticmethod
-    def write_mat(mat, path):
-        cv2.imwrite(path, mat)
+    def write_mat(mat, path, filename):
+        pathlib.Path(path).mkdir(parents=False, exist_ok=True)
+        cv2.imwrite(path+filename, mat)
 
     @staticmethod
     def create_background_subtractor_knn(frame_amount, threshold, detect_shadows=True):
@@ -484,3 +509,38 @@ class CvHelper:
         table = np.array([((i / 255.0) ** inv_gamma) * 255
                           for i in np.arange(0, 256)]).astype("uint8")
         return cv2.LUT(mat, table)
+
+    @staticmethod
+    def get_rect_sub_pix(mat, rotated_rect):
+        (x, y), (w, h), __ = rotated_rect
+        x = math.ceil(x)
+        y = math.ceil(y)
+        w = math.ceil(w)
+        h = math.ceil(h)
+        size = (x+w, y+h)
+        center = (x+ (w/2), y+(h/2))
+        return cv2.getRectSubPix(mat, patchSize=size, center=center)
+
+    @staticmethod
+    def absdiff(mat, bg_img):
+        return cv2.absdiff(mat, bg_img)
+
+    @staticmethod
+    def normalise(mat_diff, mat_norm, alpha=0, beta=255, norm_type=CvEnums.NORM_MINMAX, dtype=CvEnums.CV_8UC1):
+        return cv2.normalize(mat_diff, mat_norm, alpha=alpha, beta=beta, norm_type=norm_type.value, dtype=dtype.value)
+
+    @staticmethod
+    def bgr2lab(mat):
+        return cv2.cvtColor(mat, cv2.COLOR_BGR2LAB)
+
+    @staticmethod
+    def split(mat):
+        return cv2.split(mat)
+
+    @staticmethod
+    def merge(mat):
+        return cv2.merge(mat)
+
+    @staticmethod
+    def lab2bgr(mat):
+        return cv2.cvtColor(mat, cv2.COLOR_LAB2BGR)
