@@ -27,7 +27,7 @@ class CvHelper:
         return cv2.addWeighted(src1=mat, alpha=alpha, src2=mat2, beta=beta, gamma=gamma)
 
     @staticmethod
-    def erode(mat, kernel_shape=CvEnums.K_ELLIPSE, kernel_size=5, iterations=1):
+    def erode(mat, kernel_shape=CvEnums.K_ELLIPSE, kernel_size=(5, 5), iterations=1):
         """
         https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_morphological_ops/py_morphological_ops.html
         It erodes away the boundaries of foreground object (Always try to keep foreground in white)
@@ -37,7 +37,8 @@ class CvHelper:
         :param mat: greyscale image
         :return: eroded image
         """
-        kernel = cv2.getStructuringElement(kernel_shape.value, kernel_size)
+        #kernel = cv2.getStructuringElement(kernel_shape.value, kernel_size)
+        kernel = np.ones(kernel_size, np.uint8)
         erosion = cv2.erode(mat, kernel, iterations=iterations)
         return erosion
 
@@ -94,7 +95,7 @@ class CvHelper:
         return cv2.threshold(mat, thresh, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]  # 1
 
     @staticmethod
-    def dilate(mat, kernel_shape=CvEnums.K_RECTANGLE, kernel_size=5, iterations=1):
+    def dilate(mat, kernel_shape=CvEnums.K_RECTANGLE, kernel_size=(5, 5), iterations=1):
         """
         It is just opposite of erosion. Here, a pixel element is ‘1’ if atleast one pixel under the kernel is ‘1’. So
         it increases the white region in the image or size of foreground object increases. Normally, in cases like
@@ -107,8 +108,8 @@ class CvHelper:
         :param iterations:
         :return:
         """
-        kernel = cv2.getStructuringElement(kernel_shape.value, (kernel_size, kernel_size))
-        # kernel = np.ones((kernel_size, kernel_size), np.uint8)
+        #kernel = cv2.getStructuringElement(shape=kernel_shape.value, ksize=kernel_size)
+        kernel = np.ones(kernel_size, np.uint8)
         dilate = cv2.dilate(mat, kernel, iterations=iterations)
         return dilate
 
@@ -122,8 +123,8 @@ class CvHelper:
 
         """
         sobelx = cv2.Sobel(mat, cv2.CV_8U, 1, 0, ksize=kernel_size)
-        #abs_mat = np.absolute(sobely)
-        return sobelx #np.uint8(abs_mat)
+        abs_mat = np.absolute(sobelx)
+        return abs_mat #np.uint8(abs_mat)
 
     @staticmethod
     def laplacian(mat, kernel_size=11):
