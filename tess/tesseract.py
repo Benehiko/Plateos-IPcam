@@ -66,7 +66,7 @@ class Tess:
 
                 now = datetime.now()
                 diff = now - self.then
-                if timedelta(minutes=1) < diff:
+                if timedelta(minutes=5) < diff:
                     if len(self.cached) > 0:
                         self.backdrop.cache(self.cached)
                         self.cached = []
