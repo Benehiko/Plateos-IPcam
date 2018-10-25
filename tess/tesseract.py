@@ -45,7 +45,7 @@ class Tess:
                     if plate_type is not None and confidence > 0:
                         image = ImageUtil.compress(nparray, max_w=200)
                         now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                        plate = (text, plate_type, confidence, now, image)
+                        plate = (text, plate_type, confidence + ((tess_confidence/100)/2), now, image)
                         self.backdrop.callback_tess(plate)
                         return plate
             else:
