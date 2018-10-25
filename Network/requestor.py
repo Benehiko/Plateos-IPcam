@@ -13,19 +13,22 @@ class Request:
     @staticmethod
     def post(data, url):
         mac = Request.get_mac()
-        out = []
+        if mac is not None:
+            out = []
 
-        for x in data:
-            plate, province, confidence, date = x
-            d = [('plate', plate), ('province', province), ('confidence', confidence), ('time', date), ('mac', mac)]
-            out.append(dict(d))
+            for x in data:
+                plate, province, confidence, date = x
+                d = [('plate', plate), ('province', province), ('confidence', confidence), ('time', date), ('mac', mac)]
+                out.append(dict(d))
 
-        print("Posting:", out)
-        if Request.check_connectivity():
-            Request.send(url, out)
+            print("Posting:", out)
+            if Request.check_connectivity():
+                Request.send(url, out)
+            else:
+                now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                CacheHandler.save("offline/", now, out)
         else:
-            now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            CacheHandler.save("offline/", now, out)
+            print("Mac is None")
 
     @staticmethod
     def send(url, data):
@@ -40,10 +43,13 @@ class Request:
     @staticmethod
     def check_connectivity():
         try:
-            urlopen('http://google.com', timeout=3)
-            return True
+            request = urlopen('http://google.com', timeout=3)
+            if request.status == 200:
+                return True
+            else:
+                return False
         except Exception as e:
-            print("Testing google ping", e)
+            print("Connectivity Check: ", e)
             pass
 
         return False
@@ -59,11 +65,18 @@ class Request:
             j = dict(d)
             print("Posting:", j)
             Request.send(url, j)
-        except URLError:
+        except URLError as e:
+            print("Ping Location: ", e)
             pass
 
     @staticmethod
     def get_mac():
-        mac = netifaces.ifaddresses('eth0')[netifaces.AF_LINK]
-        mac = mac[0].get('addr')
-        return mac
+        try:
+            mac = netifaces.ifaddresses('eth0')[netifaces.AF_LINK]
+            mac = mac[0].get('addr')
+            return mac
+        except Exception as e:
+            print(e)
+            pass
+        return None
+

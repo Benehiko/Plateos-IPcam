@@ -24,6 +24,7 @@ class BackdropHandler:
         self.cached = []
         self.active = set()
         self.url = url
+        self.old_time = datetime.datetime.now()
 
 
     def start(self):
@@ -39,14 +40,19 @@ class BackdropHandler:
             for x in tmp:
                 if x not in active_ip:
                     self.add(x)
-            sleep(60)
-            self.check_alive()
-            if count > 60:
-                self.cleanup_cache()
-                self.offline_check()
-                count = 0
-                self.ping_location()
-            count += 1
+            # Use timedelta maybe ? ?
+            now = datetime.datetime.now()
+            diff = now - self.old_time
+            if datetime.timedelta(minutes=1) < diff:
+            # sleep(60)
+                self.check_alive()
+                if datetime.timedelta(minutes=60) < diff:
+            # if count > 60:
+                    self.cleanup_cache()
+                    self.offline_check()
+                # count = 0
+                    self.ping_location()
+            # count += 1
 
     def callback_tess(self, plate):
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2], "Date:", plate[3])
@@ -71,7 +77,7 @@ class BackdropHandler:
                 if len(c) > 0:
                     res = CacheHandler.save("cache/", today, c)
                     if res is not None:
-                        #print("Would have posted: ", res)
+                        print("Uploading: ", res)
                         BackdropHandler.upload_dataset(res)
                         # self.cached = []
         except Exception as e:

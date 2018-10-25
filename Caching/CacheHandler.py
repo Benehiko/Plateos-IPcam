@@ -13,41 +13,50 @@ class CacheHandler:
 
     @staticmethod
     def save(directory, filename, arr):
+        result = []
         try:
             pathlib.Path(directory).mkdir(parents=False, exist_ok=True)
-            fi = Path(directory + filename + ".npy.gz")
-            r = []
+            fi = pathlib.Path(directory + filename + ".npy.gz")
+
+            # The file exists so lets append
             if fi.exists():
-                np_cached = CacheHandler.load(directory, filename)
-                if np_cached is not None:
-                    try:
 
-                        cached = np_cached[:, 0].tolist()
-                        res, dup = CompareData.compare_list_tuples(arr, cached)
-                        if len(res) > 0:
-                            r = [x[0:4] for x in res]
-                            # arr = np.append(arr=np.array(res, dtype=object), values=np_cached, axis=0)
-                            f = gzip.GzipFile(directory + filename + ".npy.gz", "a")
-                            np.save(file=f, arr=r)
-                            f.close()
-                        if len(dup) > 0:
-                            r += [x[0:4] for x in dup]
-                    except Exception as e:
-                        print("Error on cached array", e)
+                # Load in the existing cache data
+                cached = CacheHandler.load(directory, filename)
 
+                # Get all the numberplates into a list.
+                cached_plates = cached[:, 0].tolist()
+
+                # Compare current data to cache for duplicates
+                res, dup = CompareData.compare_list_tuples(arr, cached_plates)
+
+                # Non-dups gets added to the file and then added to result array for post
+                if len(res) > 0:
+                    result += [x[0:4] for x in res]
+                    rest = np.array(res, dtype=object)
+                    out = np.concatenate((cached, rest), axis=0)
+                    f = gzip.GzipFile(directory + filename + ".npy.gz", "w")
+                    np.save(file=f, arr=out)
+                    f.close()
+
+                # Duplicates got an increase in confidence and then added to result for post
+                if len(dup) > 0:
+                    result += [x[0:4] for x in dup]
+
+            # The file doesn't exist. Create a new one with the current data.
             else:
-                r = [x[0:4] for x in arr]
+                result = [x[0:4] for x in arr]
                 arr = np.array(arr, dtype=object)
                 f = gzip.GzipFile(directory + filename + ".npy.gz", "w")
                 np.save(file=f, arr=arr)
                 f.close()
 
-            return r
+            # Return the result even though it might be empty.
+            return result
         except Exception as e:
             print(e)
             pass
-
-        return None
+        return None  # Exception is thrown
 
     @staticmethod
     def load(directory, filename):
