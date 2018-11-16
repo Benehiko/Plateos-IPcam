@@ -4,7 +4,6 @@ import pathlib
 from multiprocessing import Process
 from os import listdir
 from os.path import isfile, join
-from time import sleep
 
 from Caching.CacheHandler import CacheHandler
 from Network.requestor import Request
@@ -44,7 +43,7 @@ class BackdropHandler:
                     self.add(x)
                     self.add(x)
                     self.add(x)
-                    
+
             # Use timedelta maybe ? ?
             now = datetime.datetime.now()
             diff = now - self.old_time

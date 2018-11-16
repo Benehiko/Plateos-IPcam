@@ -1,5 +1,4 @@
 from multiprocessing import Process
-from threading import Thread
 
 from Backdrop.BackdropHandler import BackdropHandler
 from Network.PortScanner import PortScanner
