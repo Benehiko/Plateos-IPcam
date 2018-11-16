@@ -38,8 +38,13 @@ class BackdropHandler:
             event_loop.close()
             active_ip = [x[0] for x in active]
             for x in tmp:
+                # Add multiple camera's
                 if x not in active_ip:
                     self.add(x)
+                    self.add(x)
+                    self.add(x)
+                    self.add(x)
+                    
             # Use timedelta maybe ? ?
             now = datetime.datetime.now()
             diff = now - self.old_time
@@ -77,8 +82,8 @@ class BackdropHandler:
                 if len(c) > 0:
                     res = CacheHandler.save("cache/", today, c)
                     if res is not None:
-                        print("Uploading: ", res)
-                        BackdropHandler.upload_dataset(res)
+                        print("Would have uploaded: ", res)
+                        # BackdropHandler.upload_dataset(res)
                         # self.cached = []
         except Exception as e:
             print(e)
