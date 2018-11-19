@@ -7,8 +7,9 @@ from Network.PortScanner import PortScanner
 # noinspection PyBroadException
 class Backdrop:
 
-    def __init__(self, args, iprange, url):
-        self.backdrophandler = BackdropHandler(self, scanner=PortScanner(), iprange=iprange, args=args, url=url)
+    def __init__(self, camera, device, restful):
+        self.backdrophandler = BackdropHandler(self, scanner=PortScanner(), camera=camera, device=device,
+                                               restful=restful)
 
     def scan(self):
         while True:

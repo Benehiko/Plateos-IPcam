@@ -14,60 +14,73 @@ from tess.tesseract import Tess
 
 class BackdropHandler:
 
-    def __init__(self, backdrop, scanner, iprange, args, url):
+    def __init__(self, backdrop, scanner, camera, device, restful):
         self.backdrop = backdrop
+
+        # Scanner
         self.scanner = scanner
-        self.iprange = iprange
-        self.username, self.password = args
+
+        # Camera
+        self.iprange = camera["iprange"]
+        self.username = camera["username"]
+        self.password = camera["password"]
+        self.camapi = camera["restful"]
+
+        # Device
+        self.alias = device["alias"]
+        self.interface = device["interface"]
+
+        # Restful Service
+        self.port = restful["port"]
+        self.url = restful["url"] + ":" + str(self.port)
+        self.addplate = restful["addplate"]
+        self.addlocation = restful["addlocation"]
+
+        # Tesseract init
         self.tess = Tess(backdrop=self)
+
         self.cached = []
         self.active = set()
-        self.url = url
         self.old_time = datetime.datetime.now()
-
+        self.cameras = []
 
     def start(self):
-        count = 0
         while True:
             event_loop = asyncio.new_event_loop()
             asyncio.set_event_loop(event_loop)
             active = self.active
-            print("Current Active cameras", active)
+            # print("Current Active cameras", active)
             tmp = self.scanner.scan(self.iprange, event_loop=event_loop)
             event_loop.close()
             active_ip = [x[0] for x in active]
             for x in tmp:
-                # Add multiple camera's
                 if x not in active_ip:
                     self.add(x)
                     self.add(x)
-                    self.add(x)
-                    self.add(x)
 
-            # Use timedelta maybe ? ?
+            # Use timedelta
             now = datetime.datetime.now()
             diff = now - self.old_time
             if datetime.timedelta(minutes=1) < diff:
-            # sleep(60)
                 self.check_alive()
-                if datetime.timedelta(minutes=60) < diff:
-            # if count > 60:
+                if datetime.timedelta(minutes=2) < diff:
                     self.cleanup_cache()
                     self.offline_check()
-                # count = 0
                     self.ping_location()
-            # count += 1
+                    self.old_time = datetime.datetime.now()
 
     def callback_tess(self, plate):
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2], "Date:", plate[3])
         self.cached.append(plate)
         return
 
-    def add(self, a):
+    def add(self, ip):
         try:
-            tmp = Camera(username=self.username, password=self.password, ip=a, tess=self.tess)
+            tmp = Camera(rest=self.camapi, credentials={"username": self.username, "password": self.password}, ip=ip,
+                         tess=self.tess)
+            self.cameras.append(tmp)
             p = Process(target=tmp.start)
-            self.active.add((a, p))
+            self.active.add((ip, p))
             p.start()
         except Exception as e:
             print(e)
@@ -79,7 +92,7 @@ class BackdropHandler:
             c = Numberplate.improve(c)
             if c is not None:
                 if len(c) > 0:
-                    res = CacheHandler.save("cache/", today, c)
+                    res = CacheHandler.save("cache", today, c)
                     if res is not None:
                         print("Would have uploaded: ", res)
                         # BackdropHandler.upload_dataset(res)
@@ -97,11 +110,10 @@ class BackdropHandler:
             except Exception as e:
                 print("Tried to remove process", e)
 
-    @staticmethod
-    def upload_dataset(data):
+    def upload_dataset(self, data):
         try:
-            url = "http://104.40.251.46:8080/Plateos/db/addplate"
-            Request.post(data, url)
+            url = "http://" + self.url + self.addplate
+            Request.post(self.interface, data, url)
         except Exception as e:
             print(e)
             pass
@@ -109,6 +121,7 @@ class BackdropHandler:
     # noinspection PyMethodMayBeStatic
     def cleanup_cache(self):
         try:
+            pathlib.Path("cache").mkdir(parents=True, exist_ok=True)
             files = [f.replace('.npy.gz', '') for f in listdir("cache") if isfile(join("cache", f))]
             if len(files) > 0:
                 file_last_date = datetime.datetime.strptime(max(files), "%Y-%m-%d %H")
@@ -123,12 +136,12 @@ class BackdropHandler:
     def offline_check(self):
         if Request.check_connectivity():
             try:
-                pathlib.Path("offline").mkdir(parents=False, exist_ok=True)
+                pathlib.Path("offline").mkdir(parents=True, exist_ok=True)
                 files = [f.replace('.npy.gz', '') for f in listdir("offline") if isfile(join("offline", f))]
                 if len(files) > 0:
                     for x in files:
                         tmp = CacheHandler.load("offline/", x).tolist()
-                        Request.post(tmp, self.url)
+                        Request.post(self.interface, tmp, self.url)
                         CacheHandler.remove("offline/", x)
             except Exception as e:
                 print(e)
@@ -137,7 +150,11 @@ class BackdropHandler:
     def ping_location(self):
         try:
             if Request.check_connectivity():
-                url = self.url+"db/addlocation"
-                Request.ping_location(url)
-        except:
+                url = "http://" + self.url + self.addlocation
+                camdata = []
+                for cam in self.cameras:
+                    camdata.append(cam.get_camera_data())
+                Request.ping_location(self.interface, url, self.alias, camdata)
+        except Exception as e:
+            print(e)
             pass

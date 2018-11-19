@@ -1,0 +1,21 @@
+camera:
+  username: admin
+  password: ***REMOVED***
+  iprange: 192.168.1.110-192.168.1.111
+  restful:
+    base: /cgi-bin/api.cgi?
+    snap:
+      cmd: Snap
+      channel: 0
+    mac:
+      cmd: GetLocalLink
+    info:
+      cmd: GetDevInfo
+restful:
+  url: 127.0.0.1
+  port: 8080
+  addplate: /site/addplate
+  addlocation: /site/addlocation
+device:
+  alias: Device1
+  interface: enp2s0

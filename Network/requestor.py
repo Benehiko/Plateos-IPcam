@@ -1,4 +1,5 @@
 import datetime
+import json
 import netifaces
 from urllib.error import URLError
 from urllib.request import urlopen
@@ -11,8 +12,8 @@ from Caching.CacheHandler import CacheHandler
 class Request:
 
     @staticmethod
-    def post(data, url):
-        mac = Request.get_mac()
+    def post(interface, data, url):
+        mac = Request.get_mac(interface)
         if mac is not None:
             out = []
 
@@ -26,7 +27,7 @@ class Request:
                 Request.send(url, out)
             else:
                 now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                CacheHandler.save("offline/", now, out)
+                CacheHandler.save("offline", now, out)
         else:
             print("Mac is None")
 
@@ -37,7 +38,7 @@ class Request:
             print(r.text)
             return True
         except Exception as e:
-            print("Error\n",e)
+            print("Error\n", e)
             return False
 
     @staticmethod
@@ -55,24 +56,25 @@ class Request:
         return False
 
     @staticmethod
-    def ping_location(url):
+    def ping_location(interface, url, alias, cameras):
         try:
-            list_ip = netifaces.ifaddresses('eth0')[netifaces.AF_INET]
+            list_ip = netifaces.ifaddresses(interface)[netifaces.AF_INET]  # eth0
             ip = list_ip[len(list_ip) - 1]['addr']
-            #device_ip = urlopen('http://ip.42.pl/raw').read()
+            # device_ip = urlopen('http://ip.42.pl/raw').read()
             now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            d = [('mac', Request.get_mac()), ('ip', ip), ('timestamp', now)]
+            d = [('mac', Request.get_mac(interface)), ('ip', ip), ('time', now), ('alias', alias)]
             j = dict(d)
-            print("Posting:", j)
-            Request.send(url, j)
+            t = dict([("device", j), ('cameras', cameras)])
+            print("Posting:", t)
+            Request.send(url, t)
         except URLError as e:
             print("Ping Location: ", e)
             pass
 
     @staticmethod
-    def get_mac():
+    def get_mac(interface):
         try:
-            mac = netifaces.ifaddresses('eth0')[netifaces.AF_LINK]
+            mac = netifaces.ifaddresses(interface)[netifaces.AF_LINK]  # eth0
             mac = mac[0].get('addr')
             return mac
         except Exception as e:
@@ -80,3 +82,12 @@ class Request:
             pass
         return None
 
+    @staticmethod
+    def get(url, params):
+        try:
+            data = requests.get(url, params, timeout=3)
+            return data.text
+        except URLError as e:
+            print(e)
+            pass
+        return None

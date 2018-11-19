@@ -15,8 +15,8 @@ class CacheHandler:
     def save(directory, filename, arr):
         result = []
         try:
-            pathlib.Path(directory).mkdir(parents=False, exist_ok=True)
-            fi = pathlib.Path(directory + filename + ".npy.gz")
+            pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
+            fi = pathlib.Path(directory + "/" + filename + ".npy.gz")
 
             # The file exists so lets append
             if fi.exists():
@@ -60,7 +60,7 @@ class CacheHandler:
 
     @staticmethod
     def load(directory, filename):
-        pathlib.Path(directory).mkdir(parents=False, exist_ok=True)
+        pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
         f = gzip.GzipFile(directory + filename + ".npy.gz", "r")
         try:
             arr = np.load(file=f)
@@ -73,7 +73,7 @@ class CacheHandler:
     @staticmethod
     def remove(directory, filename):
         try:
-            pathlib.Path(directory).mkdir(parents=False, exist_ok=True)
+            pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
 
             with Path(directory + filename + ".npy.gz") as fi:
                 if fi.exists():
