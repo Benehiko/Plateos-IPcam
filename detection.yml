@@ -1,0 +1,7 @@
+shape:
+  area_max: 5
+  area_min: 0.1
+  max_point_1: 14
+  max_point_2: 20
+  min_point_1: 0.1
+  min_point_2: 5

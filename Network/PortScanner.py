@@ -6,7 +6,7 @@ import socket
 class PortScanner:
 
     def scan(self, iprange, event_loop):
-        print("Scanning for IP Camera's...")
+        # print("Scanning for IP Camera's...")
 
         data = iprange.split("-")
         start = data[0]
@@ -20,14 +20,12 @@ class PortScanner:
         pool = []
         for i in range(start, end + 1):
             ip = subip + str(i)
-            pool.append(asyncio.ensure_future(self.TCP_connect(ip, 1935, 3), loop=event_loop))
+            pool.append(asyncio.ensure_future(self.TCP_connect(ip, 1935, 1), loop=event_loop))
 
         active = event_loop.run_until_complete(asyncio.gather(*pool))
         active = [x for x in active if x is not None]
 
-        if len(active) > 0:
-            print("Found: ", active)
-        else:
+        if len(active) == 0:
             print("Could not find any IP Cameras")
 
         return active
@@ -36,7 +34,6 @@ class PortScanner:
         TCPsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         TCPsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         TCPsock.settimeout(delay)
-        subip = int(ip[ip.rfind(".") + 1:])
         # noinspection PyBroadException
         try:
             TCPsock.connect((ip, port_number))
