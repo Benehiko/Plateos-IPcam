@@ -3,6 +3,7 @@ import asyncio
 import cv2
 import numpy as np
 
+from DataHandler.PropertyHandler import PropertyHandler
 from cvlib.CvEnums import CvEnums
 
 
@@ -52,7 +53,7 @@ class ContourHandler:
 
     @staticmethod
     def get_approx(cnt):
-        epsilon = 0.01 * cv2.arcLength(cnt, True)
+        epsilon = 0.015 * cv2.arcLength(cnt, True)
         approx = cv2.approxPolyDP(cnt, epsilon, True)
         return approx
 
@@ -82,7 +83,7 @@ class ContourHandler:
 
         # 0.5 , 10 , 60, 60
         return (rect_min_area <= r_area <= rect_max_area) and (height_min <= r_height <= height_max) and (
-                    width_min <= r_width <= width_max)
+                width_min <= r_width <= width_max)
 
     @staticmethod
     def in_correct_angle(rect):
@@ -94,6 +95,15 @@ class ContourHandler:
         (__, (w, h), angle) = rect
         if w < h:
             angle = angle - 90
+        # if w > h:
+        #     angle = angle + 90
+        #
+        # if angle < -180:
+        #     angle = angle + 360
+        #
+        # if angle > 180:
+        #     angle = angle - 360
+
         return angle
 
     @staticmethod
@@ -121,6 +131,7 @@ class ContourHandler:
         :param max_point: tuple of maximum threshold for (width_max, height_max)
         :return: rectangles
         """
+
         rect_arr = []
         box_corrected = []
         angles = []
@@ -159,9 +170,13 @@ class ContourHandler:
     @staticmethod
     async def contour_helper(cnt):
         approx = ContourHandler.get_approx(cnt)
-        #if len(approx) == 4:
+        # if len(approx) == 4:
         rect = ContourHandler.get_rotated_rect(approx)
         angle = ContourHandler.in_correct_angle(rect)
+        angles = PropertyHandler.cv_settings["shape"]["angle"]
+        min = int(angles["min"])
+        max = int(angles["max"])
+
         if angle > -30 or angle < -100 or angle < -150:
             box = cv2.boxPoints(rect)
             box = np.int0(box)
@@ -181,11 +196,12 @@ class ContourHandler:
             return cnt
         return None
 
-    def get_characters_roi(self, contours, mat_width, mat_height):
+    def get_characters_roi(self, contours, mat_width, mat_height, char_bounds, points=((5, 26), (40, 60))):
         rect_array = []
         box_rect = []
 
-        self.area_bounds = (0.3, 4)
+        self.area_bounds = char_bounds  # (0.3, 4)
+        min_point, max_point = points
         img_area, img_width, img_height = ContourHandler.get_area_width_height((mat_width, mat_height))
         self.img_area = img_area
         self.img_width = img_width
@@ -196,8 +212,9 @@ class ContourHandler:
             approx = ContourHandler.get_approx(cnt)
             area = cv2.contourArea(approx)
             rect = ContourHandler.get_rotated_rect(approx)
-
-            if self.in_scope_percentage(rect, area, min_point=(5, 26), max_point=(40, 60)):
+            # min_point = (5,26)
+            # max_point = (40, 60)
+            if self.in_scope_percentage(rect, area, min_point=min_point, max_point=max_point):
                 cnt_cache.append(cnt)
 
         # Keep element if it is not False

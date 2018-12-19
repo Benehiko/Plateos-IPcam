@@ -13,7 +13,7 @@ class Tess:
 
     def __init__(self, backdrop):
         # noinspection PyArgumentList,PyArgumentList
-        self.t = PyTessBaseAPI(psm=PSM.CIRCLE_WORD, oem=OEM.LSTM_ONLY, lang="eng")
+        self.t = PyTessBaseAPI(psm=PSM.SINGLE_BLOCK, oem=OEM.LSTM_ONLY, lang="eng")
         self.t.SetVariable("load_system_dawg", "false")
         self.t.SetVariable("load_freq_dawg", "false")
         self.t.SetVariable("load_punc_dawg", "false")
@@ -38,36 +38,45 @@ class Tess:
                 image = Image.open(temp)
                 self.t.SetImage(image)
                 raw_text = self.t.GetUTF8Text()
-                tess_confidence = self.t.AllWordConfidences()
-                if any(item >= 70 for item in tess_confidence):
-                    text = Numberplate.sanitise(raw_text)
-                    plate_type, confidence = Numberplate.validate(text, use_provinces=True)
-                    if plate_type is not None and confidence > 0:
-                        image = ImageUtil.compress(nparray, max_w=200)
-                        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                        plate = (text, plate_type, confidence + ((tess_confidence/100)/2), now, image)
-                        self.backdrop.callback_tess(plate)
-                        return plate
+                tess_confidence = self.t.MeanTextConf()
+                sum_confidence = 0
+                for x in tess_confidence:
+                    sum_confidence += x
+                sum_confidence = sum_confidence / len(tess_confidence)
+
+                # if tess_confidence >= 30:  # any(item >= 70 for item in tess_confidence):
+                text = Numberplate.sanitise(raw_text)
+                plate_type, confidence = Numberplate.validate(text, use_provinces=True)
+                if plate_type is not None and confidence > 0:
+                    image = ImageUtil.compress(nparray, max_w=200)
+                    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    plate = (text, plate_type, confidence + ((tess_confidence / 100) / 2), now, image)
+                    self.backdrop.callback_tess(plate)
+                    return plate
             else:
                 print("It's a list", nparray)
         return None
 
     def multi(self, images):
-        if images is not None:
-            if len(images) > 0:
-                event_loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(event_loop)
-                pool = [asyncio.ensure_future(self.runner(i)) for i in images]
-                results = event_loop.run_until_complete(asyncio.gather(*pool))
-                results = [x for x in results if x is not None]
-                event_loop.close()
-                if len(results) > 0:
-                    self.cached = self.cached + results
+        try:
+            if images is not None:
+                if len(images) > 0:
+                    event_loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(event_loop)
+                    pool = [asyncio.ensure_future(self.runner(i)) for i in images]
+                    results = event_loop.run_until_complete(asyncio.gather(*pool))
+                    results = [x for x in results if x is not None]
+                    event_loop.close()
+                    if len(results) > 0:
+                        self.cached = self.cached + results
 
-                now = datetime.now()
-                diff = now - self.then
-                if timedelta(minutes=5) < diff:
-                    if len(self.cached) > 0:
-                        self.backdrop.cache(self.cached)
-                        self.cached = []
-                        self.then = now
+                    now = datetime.now()
+                    diff = now - self.then
+                    if timedelta(minutes=5) < diff:
+                        if len(self.cached) > 0:
+                            self.backdrop.cache(self.cached)
+                            self.cached = []
+                            self.then = now
+        except Exception as e:
+            print(e)
+            pass
