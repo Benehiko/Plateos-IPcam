@@ -1,24 +1,12 @@
-import io
+import asyncio
 import sys
 
-import yaml
-
 from Backdrop.Backdrop import Backdrop
-import asyncio
+from DataHandler.PropertyHandler import PropertyHandler
 
-stream = io.open("conf.yml", 'r', encoding='utf8')
-configs = yaml.safe_load(stream)
-
-# Camera Settings
-camera = configs.get("camera")
-
-# Device Settings
-device = configs.get("device")
-
-# Restful API Settings
-restful = configs.get("restful")
-
-runner = Backdrop(camera=camera, device=device, restful=restful)
+PropertyHandler.load_app()
+PropertyHandler.load_cv()
+runner = Backdrop()
 
 loop = asyncio.get_event_loop()
 runner.scan()

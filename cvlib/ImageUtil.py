@@ -1,9 +1,9 @@
-import cv2
-import datetime
 import math
 
+import cv2
 import numpy as np
 
+from DataHandler.PropertyHandler import PropertyHandler
 from cvlib.ContourHandler import ContourHandler
 from cvlib.CvEnums import CvEnums
 from cvlib.CvHelper import CvHelper
@@ -20,13 +20,16 @@ class ImageUtil:
 
     @staticmethod
     async def process_for_tess(data):
+        k = (int(PropertyHandler.cv_settings["char"]["morph"]["min"]),
+             int(PropertyHandler.cv_settings["char"]["morph"]["max"]))
         d = data.copy()
-        morph = CvHelper.morph(d, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_RECTANGLE, kernel_size=(9, 9), iterations=1)
+        morph = CvHelper.morph(d, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_RECTANGLE,
+                               kernel_size=k, iterations=2)
         diff = CvHelper.subtract(morph, d)
         diff = CvHelper.inverse(diff)
-        #CvHelper.display("Tess", diff)
+        # morph = CvHelper.morph(diff, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_RECTANGLE,
+        #                        kernel_size=(5, 5), iterations=1)
         return diff
-
 
     """
     Too Experimental for now
@@ -57,13 +60,22 @@ class ImageUtil:
 
     @staticmethod
     def process_for_shape_detection_bright_backlight(image):
+        values = PropertyHandler.cv_settings["preprocessing"]
         illum = ImageUtil.illumination_correction(image.copy())
+        mask_setup = PropertyHandler.cv_settings["preprocessing"]["mask"]
+        lower = np.array(int(mask_setup["lower"]))
+        upper = np.array(int(mask_setup["upper"]))
         img = CvHelper.greyscale(illum)
-        blur = CvHelper.gaussian_blur(img, kernel_size=5)
-        sobelx = CvHelper.sobel(blur, kernel_size=3)
-        otsu = CvHelper.otsu_binary(sobelx, 0)
-        morph = CvHelper.morph(otsu, CvEnums.MORPH_CLOSE, kernel_size=(20, 8), kernel_shape=CvEnums.K_RECTANGLE, iterations=2)
-        #CvHelper.display("ShapeDetect", morph.copy(), size=(640, 480))
+        mask = cv2.inRange(img, lower, upper)
+        # blur = CvHelper.gaussian_blur(mask, kernel_size=3)
+        # sobelx = CvHelper.sobel(mask, kernel_size=3)  # int(values["sobel"]["kernel"]))
+        otsu = CvHelper.adaptive_thresholding(mask, int(values["otsu"]))
+        morph = CvHelper.morph(otsu, CvEnums.MORPH_CLOSE,
+                               kernel_size=(int(values["morph"]["width"]), int(values["morph"]["height"])),
+                               kernel_shape=CvEnums.K_ELLIPSE,
+                               iterations=2)
+
+        # CvHelper.display("ShapeDetect", morph.copy(), size=(640, 480))
         return morph
 
     @staticmethod
@@ -74,20 +86,20 @@ class ImageUtil:
         diff = 255 - CvHelper.normalise(img, blur)
         normalised = diff.copy()
         normalised = CvHelper.normalise(diff, normalised)
-        equ = CvHelper.equalise_hist(normalised, by_tile=True, tile_size=(1,3))
+        equ = CvHelper.equalise_hist(normalised, by_tile=True, tile_size=(1, 3))
         thresh = CvHelper.binarise(equ, 127, 0, type=CvEnums.THRESH_TRUNC)
         norm = CvHelper.normalise(thresh, thresh)
-        #morph = CvHelper.morph(norm, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_ELLIPSE, kernel_size=(1,3))
+        # morph = CvHelper.morph(norm, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_ELLIPSE, kernel_size=(1,3))
         blank = norm.copy()
-        blank = CvHelper.morph(blank, gradient_type=CvEnums.MORPH_ERODE, kernel_size=(5,5))
+        blank = CvHelper.morph(blank, gradient_type=CvEnums.MORPH_ERODE, kernel_size=(5, 5))
         blank = CvHelper.binarise(blank, 240, 255, CvEnums.THRESH_BINARY)
         inv = CvHelper.inverse(norm)
         result = CvHelper.subtract(inv, blank)
-        equ = CvHelper.equalise_hist(result, by_tile=True, tile_size=(1,3))
-        #inv = CvHelper.inverse(inv)
-        #thresh = CvHelper.otsu_binary(result, 0)
-        #thresh = CvHelper.normalise(thresh, thresh)
-        #adaptive = CvHelper.adaptive_thresholding(thresh)
+        equ = CvHelper.equalise_hist(result, by_tile=True, tile_size=(1, 3))
+        # inv = CvHelper.inverse(inv)
+        # thresh = CvHelper.otsu_binary(result, 0)
+        # thresh = CvHelper.normalise(thresh, thresh)
+        # adaptive = CvHelper.adaptive_thresholding(thresh)
         return equ
 
     @staticmethod
@@ -100,7 +112,8 @@ class ImageUtil:
         image_source = image_source[init_crop:init_crop + (h - init_crop * 2),
                        init_crop:init_crop + (w - init_crop * 2)]
         # Add back a white border
-        image_source = CvHelper.copy_make_border(image_source, sides=(5, 5, 5, 5), border_type=CvEnums.BORDER_CONSTANT, border_colour=CvEnums.COLOUR_BLACK)
+        image_source = CvHelper.copy_make_border(image_source, sides=(5, 5, 5, 5), border_type=CvEnums.BORDER_CONSTANT,
+                                                 border_colour=CvEnums.COLOUR_BLACK)
         centre, dimensions, theta = rectangle
 
         width = int(dimensions[0]) + 20
@@ -148,7 +161,8 @@ class ImageUtil:
         (h, w) = mat.shape[:2]
         center = (w // 2, h // 2)
         M = CvHelper.rotation_matrix_2D(center, angle, 1.0)
-        rotated = CvHelper.warp_affine(mat, M, (w, h), flags=CvEnums.MAT_INTER_CUBIC, border_mode=CvEnums.BORDER_REPLICATE)
+        rotated = CvHelper.warp_affine(mat, M, (w, h), flags=CvEnums.MAT_INTER_CUBIC,
+                                       border_mode=CvEnums.BORDER_REPLICATE)
         return rotated
 
     @staticmethod
@@ -174,13 +188,13 @@ class ImageUtil:
         mapping = np.array([[v_x[0], v_y[0], s_x], [v_x[1], v_y[1], s_y]])
 
         return CvHelper.warp_affine(image, mapping, (width, height), flags=CvEnums.MAT_WARP_INVERSE_MAP,
-                              border_mode=CvEnums.BORDER_REPLICATE)
+                                    border_mode=CvEnums.BORDER_REPLICATE)
 
     @staticmethod
-    async def char_roi(mat, rectangle):
+    async def char_roi(mat, rectangle, char_bounds, char_points):
         tmp = mat.copy()
         potential_plate = ImageUtil.auto_crop(tmp, rectangle)
-        #norm_illum = ImageUtil.illumination_correction(potential_plate)
+        # norm_illum = ImageUtil.illumination_correction(potential_plate)
 
         # Grey Image -> Thresh
         greyscale = CvHelper.greyscale(potential_plate)
@@ -188,66 +202,20 @@ class ImageUtil:
         blur = CvHelper.gaussian_blur(deskew, kernel_size=5)
         thresh = CvHelper.otsu_binary(blur, 0)
 
-        # Remove White Noise
-        kernel = np.ones((3, 3), np.uint8)
-        # opening = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel=kernel, iterations=1)
-        # # Find sure BG image
-        # bg_img = cv2.dilate(opening, kernel, iterations=1)
-
-        #erosion = cv2.erode(thresh, kernel, iterations=1)
-
-        # Find sure FG image
-        # dist_transform = cv2.distanceTransform(erosion, cv2.DIST_L2, 5)
-        # ret, fg_img = cv2.threshold(dist_transform, 0.7*dist_transform.max(), 255, 0)
-        #
-        # # Finding Unknown Region
-        # fg_img = np.uint8(fg_img)
-        # unknown = cv2.subtract(bg_img, fg_img)
-        #
-        # #Marker Labelling
-        # ret, markers = cv2.connectedComponents(fg_img)
-        #
-        # # Add one to all labels so that sure background is not 0, but 1
-        # markers = markers + 1
-        #
-        # # Now, mark the region of unknown with zero
-        # markers[unknown == 255] = 0
-        # markers = cv2.watershed(potential_plate, markers)
-
-        #thresh[markers == -1] = 255
-
-        #shaddow_less = ImageUtil.shaddow_correction(greyscale)
-        #noise_less = ImageUtil.noise_correction(greyscale)
-
-        #tophat = CvHelper.morph(deskew, gradient_type=CvEnums.MORPH_TOPHAT, kernel_shape=CvEnums.K_RECTANGLE, kernel_size=(7, 7), iterations=1)
-        #otsu = CvHelper.otsu_binary(tophat)
-        #otsu = CvHelper.morph(otsu, CvEnums.MORPH_CLOSE, kernel_size=(5, 5), kernel_shape=CvEnums.K_RECTANGLE)
-        #norm = ImageUtil.fix_brightness(deskew)
-        # now = datetime.datetime.now().strftime('%H')
-        # if '19' > now < '06':
-        #     deskew = CvHelper.adjust_gamma(deskew, gamma=2.5)
-        # umat = CvHelper.get_umat(deskew.copy())
-        # otsu = CvHelper.get_mat(CvHelper.otsu_binary(umat, 0))
-        # canny = CvHelper.canny_thresholding(otsu.copy())
-        contours, __ = ContourHandler.find_contours(thresh.copy(), ret_mode=CvEnums.RETR_LIST, approx_method=CvEnums.CHAIN_APPROX_NONE)
+        contours, __ = ContourHandler.find_contours(thresh.copy(), ret_mode=CvEnums.RETR_LIST,
+                                                    approx_method=CvEnums.CHAIN_APPROX_NONE)
 
         if len(contours) > 0:
             height, width, __ = potential_plate.shape
-            roi, boxs = ContourHandler().get_characters_roi(contours, mat_width=width, mat_height=height)
+            roi, boxs = ContourHandler().get_characters_roi(contours, mat_width=width, mat_height=height,
+                                                            char_bounds=char_bounds, points=char_points)
             if 2 <= len(roi) <= 12:
-                #drawn = CvHelper.draw_boxes(potential_plate, boxs, thickness=1, colour=CvEnums.COLOUR_GREEN)
-                #now = datetime.datetime.now().strftime("%y-%m-%d %H:%M%S.%f")
-                #CvHelper.write_mat(drawn, "CharROI/", now+".jpg")
-                return thresh
-                #blank_image = CvHelper.merge(letters)
-                # blank_image = np.empty_like(deskew)
-                # blank_image[:] = 255
-                # for x in roi:
-                #     blank_image = CvHelper.blend_mat(blank_image, CvHelper.get_rect_sub_pix(deskew, x))
-                #
-                #     CvHelper.write_mat(blank_image, "draw-boxes/", now + ".jpg")
-                #results.append((rectangle, roi))
-        return None
+                drawn = CvHelper.draw_boxes(potential_plate, boxs, thickness=1, colour=CvEnums.COLOUR_GREEN)
+                # CvHelper.display("Chars", drawn, size=(640, 480))
+
+                return thresh, drawn
+
+        return None, None
 
     @staticmethod
     def rotate_image(img, angle):
@@ -299,6 +267,6 @@ class ImageUtil:
         img = 255 - mat
         line = 255 - thresh
         text = img - line
-        #bilateral = CvHelper.bilateralFilter(text)
+        # bilateral = CvHelper.bilateralFilter(text)
         CvHelper.display("Noise Correction", text)
         return text

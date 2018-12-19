@@ -8,26 +8,27 @@ from urllib.request import urlopen
 import cv2
 import numpy as np
 
+from DataHandler.PropertyHandler import PropertyHandler
 from Helper.ProcessHelper import ProcessHelper
 from Network.requestor import Request
 
 
 class Camera:
 
-    def __init__(self, ip, rest, credentials, tess):
+    def __init__(self, ip, tess):
         self.randomcmd = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
-        self.url = "http://" + ip + rest["base"] + "cmd=" + rest["snap"]["cmd"] + "&channel=" + str(rest["snap"][
-                                                                                                        "channel"]) + "&rs=" + self.randomcmd + "&user=" + \
-                   credentials["username"] + "&password=" + credentials[
-                       "password"]
 
         self.tess = tess
         self.ip = ip
-        self.rest = rest
-        self.username = credentials["username"]
-        self.password = credentials["password"]
+        self.rest = PropertyHandler.app_settings["camera"]["restful"]
+        self.username = PropertyHandler.app_settings["camera"]["username"]
+        self.password = PropertyHandler.app_settings["camera"]["password"]
         self.mac = self.get_mac()
         self.alias, self.model = self.get_info()
+        self.url = "http://" + ip + self.rest["base"] + "cmd=" + self.rest["snap"]["cmd"] + "&channel=" + str(
+            self.rest["snap"][
+                "channel"]) + "&rs=" + self.randomcmd + "&user=" + \
+                   self.username + "&password=" + self.password
 
     def start(self):
         print("Starting Camera:\nIP:", self.ip, "MAC:", self.mac, "Model", self.model)

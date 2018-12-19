@@ -6,6 +6,8 @@ from os import listdir
 from os.path import isfile, join
 
 from Caching.CacheHandler import CacheHandler
+from DataHandler.PropertyHandler import PropertyHandler
+from Network.PortScanner import PortScanner
 from Network.requestor import Request
 from camera.Camera import Camera
 from numberplate.Numberplate import Numberplate
@@ -14,23 +16,19 @@ from tess.tesseract import Tess
 
 class BackdropHandler:
 
-    def __init__(self, backdrop, scanner, camera, device, restful):
+    def __init__(self, backdrop):
         self.backdrop = backdrop
 
         # Scanner
-        self.scanner = scanner
-
-        # Camera
-        self.iprange = camera["iprange"]
-        self.username = camera["username"]
-        self.password = camera["password"]
-        self.camapi = camera["restful"]
+        self.scanner = PortScanner()
 
         # Device
+        device = PropertyHandler.app_settings["device"]
         self.alias = device["alias"]
         self.interface = device["interface"]
 
         # Restful Service
+        restful = PropertyHandler.app_settings["restful"]
         self.port = restful["port"]
         self.url = restful["url"] + ":" + str(self.port)
         self.addplate = restful["addplate"]
@@ -50,12 +48,11 @@ class BackdropHandler:
             asyncio.set_event_loop(event_loop)
             active = self.active
             # print("Current Active cameras", active)
-            tmp = self.scanner.scan(self.iprange, event_loop=event_loop)
+            tmp = self.scanner.scan(PropertyHandler.app_settings["camera"]["iprange"], event_loop=event_loop)
             event_loop.close()
             active_ip = [x[0] for x in active]
             for x in tmp:
                 if x not in active_ip:
-                    self.add(x)
                     self.add(x)
 
             # Use timedelta
@@ -76,8 +73,7 @@ class BackdropHandler:
 
     def add(self, ip):
         try:
-            tmp = Camera(rest=self.camapi, credentials={"username": self.username, "password": self.password}, ip=ip,
-                         tess=self.tess)
+            tmp = Camera(ip=ip, tess=self.tess)
             self.cameras.append(tmp)
             p = Process(target=tmp.start)
             self.active.add((ip, p))
@@ -94,9 +90,9 @@ class BackdropHandler:
                 if len(c) > 0:
                     res = CacheHandler.save("cache", today, c)
                     if res is not None:
-                        print("Would have uploaded: ", res)
-                        # BackdropHandler.upload_dataset(res)
-                        # self.cached = []
+                        # print("Would have uploaded: ", res)
+                        BackdropHandler.upload_dataset(res)
+                        self.cached = []
         except Exception as e:
             print(e)
             pass
