@@ -1,6 +1,7 @@
 import datetime
 import json
 import netifaces
+import os
 from urllib.error import URLError
 from urllib.request import urlopen
 
@@ -44,11 +45,17 @@ class Request:
     @staticmethod
     def check_connectivity():
         try:
-            request = urlopen('http://google.com', timeout=3)
-            if request.status == 200:
+            hostname = "8.8.8.8"
+            response = os.system("ping -c 3 " + hostname)
+            if response == 0:
                 return True
             else:
                 return False
+            # request = urlopen('http://google.com', timeout=3)
+            # if request.status == 200:
+            #     return True
+            # else:
+            #     return False
         except Exception as e:
             print("Connectivity Check: ", e)
             pass
