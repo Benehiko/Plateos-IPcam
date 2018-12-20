@@ -40,9 +40,14 @@ class BackdropHandler:
         self.cached = []
         self.active = set()
         self.old_time = datetime.datetime.now()
+
         self.cameras = []
 
     def start(self):
+        old_time = datetime.datetime.now()
+        old_time2 = datetime.datetime.now()
+        old_time3 = datetime.datetime.now()
+
         while True:
             event_loop = asyncio.new_event_loop()
             asyncio.set_event_loop(event_loop)
@@ -56,15 +61,24 @@ class BackdropHandler:
                     self.add(x)
 
             # Use timedelta
+            """Time delta to run certain checks periodically"""
             now = datetime.datetime.now()
-            diff = now - self.old_time
+            diff = now - old_time
+            diff2 = now - old_time2
+            diff3 = now - old_time3
+
             if datetime.timedelta(minutes=1) < diff:
                 self.check_alive()
-                if datetime.timedelta(minutes=2) < diff:
-                    self.cleanup_cache()
-                    self.offline_check()
-                    self.ping_location()
-                    self.old_time = datetime.datetime.now()
+                old_time2 = datetime.datetime.now()
+
+            if datetime.timedelta(minutes=30) < diff3:
+                self.ping_location()
+                old_time3 = datetime.datetime.now()
+                
+            if datetime.timedelta(hours=1) < diff2:
+                self.cleanup_cache()
+                self.offline_check()
+                old_time2 = datetime.datetime.now()
 
     def callback_tess(self, plate):
         print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2], "Date:", plate[3])
