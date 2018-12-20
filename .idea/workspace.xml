@@ -1,23 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/camera/Camera.py" line="49" mnemonic="3" />
+    <bookmark url="file://$PROJECT_DIR$/camera/Camera.py" line="50" mnemonic="3" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="73461767-bf7c-4bbb-a949-6252378e84fd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataHandler/PropertyHandler.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backdrop/Backdrop.py" beforeDir="false" afterPath="$PROJECT_DIR$/Backdrop/Backdrop.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backdrop/BackdropHandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Backdrop/BackdropHandler.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Helper/ProcessHelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/Helper/ProcessHelper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/camera/Camera.py" beforeDir="false" afterPath="$PROJECT_DIR$/camera/Camera.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cvlib/ContourHandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/cvlib/ContourHandler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cvlib/CvHelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/cvlib/CvHelper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cvlib/CvTess.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/cvlib/ImageUtil.py" beforeDir="false" afterPath="$PROJECT_DIR$/cvlib/ImageUtil.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/detection.yml" beforeDir="false" afterPath="$PROJECT_DIR$/detection.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/run.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tess/tesseract.py" beforeDir="false" afterPath="$PROJECT_DIR$/tess/tesseract.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -38,7 +29,7 @@
     <SUITE FILE_PATH="coverage/Plateos$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1538129091712" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_11.coverage" NAME="scratch_11 Coverage Results" MODIFIED="1534969954513" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_19.coverage" NAME="scratch_19 Coverage Results" MODIFIED="1537098407071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
-    <SUITE FILE_PATH="coverage/Plateos_IPcam$run.coverage" NAME="run Coverage Results" MODIFIED="1545180681135" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Plateos_IPcam$run.coverage" NAME="run Coverage Results" MODIFIED="1545293000573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_10.coverage" NAME="scratch_10 Coverage Results" MODIFIED="1534996601711" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_16.coverage" NAME="scratch_16 Coverage Results" MODIFIED="1535942494166" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$Backdrop.coverage" NAME="Backdrop Coverage Results" MODIFIED="1538113690050" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Backdrop" />
@@ -65,36 +56,7 @@
     <favorites_list name="Plateos-IPcam" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/detection.yml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="497">
-              <caret line="36" lean-forward="true" selection-start-line="36" selection-end-line="36" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cvlib/ImageUtil.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-285">
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cvlib/ContourHandler.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="95">
-              <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
-            </state>
-          </provider>
-        </entry>
-      </file>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Backdrop/BackdropHandler.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -108,28 +70,25 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/numberplate/Numberplate.py">
+        <entry file="file://$PROJECT_DIR$/camera/Camera.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="310">
-              <caret line="50" column="8" selection-start-line="50" selection-start-column="8" selection-end-line="50" selection-end-column="8" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Caching/CacheHandler.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="456">
-              <caret line="34" column="48" lean-forward="true" selection-start-line="34" selection-start-column="48" selection-end-line="34" selection-end-column="48" />
+            <state relative-caret-position="453">
+              <caret line="47" column="56" selection-start-line="47" selection-start-column="56" selection-end-line="47" selection-end-column="56" />
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/tess/tesseract.py">
+        <entry file="file://$PROJECT_DIR$/Helper/ProcessHelper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="284">
-              <caret line="45" lean-forward="true" selection-start-line="45" selection-end-line="45" />
+            <state relative-caret-position="418">
+              <caret line="64" column="38" selection-start-line="64" selection-start-column="38" selection-end-line="64" selection-end-column="38" />
+              <folding>
+                <element signature="e#0#14#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -225,23 +184,22 @@
         <option value="$PROJECT_DIR$/conf.yml" />
         <option value="$PROJECT_DIR$/Network/requestor.py" />
         <option value="$PROJECT_DIR$/DataHandler/PropertyHandler.py" />
-        <option value="$PROJECT_DIR$/Helper/ProcessHelper.py" />
-        <option value="$PROJECT_DIR$/camera/Camera.py" />
         <option value="$PROJECT_DIR$/detection.yml" />
         <option value="$PROJECT_DIR$/run.py" />
         <option value="$PROJECT_DIR$/Backdrop/Backdrop.py" />
         <option value="$PROJECT_DIR$/cvlib/ContourHandler.py" />
-        <option value="$PROJECT_DIR$/cvlib/ImageUtil.py" />
         <option value="$PROJECT_DIR$/Backdrop/BackdropHandler.py" />
+        <option value="$PROJECT_DIR$/camera/Camera.py" />
+        <option value="$PROJECT_DIR$/cvlib/ImageUtil.py" />
         <option value="$PROJECT_DIR$/tess/tesseract.py" />
+        <option value="$PROJECT_DIR$/Helper/ProcessHelper.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="2029" />
-    <option name="y" value="87" />
-    <option name="width" value="1707" />
-    <option name="height" value="959" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="1920" />
+    <option name="width" value="1920" />
+    <option name="height" value="1080" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -265,6 +223,17 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope">
+        <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
+          <expand>
+            <path>
+              <item name="Plateos" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -316,23 +285,12 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope">
-        <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
-          <expand>
-            <path>
-              <item name="Plateos" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
-    <property name="last_opened_file_path" value="$USER_HOME$/Documents/PyCharm/CefTest" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Documents/PyCharm/Plateos-Setup" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
@@ -355,16 +313,17 @@
     </option>
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/cvlib" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/DataHandler" />
-      <recent name="$PROJECT_DIR$/../Scratch Folder" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Helper" />
       <recent name="$PROJECT_DIR$/Network" />
       <recent name="$PROJECT_DIR$/Backdrop" />
       <recent name="$PROJECT_DIR$/camera" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/cvlib" />
+      <recent name="$PROJECT_DIR$/DataHandler" />
+      <recent name="$PROJECT_DIR$/../Scratch Folder" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -567,12 +526,13 @@
       <workItem from="1545067335281" duration="4248000" />
       <workItem from="1545092952659" duration="2136000" />
       <workItem from="1545127028026" duration="1382000" />
-      <workItem from="1545178135406" duration="1839000" />
+      <workItem from="1545178135406" duration="2439000" />
+      <workItem from="1545291834943" duration="1207000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9621000" />
+    <option name="totallyTimeSpent" value="11428000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -584,16 +544,16 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="2029" y="87" width="1707" height="959" extended-state="0" />
+    <frame x="1920" y="0" width="1920" height="1080" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49343064" visible="true" weight="0.16375677" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49343064" visible="true" weight="0.14674494" />
       <window_info id="Structure" order="1" sideWeight="0.5065693" side_tool="true" weight="0.13835086" />
       <window_info id="Favorites" order="2" sideWeight="0.5048701" side_tool="true" weight="0.1624521" />
       <window_info anchor="bottom" id="Inspection Results" order="0" weight="0.32889965" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" weight="0.26512653" />
-      <window_info anchor="bottom" id="Run" order="3" sideWeight="0.49963155" visible="true" weight="0.23684211" />
+      <window_info active="true" anchor="bottom" id="Run" order="3" sideWeight="0.49963155" visible="true" weight="0.20689656" />
       <window_info anchor="bottom" id="Debug" order="4" weight="0.39539748" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
@@ -643,9 +603,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/cvlib/numpyencoder.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file:///usr/lib/python3.6/asyncio/coroutines.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="205">
@@ -836,30 +793,10 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/cvlib/CvTess.py" />
-    <entry file="file://$PROJECT_DIR$/Helper/ProcessHelper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1064">
-          <caret line="63" column="24" selection-start-line="63" selection-start-column="24" selection-end-line="63" selection-end-column="24" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/conf.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="38">
           <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/camera/Camera.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="424">
-          <caret line="42" column="24" lean-forward="true" selection-start-line="42" selection-start-column="24" selection-end-line="42" selection-end-column="24" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -883,10 +820,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Helper/ProcessHelper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="244">
+          <caret line="13" column="8" selection-start-line="13" selection-start-column="8" selection-end-line="13" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tess/tesseract.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="263">
+          <caret line="39" column="21" selection-start-line="39" selection-start-column="21" selection-end-line="39" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Caching/CacheHandler.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="456">
-          <caret line="34" column="48" lean-forward="true" selection-start-line="34" selection-start-column="48" selection-end-line="34" selection-end-column="48" />
+          <caret line="34" column="48" selection-start-line="34" selection-start-column="48" selection-end-line="34" selection-end-column="48" />
         </state>
       </provider>
     </entry>
@@ -897,26 +851,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/detection.yml">
+    <entry file="file://$PROJECT_DIR$/cvlib/ContourHandler.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="497">
-          <caret line="36" lean-forward="true" selection-start-line="36" selection-end-line="36" />
+        <state relative-caret-position="95">
+          <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/cvlib/ImageUtil.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-285">
+        <state relative-caret-position="35">
+          <caret line="217" column="108" selection-start-line="217" selection-start-column="108" selection-end-line="217" selection-end-column="108" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cvlib/ContourHandler.py">
+    <entry file="file://$PROJECT_DIR$/detection.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
+        <state relative-caret-position="618">
+          <caret line="36" selection-start-line="36" selection-end-line="36" />
         </state>
       </provider>
     </entry>
@@ -930,10 +885,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tess/tesseract.py">
+    <entry file="file://$PROJECT_DIR$/camera/Camera.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="284">
-          <caret line="45" lean-forward="true" selection-start-line="45" selection-end-line="45" />
+        <state relative-caret-position="453">
+          <caret line="47" column="56" selection-start-line="47" selection-start-column="56" selection-end-line="47" selection-end-column="56" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Helper/ProcessHelper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="418">
+          <caret line="64" column="38" selection-start-line="64" selection-start-column="38" selection-end-line="64" selection-end-column="38" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
