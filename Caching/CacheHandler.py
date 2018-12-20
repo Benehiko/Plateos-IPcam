@@ -61,7 +61,7 @@ class CacheHandler:
     @staticmethod
     def load(directory, filename):
         pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
-        f = gzip.GzipFile(directory + filename + ".npy.gz", "r")
+        f = gzip.GzipFile(directory + "/" + filename + ".npy.gz", "r")
         try:
             arr = np.load(file=f)
         except Exception as e:
@@ -75,7 +75,7 @@ class CacheHandler:
         try:
             pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
 
-            with Path(directory + filename + ".npy.gz") as fi:
+            with Path(directory + "/" + filename + ".npy.gz") as fi:
                 if fi.exists():
                     os.remove(str(fi.resolve()))
         except Exception as e:
