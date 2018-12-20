@@ -19,8 +19,8 @@ class Request:
             out = []
 
             for x in data:
-                plate, province, confidence, date = x
-                d = [('plate', plate), ('province', province), ('confidence', confidence), ('time', date), ('mac', mac)]
+                plate, province, confidence, date, deviceMac = x
+                d = [('plate', plate), ('province', province), ('confidence', confidence), ('time', date), ('deviceMac', mac), ('cameraMac', deviceMac)]
                 out.append(dict(d))
 
             print("Posting:", out)

@@ -52,7 +52,7 @@ class Tess:
                 print("It's a list", nparray)
         return None
 
-    def multi(self, images):
+    def multi(self, images, camera_mac):
         try:
             if images is not None:
                 if len(images) > 0:
@@ -61,6 +61,7 @@ class Tess:
                     pool = [asyncio.ensure_future(self.runner(i)) for i in images]
                     results = event_loop.run_until_complete(asyncio.gather(*pool))
                     results = [x for x in results if x is not None]
+                    results = [x + (camera_mac,) for x in results]
                     event_loop.close()
                     if len(results) > 0:
                         self.cached = self.cached + results

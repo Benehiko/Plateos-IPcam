@@ -45,12 +45,12 @@ class Camera:
 
                         if result is not None:
                             if len(result) > 0:
-                                t = Thread(self.tess.multi(result))
+                                t = Thread(self.tess.multi(result, self.mac))
                                 t.start()
                                 t.join()
 
             except Exception as e:
-                print("Camera died", "\n", self.get_camera_data(), "\nReason:", e)
+                print("Camera", self.get_camera_data()["alias"], self.get_camera_data()["ip"], "Died", "\nReason:", e)
                 break
             sleep(1)
 
