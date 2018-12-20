@@ -60,23 +60,28 @@ class ImageUtil:
 
     @staticmethod
     def process_for_shape_detection_bright_backlight(image):
-        values = PropertyHandler.cv_settings["preprocessing"]
-        illum = ImageUtil.illumination_correction(image.copy())
-        mask_setup = PropertyHandler.cv_settings["preprocessing"]["mask"]
-        lower = np.array(int(mask_setup["lower"]))
-        upper = np.array(int(mask_setup["upper"]))
-        img = CvHelper.greyscale(illum)
-        mask = cv2.inRange(img, lower, upper)
-        # blur = CvHelper.gaussian_blur(mask, kernel_size=3)
-        # sobelx = CvHelper.sobel(mask, kernel_size=3)  # int(values["sobel"]["kernel"]))
-        otsu = CvHelper.adaptive_thresholding(mask, int(values["otsu"]))
-        morph = CvHelper.morph(otsu, CvEnums.MORPH_CLOSE,
-                               kernel_size=(int(values["morph"]["width"]), int(values["morph"]["height"])),
-                               kernel_shape=CvEnums.K_ELLIPSE,
-                               iterations=2)
+        try:
+            values = PropertyHandler.cv_settings["preprocessing"]
+            illum = ImageUtil.illumination_correction(image.copy())
+            mask_setup = PropertyHandler.cv_settings["preprocessing"]["mask"]
+            lower = np.array(int(mask_setup["lower"]))
+            upper = np.array(int(mask_setup["upper"]))
+            img = CvHelper.greyscale(illum)
+            mask = cv2.inRange(img, lower, upper)
+            # blur = CvHelper.gaussian_blur(mask, kernel_size=3)
+            # sobelx = CvHelper.sobel(mask, kernel_size=3)  # int(values["sobel"]["kernel"]))
+            otsu = CvHelper.adaptive_thresholding(mask, int(values["otsu"]))
+            morph = CvHelper.morph(otsu, CvEnums.MORPH_CLOSE,
+                                   kernel_size=(int(values["morph"]["width"]), int(values["morph"]["height"])),
+                                   kernel_shape=CvEnums.K_ELLIPSE,
+                                   iterations=2)
 
-        # CvHelper.display("ShapeDetect", morph.copy(), size=(640, 480))
-        return morph
+            # CvHelper.display("ShapeDetect", morph.copy(), size=(640, 480))
+            return morph
+        except Exception as e:
+            print(e)
+            pass
+        return None
 
     @staticmethod
     def fix_brightness(mat):
@@ -211,8 +216,6 @@ class ImageUtil:
                                                             char_bounds=char_bounds, points=char_points)
             if 2 <= len(roi) <= 12:
                 drawn = CvHelper.draw_boxes(potential_plate, boxs, thickness=1, colour=CvEnums.COLOUR_GREEN)
-                # CvHelper.display("Chars", drawn, size=(640, 480))
-
                 return thresh, drawn
 
         return None, None

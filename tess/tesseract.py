@@ -39,11 +39,6 @@ class Tess:
                 self.t.SetImage(image)
                 raw_text = self.t.GetUTF8Text()
                 tess_confidence = self.t.MeanTextConf()
-                sum_confidence = 0
-                for x in tess_confidence:
-                    sum_confidence += x
-                sum_confidence = sum_confidence / len(tess_confidence)
-
                 # if tess_confidence >= 30:  # any(item >= 70 for item in tess_confidence):
                 text = Numberplate.sanitise(raw_text)
                 plate_type, confidence = Numberplate.validate(text, use_provinces=True)

@@ -23,6 +23,7 @@ class Camera:
         self.rest = PropertyHandler.app_settings["camera"]["restful"]
         self.username = PropertyHandler.app_settings["camera"]["username"]
         self.password = PropertyHandler.app_settings["camera"]["password"]
+        self.processHelper = ProcessHelper()
         self.mac = self.get_mac()
         self.alias, self.model = self.get_info()
         self.url = "http://" + ip + self.rest["base"] + "cmd=" + self.rest["snap"]["cmd"] + "&channel=" + str(
@@ -40,11 +41,11 @@ class Camera:
                     npy = np.array(b, dtype=np.uint8)
                     img = cv2.imdecode(npy, -1)
                     if img is not None:
-                        cropped_array = ProcessHelper.analyse_frames(img)
+                        result, __, __, __ = self.processHelper.analyse_frames(img)
 
-                        if cropped_array is not None:
-                            if len(cropped_array) > 0:
-                                t = Thread(self.tess.multi(cropped_array))
+                        if result is not None:
+                            if len(result) > 0:
+                                t = Thread(self.tess.multi(result))
                                 t.start()
                                 t.join()
 
