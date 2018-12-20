@@ -50,7 +50,7 @@ class Camera:
                                 t.join()
 
             except Exception as e:
-                print("Camera died", e)
+                print("Camera died", "\n", self.get_camera_data(), "\nReason:", e)
                 break
             sleep(1)
 
