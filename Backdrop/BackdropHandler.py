@@ -74,7 +74,7 @@ class BackdropHandler:
             if datetime.timedelta(minutes=30) < diff3:
                 self.ping_location()
                 old_time3 = datetime.datetime.now()
-                
+
             if datetime.timedelta(hours=1) < diff2:
                 self.cleanup_cache()
                 self.offline_check()
@@ -105,7 +105,7 @@ class BackdropHandler:
                     res = CacheHandler.save("cache", today, c)
                     if res is not None:
                         # print("Would have uploaded: ", res)
-                        BackdropHandler.upload_dataset(res)
+                        self.upload_dataset(res)
                         self.cached = []
         except Exception as e:
             print(e)

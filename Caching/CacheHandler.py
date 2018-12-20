@@ -35,7 +35,7 @@ class CacheHandler:
                     result += [x[0:4] for x in res]
                     rest = np.array(res, dtype=object)
                     out = np.concatenate((cached, rest), axis=0)
-                    f = gzip.GzipFile(directory + filename + ".npy.gz", "w")
+                    f = gzip.GzipFile(directory + "/" + filename + ".npy.gz", "w")
                     np.save(file=f, arr=out)
                     f.close()
 
@@ -47,7 +47,7 @@ class CacheHandler:
             else:
                 result = [x[0:4] for x in arr]
                 arr = np.array(arr, dtype=object)
-                f = gzip.GzipFile(directory + filename + ".npy.gz", "w")
+                f = gzip.GzipFile(directory + "/" + filename + ".npy.gz", "w")
                 np.save(file=f, arr=arr)
                 f.close()
 
