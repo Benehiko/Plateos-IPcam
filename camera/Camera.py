@@ -51,8 +51,8 @@ class Camera:
 
             except Exception as e:
                 print("Camera died", e)
-                sleep(1)
-                pass
+                break
+            sleep(1)
 
     def get_mac(self):
         params = [('cmd', self.rest["mac"]["cmd"]), ('rs', self.randomcmd), ('user', self.username),
