@@ -23,25 +23,25 @@ class CacheHandler:
 
                 # Load in the existing cache data
                 cached = CacheHandler.load(directory, filename)
+                if cached is not None:
+                    # Get all the numberplates into a list.
+                    cached_plates = cached[:, 0].tolist()
 
-                # Get all the numberplates into a list.
-                cached_plates = cached[:, 0].tolist()
+                    # Compare current data to cache for duplicates
+                    res, dup = CompareData.compare_list_tuples(arr, cached_plates)
 
-                # Compare current data to cache for duplicates
-                res, dup = CompareData.compare_list_tuples(arr, cached_plates)
+                    # Non-dups gets added to the file and then added to result array for post
+                    if len(res) > 0:
+                        result += [x[0:4] for x in res]
+                        rest = np.array(res, dtype=object)
+                        out = np.concatenate((cached, rest), axis=0)
+                        f = gzip.GzipFile(directory + "/" + filename + ".npy.gz", "w")
+                        np.save(file=f, arr=out)
+                        f.close()
 
-                # Non-dups gets added to the file and then added to result array for post
-                if len(res) > 0:
-                    result += [x[0:4] for x in res]
-                    rest = np.array(res, dtype=object)
-                    out = np.concatenate((cached, rest), axis=0)
-                    f = gzip.GzipFile(directory + "/" + filename + ".npy.gz", "w")
-                    np.save(file=f, arr=out)
-                    f.close()
-
-                # Duplicates got an increase in confidence and then added to result for post
-                if len(dup) > 0:
-                    result += [x[0:4] for x in dup]
+                    # Duplicates got an increase in confidence and then added to result for post
+                    if len(dup) > 0:
+                        result += [x[0:4] for x in dup]
 
             # The file doesn't exist. Create a new one with the current data.
             else:
@@ -60,15 +60,18 @@ class CacheHandler:
 
     @staticmethod
     def load(directory, filename):
-        pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
-        f = gzip.GzipFile(directory + "/" + filename + ".npy.gz", "r")
-        try:
-            arr = np.load(file=f)
-        except Exception as e:
-            print("Error on loading array", e)
-            return None
-        f.close()
-        return arr
+        fi = pathlib.Path(directory + "/" + filename + ".npy.gz")
+        if fi.exists():
+            pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
+            f = gzip.GzipFile(directory + "/" + filename + ".npy.gz", "r")
+            try:
+                arr = np.load(file=f)
+            except Exception as e:
+                print("Error on loading array", e)
+                return None
+            f.close()
+            return arr
+        return None
 
     @staticmethod
     def remove(directory, filename):

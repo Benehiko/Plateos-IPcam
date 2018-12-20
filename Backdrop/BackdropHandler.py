@@ -96,7 +96,11 @@ class BackdropHandler:
             print(e)
             pass
 
-    def cache(self, c):
+    def cache(self, c, camera_mac):
+        """
+        Do not add any extra tuple data to 'c'-plate data from tesseract
+        Too much to edit in Numberplate.improve()
+        """
         try:
             today = datetime.datetime.now().strftime('%Y-%m-%d %H')
             c = Numberplate.improve(c)
@@ -105,6 +109,7 @@ class BackdropHandler:
                     res = CacheHandler.save("cache", today, c)
                     if res is not None:
                         # print("Would have uploaded: ", res)
+                        res = [x + (camera_mac, ) for x in res]
                         self.upload_dataset(res)
                         self.cached = []
         except Exception as e:
@@ -151,8 +156,9 @@ class BackdropHandler:
                 if len(files) > 0:
                     for x in files:
                         tmp = CacheHandler.load("offline/", x).tolist()
-                        Request.post(self.interface, tmp, self.url)
-                        CacheHandler.remove("offline/", x)
+                        if tmp is not None:
+                            Request.post(self.interface, tmp, self.url)
+                            CacheHandler.remove("offline/", x)
             except Exception as e:
                 print(e)
                 pass
