@@ -67,7 +67,7 @@ class BackdropHandler:
             diff2 = now - old_time2
             diff3 = now - old_time3
 
-            if datetime.timedelta(minutes=1) < diff:
+            if datetime.timedelta(seconds=10) < diff:
                 self.check_alive()
                 old_time2 = datetime.datetime.now()
 
