@@ -61,7 +61,7 @@ class Tess:
                     pool = [asyncio.ensure_future(self.runner(i)) for i in images]
                     results = event_loop.run_until_complete(asyncio.gather(*pool))
                     results = [x for x in results if x is not None]
-                    results = [x + (camera_mac,) for x in results]
+                    results = [x for x in results]
                     event_loop.close()
                     if len(results) > 0:
                         self.cached = self.cached + results
@@ -70,7 +70,7 @@ class Tess:
                     diff = now - self.then
                     if timedelta(minutes=1) < diff:
                         if len(self.cached) > 0:
-                            self.backdrop.cache(self.cached)
+                            self.backdrop.cache(self.cached, camera_mac)
                             self.cached = []
                             self.then = now
         except Exception as e:
