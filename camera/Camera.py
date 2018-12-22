@@ -52,26 +52,31 @@ class Camera:
             except Exception as e:
                 print("Camera", self.get_camera_data()["alias"], self.get_camera_data()["ip"], "Died", "\nReason:", e)
                 break
-            sleep(1)
 
     def get_mac(self):
-        params = [('cmd', self.rest["mac"]["cmd"]), ('rs', self.randomcmd), ('user', self.username),
-                  ('password', self.password)]
-        url = "http://" + self.ip + self.rest["base"]
-        data = Request.get(url, params)
-        j = json.loads(data)
-        mac = j[0]['value']['LocalLink']['mac']
-        return mac
+        try:
+            params = [('cmd', self.rest["mac"]["cmd"]), ('rs', self.randomcmd), ('user', self.username),
+                      ('password', self.password)]
+            url = "http://" + self.ip + self.rest["base"]
+            data = Request.get(url, params)
+            j = json.loads(data)
+            mac = j[0]['value']['LocalLink']['mac']
+            return mac
+        except Exception as e:
+            print("Couldn't get camera", self.ip, "mac", "\nReason:", e)
 
     def get_info(self):
-        params = [('cmd', self.rest["info"]["cmd"]), ('rs', self.randomcmd), ('user', self.username),
-                  ('password', self.password)]
-        url = "http://" + self.ip + self.rest["base"]
-        data = Request.get(url, params)
-        j = json.loads(data)
-        alias = j[0]["value"]["DevInfo"]["name"]
-        model = j[0]["value"]["DevInfo"]["model"]
-        return alias, model
+        try:
+            params = [('cmd', self.rest["info"]["cmd"]), ('rs', self.randomcmd), ('user', self.username),
+                      ('password', self.password)]
+            url = "http://" + self.ip + self.rest["base"]
+            data = Request.get(url, params)
+            j = json.loads(data)
+            alias = j[0]["value"]["DevInfo"]["name"]
+            model = j[0]["value"]["DevInfo"]["model"]
+            return alias, model
+        except Exception as e:
+            print("Couldn't get camera", self.ip, "information", "\nReason", e)
 
     def get_camera_data(self):
         return dict([('mac', self.mac), ('alias', self.alias), ('ip', self.ip), ('model', self.model)])

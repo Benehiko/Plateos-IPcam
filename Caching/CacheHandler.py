@@ -84,3 +84,14 @@ class CacheHandler:
         except Exception as e:
             print(e)
             pass
+
+    @staticmethod
+    def loadByPlate(directory, filename, plate):
+        try:
+            data = CacheHandler.load(directory, filename)
+            d = [x for x in data if x[0] == plate]
+            return d
+        except Exception as e:
+            print(e)
+            pass
+        return []
