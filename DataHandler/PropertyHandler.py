@@ -4,6 +4,7 @@ import yaml
 
 
 class PropertyHandler:
+    numberplate = {}
     app_settings = {
         "camera": {
             "username": "",
@@ -57,10 +58,8 @@ class PropertyHandler:
 
     @staticmethod
     def load_app():
-        stream = io.open("conf.yml", 'r', encoding='utf8')
-        configs = yaml.safe_load(stream)
-
         try:
+            configs = PropertyHandler.load("conf")
             # Camera Settings
             camera = configs.get("camera")
 
@@ -81,10 +80,8 @@ class PropertyHandler:
 
     @staticmethod
     def load_cv():
-        stream = io.open("detection.yml", 'r', encoding='utf8')
-        configs = yaml.safe_load(stream)
-
         try:
+            configs = PropertyHandler.load("detection")
             # Character detection
             char = configs.get("char")
 
@@ -102,6 +99,23 @@ class PropertyHandler:
         except Exception as e:
             print(e)
             PropertyHandler.save("detection.yml", PropertyHandler.cv_settings)
+
+    @staticmethod
+    def load_numberplate():
+        try:
+            data = PropertyHandler.load("numberplate")
+            PropertyHandler.numberplate = data
+        except Exception as e:
+            print(e)
+
+    @staticmethod
+    def load(file):
+        try:
+            stream = io.open(file + ".yml", 'r', encoding='utf8')
+            data = yaml.safe_load(stream)
+            return data
+        except Exception as e:
+            print(e)
 
     @staticmethod
     def save(filename, data):

@@ -11,6 +11,7 @@ from Network.PortScanner import PortScanner
 from Network.requestor import Request
 from camera.Camera import Camera
 from numberplate.Numberplate import Numberplate
+from numberplate.NumberplateHandler import NumberplateHandler
 from tess.tesseract import Tess
 
 
@@ -80,10 +81,6 @@ class BackdropHandler:
                 self.offline_check()
                 old_time2 = datetime.datetime.now()
 
-    def callback_tess(self, plate):
-        print("Plate:", plate[0], "Province:", plate[1], "Confidence:", plate[2], "Date:", plate[3])
-        self.cached.append(plate)
-        return
 
     def add(self, ip):
         try:
@@ -103,15 +100,19 @@ class BackdropHandler:
         """
         try:
             today = datetime.datetime.now().strftime('%Y-%m-%d %H')
-            c = Numberplate.improve(c)
+            tmp = []
+            for x in c:
+                tmp.append((x["plate"], x["province"], x["confidence"], x["time"], x["image"]))
+            c = tmp
+            c = NumberplateHandler.improve(c)
             if c is not None:
                 if len(c) > 0:
+                    c = NumberplateHandler.remove_similar(c)
                     res = CacheHandler.save("cache", today, c)
                     if res is not None:
                         # print("Would have uploaded: ", res)
-                        res = [x + (camera_mac, ) for x in res]
+                        res = [x + (camera_mac,) for x in res]
                         self.upload_dataset(res)
-                        self.cached = []
         except Exception as e:
             print(e)
             pass

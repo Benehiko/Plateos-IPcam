@@ -1,5 +1,8 @@
 from difflib import SequenceMatcher
+from os import listdir
+from os.path import isfile, join
 
+from Caching.CacheHandler import CacheHandler
 from DataHandler.CompareData import CompareData
 
 '''
@@ -47,32 +50,7 @@ class Numberplate:
 
         return 3 <= len(text) <= 9
 
-    @staticmethod
-    def improve(plates):
-        tmp = Numberplate.remove_duplicates(plates)
-        if tmp is not None:
-            out = []
-            while True:
-                highest = Numberplate.get_highest(tmp)
-                if highest is not None:
-                    result, remainder = Numberplate.split_plates(tmp, highest)
-                    if result is not None:
-                        if (0.6 > result[2] > 0.56) or (0.8 > result[2] > 0.63) or result[2] > 0.83:
-                            out.append(result)
-                    if len(remainder) == 0:
-                        break
-                    else:
-                        tmp = remainder
-                else:
-                    break
-            return out
-        return None
 
-    @staticmethod
-    def sanitise(text):
-        text = text.replace("\n", "")
-        text = ''.join(e for e in text if e.isalnum()).upper()
-        return text
 
     @staticmethod
     def province_validate(text):
@@ -189,63 +167,4 @@ class Numberplate:
 
         return result, confidence
 
-    """
-        Remove all the duplicates.
-        Returns list without duplicates with increased confidence.
-    """
-    @staticmethod
-    def remove_duplicates(l):
 
-        """Get duplication count of each element"""
-        #counts = list(Counter([x[0] for x in l]).values())
-
-        """Remove duplicates using set then convert back to list"""
-        # gen = (random.choice(tuple(g)) for _, g in groupby(l, key=lambda x: x[0]))
-        # plates = list(islice(gen, 4))
-        if len(l) > 0:
-            plates, counts = CompareData.del_duplicates_list_tuples(l)
-            if plates is not None or counts is not None:
-                for x in range(0, len(counts)):
-                    (pl, pr, con, t, img) = plates[x]
-                    con = round(con + (counts[x] / 100), 2)
-                    plates[x] = (pl, pr, con, t, img)
-
-                return plates
-        return None
-
-    """Get the highest confidence value"""
-    @staticmethod
-    def get_highest(l):
-        #print(l)
-        if len(l) > 0:
-            highest = l[0]
-            for x in l:
-                _, _, con, _, _ = x
-                _, _, h, _, _ = highest
-                if h < con:
-                    highest = x
-            return highest
-        return None
-
-    """
-        Split plates based off of their similarity report
-        Returns The best plate (confidence level highest)
-        Returns the remainder that was not similar
-    """
-
-    # noinspection PyShadowingNames
-    @staticmethod
-    def split_plates(plates, highest):
-        remainder = []
-        similar = []
-        if len(plates) > 0 and len(highest) > 0:
-            for x in plates:
-                if SequenceMatcher(None, highest[0], x[0]).ratio() * 100 > 80:
-                    similar.append(x)
-                else:
-                    remainder.append(x)
-        if len(similar) > 0:
-            r = max(similar, key=lambda x: x[2])
-        else:
-            r = None
-        return r, remainder

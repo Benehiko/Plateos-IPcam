@@ -7,6 +7,7 @@ from PIL import Image
 from io import BytesIO
 from cvlib.ImageUtil import ImageUtil
 from numberplate.Numberplate import Numberplate
+from numberplate.NumberplateHandler import NumberplateHandler
 
 
 class Tess:
@@ -38,16 +39,24 @@ class Tess:
                 image = Image.open(temp)
                 self.t.SetImage(image)
                 raw_text = self.t.GetUTF8Text()
-                tess_confidence = self.t.MeanTextConf()
-                # if tess_confidence >= 30:  # any(item >= 70 for item in tess_confidence):
-                text = Numberplate.sanitise(raw_text)
-                plate_type, confidence = Numberplate.validate(text, use_provinces=True)
-                if plate_type is not None and confidence > 0:
-                    image = ImageUtil.compress(nparray, max_w=200)
-                    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                    plate = (text, plate_type, confidence + ((tess_confidence / 100) / 2), now, image)
-                    self.backdrop.callback_tess(plate)
-                    return plate
+                if len(raw_text) > 0:
+                    text = NumberplateHandler.sanitise(raw_text)
+                    word_conf = self.t.MapWordConfidences()
+                    tess_confidence = 0
+                    for x in word_conf:
+                        if text == x[0]:
+                            tess_confidence = x[1]
+                            break
+
+                    data = NumberplateHandler.validate(text)
+                    if None is not data[0]:
+                        country, province, confidence = data
+                        image = ImageUtil.compress(nparray, max_w=200)
+                        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                        confidence = confidence + round(((tess_confidence / 100) / 2), 2)
+                        plate = {"plate": text, "country": country, "province": province, "confidence": confidence, "time": now, "image": image}
+                        print("Plate:", text, "Country:", country, "Province:", province, "Confidence:", confidence, "Time:", now)
+                        return plate
             else:
                 print("It's a list", nparray)
         return None
@@ -61,10 +70,10 @@ class Tess:
                     pool = [asyncio.ensure_future(self.runner(i)) for i in images]
                     results = event_loop.run_until_complete(asyncio.gather(*pool))
                     results = [x for x in results if x is not None]
-                    results = [x for x in results]
+                    # results = [x for x in results]
                     event_loop.close()
                     if len(results) > 0:
-                        self.cached = self.cached + results
+                        self.cached += results
 
                     now = datetime.now()
                     diff = now - self.then
