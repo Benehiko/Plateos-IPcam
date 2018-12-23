@@ -57,7 +57,8 @@ class Tess:
                     confidence = confidence + round(((tess_confidence / 100) / 2), 2)
                     plate = {"plate": text, "country": country, "province": province, "confidence": confidence,
                              "image": image, "time": now, "char-len": data[1]}
-                    #print("Plate:", text, "Country:", country, "Province:", province, "Confidence:", confidence, "Time:", now)
+                    print("Plate:", text, "Country:", country, "Province:", province, "Confidence:", confidence,
+                          "Time:", now)
         return plate
 
     def multi(self, images, camera_mac, original_img):
@@ -81,12 +82,12 @@ class Tess:
                         image = ImageUtil.compress(original_img, max_w=1080, quality=100)
                         if len(allowed) > 0:
                             meta = [{"time": now, "original": image, "results": allowed}]
-                            CacheHandler.save_meta("meta", now, meta)
+                            self.backdrop.tess_save_meta(meta)
 
                         if len(self.cached) > 0:
                             self.backdrop.cache(self.cached, camera_mac)
                             self.cached = []
                             self.then = datetime.now()
         except Exception as e:
-            print(e)
+            print("Tesseract Error", e)
             pass
