@@ -97,20 +97,21 @@ class BackdropHandler:
         Too much to edit in Numberplate.improve()
         """
         try:
-            today = datetime.datetime.now().strftime('%Y-%m-%d %H')
-            tmp = []
-            for x in c:
-                tmp.append((x["plate"], x["province"], x["confidence"], x["time"], x["image"]))
-            c = tmp
-            c = NumberplateHandler.improve(c)
-            if c is not None:
-                if len(c) > 0:
-                    c = NumberplateHandler.remove_similar(c)
-                    res = CacheHandler.save("cache", today, c)
-                    if res is not None:
-                        # print("Would have uploaded: ", res)
-                        res = [x + (camera_mac,) for x in res]
-                        self.upload_dataset(res)
+            if len(c) > 0:
+                today = datetime.datetime.now().strftime('%Y-%m-%d %H')
+                tmp = []
+                for x in c:
+                    tmp.append((x["plate"], x["province"], x["confidence"], x["time"], x["image"]))
+                c = tmp
+                c = NumberplateHandler.improve(c)
+                if c is not None:
+                    if len(c) > 0:
+                        c = NumberplateHandler.remove_similar(c)
+                        res = CacheHandler.save("cache", today, c)
+                        if res is not None:
+                            # print("Would have uploaded: ", res)
+                            res = [x + (camera_mac,) for x in res]
+                            self.upload_dataset(res)
         except Exception as e:
             print(e)
             pass

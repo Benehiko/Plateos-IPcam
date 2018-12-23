@@ -63,7 +63,7 @@ class Tess:
 
     def multi(self, images, camera_mac, original_img):
         try:
-            if images is not None:
+            if images is not None and original_img is not None and camera_mac is not "":
                 if len(images) > 0:
                     event_loop = asyncio.new_event_loop()
                     asyncio.set_event_loop(event_loop)
