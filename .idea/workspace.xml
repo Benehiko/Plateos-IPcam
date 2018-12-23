@@ -6,9 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="73461767-bf7c-4bbb-a949-6252378e84fd" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backdrop/BackdropHandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Backdrop/BackdropHandler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Caching/CacheHandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Caching/CacheHandler.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Helper/ProcessHelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/Helper/ProcessHelper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Network/PortScanner.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/camera/Camera.py" beforeDir="false" afterPath="$PROJECT_DIR$/camera/Camera.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cvlib/ImageUtil.py" beforeDir="false" afterPath="$PROJECT_DIR$/cvlib/ImageUtil.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/numberplate.yml" beforeDir="false" afterPath="$PROJECT_DIR$/numberplate.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/numberplate/NumberplateHandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/numberplate/NumberplateHandler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/run.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tess/tesseract.py" beforeDir="false" afterPath="$PROJECT_DIR$/tess/tesseract.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -23,13 +29,21 @@
     <SUITE FILE_PATH="coverage/Plateos$scratch_9.coverage" NAME="scratch_9 Coverage Results" MODIFIED="1534925441740" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_6.coverage" NAME="scratch_6 Coverage Results" MODIFIED="1534676426187" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_4.coverage" NAME="scratch_4 Coverage Results" MODIFIED="1540463913208" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_7.coverage" NAME="scratch_7 Coverage Results" MODIFIED="1545318255819" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_14.coverage" NAME="scratch_14 Coverage Results" MODIFIED="1545490253554" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$Camera__1_.coverage" NAME="Camera (1) Coverage Results" MODIFIED="1538080748504" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/camera" />
+    <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_11.coverage" NAME="scratch_11 Coverage Results" MODIFIED="1545416173202" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_17.coverage" NAME="scratch_17 Coverage Results" MODIFIED="1536179237666" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$run.coverage" NAME="run Coverage Results" MODIFIED="1538121831755" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_12.coverage" NAME="scratch_12 Coverage Results" MODIFIED="1545438415747" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1538129091712" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_11.coverage" NAME="scratch_11 Coverage Results" MODIFIED="1534969954513" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_9.coverage" NAME="scratch_9 Coverage Results" MODIFIED="1545321943877" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_19.coverage" NAME="scratch_19 Coverage Results" MODIFIED="1537098407071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
-    <SUITE FILE_PATH="coverage/Plateos_IPcam$run.coverage" NAME="run Coverage Results" MODIFIED="1545293000573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_6.coverage" NAME="scratch_6 Coverage Results" MODIFIED="1545311372785" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/Plateos_IPcam$run.coverage" NAME="run Coverage Results" MODIFIED="1545526611761" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_13.coverage" NAME="scratch_13 Coverage Results" MODIFIED="1545489751927" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_10.coverage" NAME="scratch_10 Coverage Results" MODIFIED="1545357153622" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_10.coverage" NAME="scratch_10 Coverage Results" MODIFIED="1534996601711" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_16.coverage" NAME="scratch_16 Coverage Results" MODIFIED="1535942494166" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$Backdrop.coverage" NAME="Backdrop Coverage Results" MODIFIED="1538113690050" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Backdrop" />
@@ -43,7 +57,10 @@
     <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_5.coverage" NAME="scratch_5 Coverage Results" MODIFIED="1540465014729" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos_IPcam$VideoProcess.coverage" NAME="VideoProcess Coverage Results" MODIFIED="1538879979906" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../Scratch Folder" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_7.coverage" NAME="scratch_7 Coverage Results" MODIFIED="1534696294009" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_8.coverage" NAME="scratch_8 Coverage Results" MODIFIED="1545369165673" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/Plateos_IPcam$TestMeta.coverage" NAME="TestMeta Coverage Results" MODIFIED="1545526779070" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_18.coverage" NAME="scratch_18 Coverage Results" MODIFIED="1536274918181" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/Plateos_IPcam$NumberplateHandler.coverage" NAME="NumberplateHandler Coverage Results" MODIFIED="1545438426466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/numberplate" />
     <SUITE FILE_PATH="coverage/Plateos$Numberplate.coverage" NAME="Numberplate Coverage Results" MODIFIED="1534023325919" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/numberplate" />
     <SUITE FILE_PATH="coverage/Plateos$Camera.coverage" NAME="Camera Coverage Results" MODIFIED="1538113670336" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/camera" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_15.coverage" NAME="scratch_15 Coverage Results" MODIFIED="1535929012450" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
@@ -52,42 +69,94 @@
   <component name="CoverageViewManager">
     <option name="myElementSize" value="305" />
   </component>
+  <component name="DockManager">
+    <window id="1">
+      <content type="file-editors">
+        <state>
+          <leaf>
+            <file pinned="false" current-in-tab="false">
+              <entry file="file://$PROJECT_DIR$/Caching/CacheHandler.py">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="297">
+                    <caret line="69" column="50" selection-start-line="69" selection-start-column="50" selection-end-line="69" selection-end-column="50" />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+            <file pinned="false" current-in-tab="false">
+              <entry file="file://$PROJECT_DIR$/numberplate/NumberplateHandler.py">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="610">
+                    <caret line="215" column="23" selection-start-line="215" selection-start-column="23" selection-end-line="215" selection-end-column="23" />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+            <file pinned="false" current-in-tab="false">
+              <entry file="file://$PROJECT_DIR$/numberplate.yml">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="311">
+                    <caret line="243" column="18" selection-start-line="243" selection-start-column="18" selection-end-line="243" selection-end-column="18" />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+            <file pinned="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/Network/CameraScan.py">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="209">
+                    <caret line="11" selection-start-line="11" selection-end-line="11" />
+                    <folding>
+                      <element signature="e#0#13#0" expanded="true" />
+                    </folding>
+                  </state>
+                </provider>
+              </entry>
+            </file>
+          </leaf>
+        </state>
+      </content>
+    </window>
+    <window id="5">
+      <content type="file-editors">
+        <state>
+          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+            <file pinned="false" current-in-tab="true">
+              <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_14.py">
+                <provider selected="true" editor-type-id="text-editor" />
+              </entry>
+            </file>
+          </leaf>
+        </state>
+      </content>
+    </window>
+  </component>
   <component name="FavoritesManager">
     <favorites_list name="Plateos-IPcam" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Backdrop/BackdropHandler.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="455">
-              <caret line="92" column="26" selection-start-line="92" selection-start-column="26" selection-end-line="92" selection-end-column="26" />
-              <folding>
-                <element signature="e#0#14#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
+        <entry file="mock:///home/benehiko/.PyCharm2018.3/system/snapshots/Plateos-IPcam2.pstat">
+          <provider selected="true" editor-type-id="profiler-session-editor" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/camera/Camera.py">
+        <entry file="file://$PROJECT_DIR$/detection.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="453">
-              <caret line="47" column="56" selection-start-line="47" selection-start-column="56" selection-end-line="47" selection-end-column="56" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="563">
+              <caret line="36" selection-start-line="36" selection-end-line="36" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Helper/ProcessHelper.py">
+        <entry file="file://$PROJECT_DIR$/TestMeta.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="418">
-              <caret line="64" column="38" selection-start-line="64" selection-start-column="38" selection-end-line="64" selection-end-column="38" />
+            <state relative-caret-position="95">
+              <caret line="5" column="47" selection-start-line="5" selection-start-column="47" selection-end-line="5" selection-end-column="47" />
               <folding>
-                <element signature="e#0#14#0" expanded="true" />
+                <element signature="e#0#10#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -104,11 +173,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>crop</find>
-      <find>GP</find>
-      <find>ff69TKGP</find>
-      <find>CvEnums</find>
-      <find>sub</find>
       <find>shado</find>
       <find>char_</find>
       <find>draww</find>
@@ -134,6 +198,11 @@
       <find>cached</find>
       <find>res</find>
       <find>dup</find>
+      <find>plate[:6] + plate[6+1:]</find>
+      <find>b</find>
+      <find>GP</find>
+      <find>self.cached</find>
+      <find>Lesotho</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -142,20 +211,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_10.py" />
-        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_12.py" />
-        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_13.py" />
-        <option value="$PROJECT_DIR$/cvShapeHandler/gpuhandler.py" />
-        <option value="$PROJECT_DIR$/cvShapeHandler/imagedisplay.py" />
-        <option value="$PROJECT_DIR$/cvShapeHandler/shapehandler.py" />
-        <option value="$PROJECT_DIR$/cvShapeHandler/process.py" />
-        <option value="$PROJECT_DIR$/cvShapeHandler/imgprocess.py" />
-        <option value="$PROJECT_DIR$/cvShapeHandler/imageprocessing.py" />
-        <option value="$PROJECT_DIR$/cvShapeHandler/cvHelper.py" />
-        <option value="$PROJECT_DIR$/cvShapeHandler/cvEnums.py" />
-        <option value="$PROJECT_DIR$/cvShapeHandler/CvEnums.py" />
-        <option value="$PROJECT_DIR$/cvShapeHandler/CvHelper.py" />
-        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_14.py" />
         <option value="$PROJECT_DIR$/cvlib/imgprocess.py" />
         <option value="$PROJECT_DIR$/cvlib/imageprocessing.py" />
         <option value="$PROJECT_DIR$/cvlib/process.py" />
@@ -171,35 +226,50 @@
         <option value="$PROJECT_DIR$/../PlateosHorizon/plateos.py" />
         <option value="$PROJECT_DIR$/../PlateosHorizon/octodaddy/Octodaddy.py" />
         <option value="$PROJECT_DIR$/cvlib/CvEnums.py" />
-        <option value="$PROJECT_DIR$/numberplate/Numberplate.py" />
         <option value="$PROJECT_DIR$/cvlib/CvHelper.py" />
         <option value="$PROJECT_DIR$/../Scratch Folder/VideoProcess.py" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_2.py" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_3.py" />
-        <option value="$PROJECT_DIR$/DataHandler/CompareData.py" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_4.py" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_5.py" />
         <option value="$PROJECT_DIR$/Network/PortScanner.py" />
-        <option value="$PROJECT_DIR$/Caching/CacheHandler.py" />
-        <option value="$PROJECT_DIR$/conf.yml" />
-        <option value="$PROJECT_DIR$/Network/requestor.py" />
-        <option value="$PROJECT_DIR$/DataHandler/PropertyHandler.py" />
         <option value="$PROJECT_DIR$/detection.yml" />
-        <option value="$PROJECT_DIR$/run.py" />
         <option value="$PROJECT_DIR$/Backdrop/Backdrop.py" />
         <option value="$PROJECT_DIR$/cvlib/ContourHandler.py" />
-        <option value="$PROJECT_DIR$/Backdrop/BackdropHandler.py" />
-        <option value="$PROJECT_DIR$/camera/Camera.py" />
-        <option value="$PROJECT_DIR$/cvlib/ImageUtil.py" />
-        <option value="$PROJECT_DIR$/tess/tesseract.py" />
+        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_6.py" />
+        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_7.py" />
+        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_9.py" />
+        <option value="$PROJECT_DIR$/Network/requestor.py" />
+        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_10.py" />
+        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_8.py" />
+        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_11.py" />
+        <option value="$PROJECT_DIR$/numberplate/Numberplate.py" />
+        <option value="$PROJECT_DIR$/DataHandler/PropertyHandler.py" />
+        <option value="$PROJECT_DIR$/conf.yml" />
+        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_12.py" />
+        <option value="$PROJECT_DIR$/DataHandler/CompareData.py" />
+        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_13.py" />
+        <option value="$PROJECT_DIR$/TestValidate.py" />
+        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_14.py" />
+        <option value="$PROJECT_DIR$/numberplate.yml" />
+        <option value="$PROJECT_DIR$/numberplate/NumberplateHandler.py" />
+        <option value="$PROJECT_DIR$/Caching/CacheHandler.py" />
         <option value="$PROJECT_DIR$/Helper/ProcessHelper.py" />
+        <option value="$PROJECT_DIR$/cvlib/ImageUtil.py" />
+        <option value="$PROJECT_DIR$/camera/Camera.py" />
+        <option value="$PROJECT_DIR$/run.py" />
+        <option value="$PROJECT_DIR$/Network/CameraScan.py" />
+        <option value="$PROJECT_DIR$/Backdrop/BackdropHandler.py" />
+        <option value="$PROJECT_DIR$/tess/tesseract.py" />
+        <option value="$PROJECT_DIR$/TestMeta.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1920" />
-    <option name="width" value="1920" />
-    <option name="height" value="1080" />
+    <option name="x" value="67" />
+    <option name="y" value="27" />
+    <option name="width" value="1853" />
+    <option name="height" value="1053" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -223,17 +293,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope">
-        <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
-          <expand>
-            <path>
-              <item name="Plateos" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -279,7 +338,23 @@
             <path>
               <item name="Plateos-IPcam" type="b2602c69:ProjectViewProjectNode" />
               <item name="Plateos-IPcam" type="462c0819:PsiDirectoryNode" />
+              <item name="numberplate" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Plateos-IPcam" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Plateos-IPcam" type="462c0819:PsiDirectoryNode" />
               <item name="tess" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope">
+        <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
+          <expand>
+            <path>
+              <item name="Plateos" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
             </path>
           </expand>
           <select />
@@ -290,7 +365,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
-    <property name="last_opened_file_path" value="$USER_HOME$/Documents/PyCharm/Plateos-Setup" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Documents/PyCharm/Scratch Folder" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
@@ -313,17 +388,18 @@
     </option>
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/numberplate" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/cvlib" />
+      <recent name="$PROJECT_DIR$/DataHandler" />
+      <recent name="$PROJECT_DIR$/../Scratch Folder" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/Helper" />
       <recent name="$PROJECT_DIR$/Network" />
       <recent name="$PROJECT_DIR$/Backdrop" />
       <recent name="$PROJECT_DIR$/camera" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/cvlib" />
-      <recent name="$PROJECT_DIR$/DataHandler" />
-      <recent name="$PROJECT_DIR$/../Scratch Folder" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -338,8 +414,8 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.run">
-    <configuration name="VideoProcess" type="PythonConfigurationType" factoryName="Python" temporary="true">
+  <component name="RunManager" selected="Python.TestMeta">
+    <configuration name="NumberplateHandler" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Plateos" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -347,12 +423,34 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../Scratch Folder" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/numberplate" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../Scratch Folder/VideoProcess.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/numberplate/NumberplateHandler.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestMeta" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Plateos" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/TestMeta.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -383,6 +481,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="scratch_12" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Plateos" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_12.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="scratch_13" type="PythonConfigurationType" factoryName="Python">
       <module name="Plateos" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -405,7 +525,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="scratch_2" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="scratch_14" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Plateos" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -418,29 +538,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_2.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="scratch_3" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="Plateos" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_3.py" />
+      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_14.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -471,44 +569,22 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="scratch_5" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="Plateos" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_5.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <list>
       <item itemvalue="Python.scratch_4" />
       <item itemvalue="Python.scratch_13" />
-      <item itemvalue="Python.VideoProcess" />
-      <item itemvalue="Python.scratch_2" />
-      <item itemvalue="Python.scratch_3" />
-      <item itemvalue="Python.scratch_5" />
       <item itemvalue="Python.run" />
+      <item itemvalue="Python.NumberplateHandler" />
+      <item itemvalue="Python.scratch_12" />
+      <item itemvalue="Python.scratch_14" />
+      <item itemvalue="Python.TestMeta" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.TestMeta" />
         <item itemvalue="Python.run" />
-        <item itemvalue="Python.scratch_5" />
-        <item itemvalue="Python.scratch_3" />
-        <item itemvalue="Python.scratch_2" />
-        <item itemvalue="Python.VideoProcess" />
+        <item itemvalue="Python.scratch_14" />
+        <item itemvalue="Python.NumberplateHandler" />
+        <item itemvalue="Python.scratch_12" />
       </list>
     </recent_temporary>
   </component>
@@ -527,12 +603,14 @@
       <workItem from="1545092952659" duration="2136000" />
       <workItem from="1545127028026" duration="1382000" />
       <workItem from="1545178135406" duration="2439000" />
-      <workItem from="1545291834943" duration="1207000" />
+      <workItem from="1545291834943" duration="57526000" />
+      <workItem from="1545408182471" duration="27306000" />
+      <workItem from="1545494179181" duration="17013000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11428000" />
+    <option name="totallyTimeSpent" value="112066000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -544,27 +622,27 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1920" y="0" width="1920" height="1080" extended-state="6" />
+    <frame x="67" y="27" width="1853" height="1053" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49343064" visible="true" weight="0.14674494" />
-      <window_info id="Structure" order="1" sideWeight="0.5065693" side_tool="true" weight="0.13835086" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49110806" visible="true" weight="0.15550636" />
+      <window_info id="Structure" order="1" sideWeight="0.50889194" side_tool="true" weight="0.20486367" />
       <window_info id="Favorites" order="2" sideWeight="0.5048701" side_tool="true" weight="0.1624521" />
       <window_info anchor="bottom" id="Inspection Results" order="0" weight="0.32889965" />
       <window_info anchor="bottom" id="Message" order="1" />
-      <window_info anchor="bottom" id="Find" order="2" weight="0.26512653" />
-      <window_info active="true" anchor="bottom" id="Run" order="3" sideWeight="0.49963155" visible="true" weight="0.20689656" />
-      <window_info anchor="bottom" id="Debug" order="4" weight="0.39539748" />
+      <window_info anchor="bottom" id="Find" order="2" weight="0.26436782" />
+      <window_info active="true" anchor="bottom" id="Run" order="3" sideWeight="0.49963155" visible="true" weight="0.24301076" />
+      <window_info anchor="bottom" id="Debug" order="4" weight="0.3448276" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="7" weight="0.32673267" />
-      <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="9" weight="0.32846716" />
-      <window_info anchor="bottom" id="Database Changes" order="10" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.5003685" side_tool="true" weight="0.29812983" />
-      <window_info anchor="bottom" id="Terminal" order="12" weight="0.3278328" />
-      <window_info anchor="bottom" id="Python Console" order="13" weight="0.32673267" />
-      <window_info anchor="bottom" id="Concurrent Activities Diagram" order="14" weight="0.3278328" />
+      <window_info anchor="bottom" id="Concurrent Activities Diagram" order="7" weight="0.3268817" />
+      <window_info anchor="bottom" id="TODO" order="8" weight="0.32580644" />
+      <window_info anchor="bottom" id="Docker" order="9" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="10" weight="0.32795697" />
+      <window_info anchor="bottom" id="Database Changes" order="11" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.5003685" side_tool="true" weight="0.29812983" />
+      <window_info anchor="bottom" id="Terminal" order="13" weight="0.3268817" />
+      <window_info anchor="bottom" id="Python Console" order="14" weight="0.32580644" />
       <window_info anchor="right" id="Coverage" order="0" side_tool="true" weight="0.3294031" />
       <window_info anchor="right" id="Commander" order="1" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="2" weight="0.25" />
@@ -602,73 +680,43 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="editorHistoryManager">
-    <entry file="file:///usr/lib/python3.6/asyncio/coroutines.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="205">
-          <caret line="211" selection-start-line="211" selection-end-line="211" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_15.py" />
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_16.py" />
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_17.py" />
-    <entry file="file://$PROJECT_DIR$/../Scratch Folder/character_highlight.py" />
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_18.py" />
-    <entry file="file://$USER_HOME$/.PyCharm2018.2/system/python_stubs/-752092150/cv2/cv2/__init__.py" />
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_19.py" />
-    <entry file="file://$USER_HOME$/.local/lib/python3.6/site-packages/PIL/Image.py" />
-    <entry file="file://$PROJECT_DIR$/../Scratch Folder/convert_white.py" />
-    <entry file="file:///usr/lib/python3.6/asyncio/events.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="127">
-          <caret line="681" column="4" selection-start-line="681" selection-start-column="4" selection-end-line="681" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../PythonVirtualEnvironment/lib/python3.6/site-packages/numpy/lib/npyio.py" />
-    <entry file="file:///usr/lib/python3.6/multiprocessing/pool.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="348" column="8" selection-start-line="348" selection-start-column="8" selection-end-line="348" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/python3.6/threading.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="756" column="8" selection-start-line="756" selection-start-column="8" selection-end-line="756" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/python3.6/asyncio/tasks.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="245">
-          <caret line="525" selection-start-line="525" selection-end-line="525" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="5" column="50" selection-start-line="5" selection-start-column="50" selection-end-line="5" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/python3.6/asyncio/base_events.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="293">
-          <caret line="433" selection-start-line="433" selection-end-line="433" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/python3/dist-packages/PIL/Image.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="1934" selection-start-line="1934" selection-end-line="1934" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_HOME_DIR$/helpers/python-skeletons/multiprocessing/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="19">
@@ -737,31 +785,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Network/PortScanner.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="443">
-          <caret line="40" column="14" selection-start-line="40" selection-start-column="14" selection-end-line="40" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/requestor/requestor.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="513">
           <caret line="35" column="37" lean-forward="true" selection-start-line="35" selection-start-column="37" selection-end-line="35" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DataHandler/CompareData.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="10" column="29" selection-start-line="10" selection-start-column="29" selection-end-line="10" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DataHandler/PropertyHandler.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="246">
-          <caret line="79" column="73" selection-start-line="79" selection-start-column="73" selection-end-line="79" selection-end-column="73" />
         </state>
       </provider>
     </entry>
@@ -775,16 +802,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Network/requestor.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="892">
-          <caret line="65" column="23" selection-start-line="65" selection-start-column="23" selection-end-line="65" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/cvlib/CvEnums.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="342">
@@ -793,17 +810,212 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/cvlib/CvTess.py" />
+    <entry file="file:///usr/lib/python3.6/subprocess.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="1343" selection-start-line="1343" selection-end-line="1343" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_6.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="11" column="48" selection-start-line="11" selection-start-column="48" selection-end-line="11" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_9.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="14" column="28" selection-start-line="14" selection-start-column="28" selection-end-line="14" selection-end-column="28" />
+          <folding>
+            <element signature="e#0#22#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Network/requestor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="87" column="20" selection-start-line="87" selection-start-column="20" selection-end-line="87" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_10.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="9" column="18" lean-forward="true" selection-start-line="9" selection-start-column="18" selection-end-line="9" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_7.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1159">
+          <caret line="61" column="32" selection-start-line="61" selection-start-column="32" selection-end-line="61" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_8.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="16" selection-start-column="16" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_11.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="17" lean-forward="true" selection-start-column="17" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DataHandler/PropertyHandler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="248">
+          <caret line="105" column="41" selection-start-line="105" selection-start-column="41" selection-end-line="105" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/numberplate/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_12.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_13.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="57">
+          <caret line="3" column="17" lean-forward="true" selection-start-line="3" selection-start-column="17" selection-end-line="3" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TestValidate.py" />
     <entry file="file://$PROJECT_DIR$/conf.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
-          <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
+        <state relative-caret-position="380">
+          <caret line="20" column="19" selection-start-line="20" selection-start-column="19" selection-end-line="20" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_14.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/numberplate/Numberplate.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2441">
+          <caret selection-end-line="5" selection-end-column="47" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/python3.6/multiprocessing/process.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="697">
+          <caret line="234" column="6" lean-forward="true" selection-start-line="234" selection-start-column="6" selection-end-line="234" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharm2018.3/system/python_stubs/1178295112/builtins.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="173">
+          <caret line="4609" column="4" lean-forward="true" selection-start-line="4609" selection-start-column="4" selection-end-line="4609" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DataHandler/CompareData.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="305">
+          <caret line="20" column="12" selection-start-line="20" selection-start-column="12" selection-end-line="20" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cvlib/ContourHandler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3517">
+          <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cvlib/ImageUtil.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="21" column="24" selection-start-line="21" selection-start-column="24" selection-end-line="21" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/python3.6/asyncio/base_events.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="438" selection-start-line="438" selection-end-line="438" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Helper/ProcessHelper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="56" column="50" selection-start-line="56" selection-start-column="50" selection-end-line="56" selection-end-column="50" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/camera/Camera.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="389">
+          <caret line="43" column="71" selection-start-line="43" selection-start-column="71" selection-end-line="43" selection-end-column="71" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/numberplate.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="311">
+          <caret line="243" column="18" selection-start-line="243" selection-start-column="18" selection-end-line="243" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/numberplate/NumberplateHandler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="610">
+          <caret line="215" column="23" selection-start-line="215" selection-start-column="23" selection-end-line="215" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Caching/CacheHandler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="297">
+          <caret line="69" column="50" selection-start-line="69" selection-start-column="50" selection-end-line="69" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Network/CameraScan.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Backdrop/Backdrop.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret lean-forward="true" />
+        <state relative-caret-position="171">
+          <caret line="9" column="39" selection-start-line="9" selection-start-column="39" selection-end-line="9" selection-end-column="39" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
@@ -813,17 +1025,24 @@
     <entry file="file://$PROJECT_DIR$/run.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="152">
-          <caret line="8" column="14" lean-forward="true" selection-start-line="8" selection-start-column="14" selection-end-line="8" selection-end-column="14" />
+          <caret line="8" column="14" selection-start-line="8" selection-start-column="14" selection-end-line="8" selection-end-column="14" />
           <folding>
-            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#0#10#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Helper/ProcessHelper.py">
+    <entry file="file://$PROJECT_DIR$/Network/PortScanner.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="244">
-          <caret line="13" column="8" selection-start-line="13" selection-start-column="8" selection-end-line="13" selection-end-column="8" />
+        <state relative-caret-position="760">
+          <caret line="41" column="16" selection-start-line="41" selection-start-column="16" selection-end-line="41" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Backdrop/BackdropHandler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="453">
+          <caret line="81" lean-forward="true" selection-start-line="81" selection-end-line="81" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
@@ -832,75 +1051,27 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tess/tesseract.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="263">
-          <caret line="39" column="21" selection-start-line="39" selection-start-column="21" selection-end-line="39" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Caching/CacheHandler.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="456">
-          <caret line="34" column="48" selection-start-line="34" selection-start-column="48" selection-end-line="34" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/numberplate/Numberplate.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="310">
-          <caret line="50" column="8" selection-start-line="50" selection-start-column="8" selection-end-line="50" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cvlib/ContourHandler.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cvlib/ImageUtil.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="35">
-          <caret line="217" column="108" selection-start-line="217" selection-start-column="108" selection-end-line="217" selection-end-column="108" />
+        <state relative-caret-position="411">
+          <caret line="83" column="67" selection-start-line="83" selection-start-column="67" selection-end-line="83" selection-end-column="67" />
           <folding>
-            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/detection.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="618">
+        <state relative-caret-position="563">
           <caret line="36" selection-start-line="36" selection-end-line="36" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Backdrop/BackdropHandler.py">
+    <entry file="file://$PROJECT_DIR$/TestMeta.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="455">
-          <caret line="92" column="26" selection-start-line="92" selection-start-column="26" selection-end-line="92" selection-end-column="26" />
+        <state relative-caret-position="95">
+          <caret line="5" column="47" selection-start-line="5" selection-start-column="47" selection-end-line="5" selection-end-column="47" />
           <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/camera/Camera.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="453">
-          <caret line="47" column="56" selection-start-line="47" selection-start-column="56" selection-end-line="47" selection-end-column="56" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Helper/ProcessHelper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="64" column="38" selection-start-line="64" selection-start-column="38" selection-end-line="64" selection-end-column="38" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#0#10#0" expanded="true" />
           </folding>
         </state>
       </provider>

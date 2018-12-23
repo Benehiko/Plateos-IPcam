@@ -45,7 +45,7 @@ class Camera:
 
                         if result is not None:
                             if len(result) > 0:
-                                t = Thread(self.tess.multi(result, self.mac))
+                                t = Thread(self.tess.multi(result, self.mac, img))
                                 t.start()
                                 t.join()
 

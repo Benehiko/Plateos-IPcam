@@ -1,4 +1,3 @@
-import asyncio
 import sys
 
 from Backdrop.Backdrop import Backdrop
@@ -8,7 +7,5 @@ PropertyHandler.load_app()
 PropertyHandler.load_cv()
 PropertyHandler.load_numberplate()
 runner = Backdrop()
-
-loop = asyncio.get_event_loop()
 runner.scan()
 sys.exc_info()

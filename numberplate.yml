@@ -27,7 +27,7 @@ Country:
       custom: ['xzzzzzc']
       code: ['L!']
     Western Cape:
-      standard: ['cx+nnnn']
+      standard: ['c+nnnn']
       custom: ['xzzzzzc']
       code: ['!CA', '!CAB', '!CAC', '!CAD', '!CAE', '!CAF',
              '!CAG', '!CAH', '!CAJ', '!CAL', '!CAM', '!CAN',
@@ -52,7 +52,7 @@ Country:
              '!CU', '!CV', '!CW', '!CWB', '!CX', '!CY', '!CZ',
              '!DK', '!DW', 'WP!']
     KwaZulu-Natal:
-      standard: ['cx+nnnn', '++nnnnc']
+      standard: ['c+nnnn', '++nnnnc']
       custom: ['xzzzzzc']
       code: ['!KZN', '!NZ', '!NX', '!NW',
              '!NV', '!NUZ', '!NUT', '!NUR',
@@ -239,7 +239,7 @@ Country:
       standard: ['N+++nnnc']
       custom: []
       code: ['WB!']
-    Namibian Custom:
+    Namibian Vanity:
       standard: []
       custom: ['xzzzzzzc']
       code: ['NA!']

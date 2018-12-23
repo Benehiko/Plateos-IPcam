@@ -1,12 +1,14 @@
-import asyncio
 import socket
+from threading import Thread
 
 
-# noinspection PyMethodMayBeStatic
-class PortScanner:
+class CameraScan:
 
-    def scan(self, iprange, event_loop):
-        # print("Scanning for IP Camera's...")
+    def __init__(self):
+        self.valid = []
+
+    def scan(self, iprange):
+        self.valid = []
 
         data = iprange.split("-")
         start = data[0]
@@ -20,24 +22,24 @@ class PortScanner:
         pool = []
         for i in range(start, end + 1):
             ip = subip + str(i)
-            pool.append(asyncio.ensure_future(self.TCP_connect(ip, 1935, 1), loop=event_loop))
+            pool.append(Thread(self.TCP_connect(ip, 1935, 0.3)))
 
-        active = event_loop.run_until_complete(asyncio.gather(*pool))
-        active = [x for x in active if x is not None]
+        for p in pool:
+            p.start()
 
-        if len(active) == 0:
-            print("Could not find any IP Cameras")
+        for p in pool:
+            p.join()
 
-        return active
+        return self.valid
 
-    async def TCP_connect(self, ip, port_number, delay):
+    def TCP_connect(self, ip, port_number, delay):
         TCPsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         TCPsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         TCPsock.settimeout(delay)
         # noinspection PyBroadException
         try:
             TCPsock.connect((ip, port_number))
-            return ip
+            self.valid.append(ip)
         except:
             pass
 

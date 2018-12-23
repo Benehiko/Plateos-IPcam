@@ -22,14 +22,14 @@ class ImageUtil:
     async def process_for_tess(data):
         k = (int(PropertyHandler.cv_settings["char"]["morph"]["min"]),
              int(PropertyHandler.cv_settings["char"]["morph"]["max"]))
-        d = data.copy()
+        d = data[0].copy()
         morph = CvHelper.morph(d, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_RECTANGLE,
                                kernel_size=k, iterations=2)
         diff = CvHelper.subtract(morph, d)
         diff = CvHelper.inverse(diff)
         # morph = CvHelper.morph(diff, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_RECTANGLE,
         #                        kernel_size=(5, 5), iterations=1)
-        return diff
+        return diff, data[1]
 
     """
     Too Experimental for now
@@ -216,7 +216,7 @@ class ImageUtil:
                                                             char_bounds=char_bounds, points=char_points)
             if 2 <= len(roi) <= 12:
                 drawn = CvHelper.draw_boxes(potential_plate, boxs, thickness=1, colour=CvEnums.COLOUR_GREEN)
-                return thresh, drawn
+                return thresh, drawn, len(roi)
 
         return None, None
 

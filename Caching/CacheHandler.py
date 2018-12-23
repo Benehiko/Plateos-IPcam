@@ -68,6 +68,7 @@ class CacheHandler:
                 arr = np.load(file=f)
             except Exception as e:
                 print("Error on loading array", e)
+                CacheHandler.remove(directory, filename)
                 return None
             f.close()
             return arr
@@ -95,3 +96,29 @@ class CacheHandler:
             print(e)
             pass
         return []
+
+    @staticmethod
+    def save_meta(directory, filename, arr):
+        try:
+            pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
+            fi = pathlib.Path(directory + "/" + filename + ".npy.gz")
+
+            if fi.exists():
+                # Load in the existing cache data
+                cached = CacheHandler.load(directory, filename)
+                if cached is not None:
+                    rest = np.array(arr, dtype=object)
+                    out = np.concatenate((cached, rest), axis=0)
+                    f = gzip.GzipFile(directory + "/" + filename + ".npy.gz", "w")
+                    np.save(file=f, arr=out)
+                    f.close()
+
+            else:
+                arr = np.array(arr, dtype=object)
+                f = gzip.GzipFile(directory + "/" + filename + ".npy.gz", "w")
+                np.save(file=f, arr=arr)
+                f.close()
+
+        except Exception as e:
+            print("Error on saving meta", e)
+            pass
