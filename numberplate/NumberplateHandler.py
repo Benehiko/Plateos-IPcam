@@ -58,14 +58,27 @@ class NumberplateHandler:
         pos = val.find('!')
         if pos == -1:
             pos = val.find("?")
-            if pos == len(val) - 1:
-                return "any"
+            if pos > -1:
+                if pos == len(val) - 1:
+                    return "any"
         else:
             if pos == len(val) - 1:
                 return "end"
             elif pos == 0:
                 return "start"
-        return "any"
+        return ""
+
+    @staticmethod
+    def code_plate_pos(plate, pos, code_len):
+        pos_val = []
+        for p in pos:
+            if p + code_len == len(plate):
+                pos_val.append("end")
+            elif p == 0:
+                pos_val.append("start")
+            else:
+                pos_val.append("any")
+        return pos_val
 
     @staticmethod
     def code_parse(value, char, nothing_counter):
@@ -134,13 +147,23 @@ class NumberplateHandler:
             pos = [i for i, letter in enumerate(reg) if letter == 'c']  # c = code
             # Find all codes which it might be
             val = [c.replace('!', '').replace('?', '') for c in code if
-                   NumberplateHandler.contains_province_helper(plate, c, pos, reg.replace('c', ''))]
+                   NumberplateHandler.contains_province_helper(plate=plate, code=c, code_occurances=pos,
+                                                               regex=reg.replace('c', ''))]
             if len(val) > 0:
                 return val, reg
         return False, False
 
     @staticmethod
-    def pos_plate_code(plate, code, code_occurances):
+    def pos_regex_code(code_occurances, regex):
+        if len(code_occurances) > 1:
+            return "any"
+        if code_occurances[0] == 0:
+            return "start"
+        if code_occurances[0] >= len(regex):
+            return "end"
+
+    @staticmethod
+    def pos_plate_code(plate, code, code_occurances, regex):
         """
         Validate if the plate has area code in the same position as the regex template
         :param plate: numberplate
@@ -149,35 +172,38 @@ class NumberplateHandler:
         :return:
         """
         c_pos = NumberplateHandler.code_position(code)
+        r_pos = NumberplateHandler.pos_regex_code(code_occurances, regex)
         t_code = code.replace('!', '').replace('?', '')
         code_len = len(t_code)
-        plate_len = len(plate)
         pos = [w.start() for w in re.finditer(t_code, plate)]
         if len(pos) == len(code_occurances):
+            plate_pos = NumberplateHandler.code_plate_pos(plate, pos, code_len)
             counter = 0
             tmp = ""
-            for p in pos:
-                if p + code_len == plate_len and c_pos == "end":
-                    if plate[-code_len:] == t_code:
-                        tmp = plate[:-code_len]
-                        counter += 1
-                elif p == 0 and c_pos == "start":
-                    if plate[0:code_len] == t_code:
-                        tmp = plate[code_len:]
-                        counter += 1
-                elif c_pos == "any":
-                    if plate[p:code_len] == t_code:
-                        sub1 = plate[:p]
-                        sub2 = plate[p + code_len:]
-                        tmp = sub1 + sub2
-                        counter += 1
+            for p in plate_pos:
+                if p == c_pos == r_pos:
+                    if p == "end":
+                        if plate[-code_len:] == t_code:
+                            tmp = plate[:-code_len]
+                            counter += 1
+                    elif p == "start":
+                        if plate[0:code_len] == t_code:
+                            tmp = plate[code_len:]
+                            counter += 1
+                    elif p == "any":
+                        if plate[p:code_len] == t_code:
+                            sub1 = plate[:p]
+                            sub2 = plate[p + code_len:]
+                            tmp = sub1 + sub2
+                            counter += 1
+
             if counter == len(pos):
                 return tmp
         return False
 
     @staticmethod
     def contains_province_helper(plate, code, code_occurances, regex):
-        c_less_plate = NumberplateHandler.pos_plate_code(plate, code, code_occurances)
+        c_less_plate = NumberplateHandler.pos_plate_code(plate, code, code_occurances, regex)
         if c_less_plate is not False and len(c_less_plate) > 0:
             if NumberplateHandler.get_regex_length(regex) <= len(c_less_plate) <= len(regex):
                 nothing_counter = [len(regex) - len(c_less_plate)]

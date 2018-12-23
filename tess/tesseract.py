@@ -1,12 +1,13 @@
 import asyncio
 from datetime import datetime, timedelta
+from io import BytesIO
 from tesserocr import PyTessBaseAPI, PSM, OEM
 
 import numpy as np
 from PIL import Image
-from io import BytesIO
+
+from Caching.CacheHandler import CacheHandler
 from cvlib.ImageUtil import ImageUtil
-from numberplate.Numberplate import Numberplate
 from numberplate.NumberplateHandler import NumberplateHandler
 
 
@@ -29,48 +30,45 @@ class Tess:
         self.cached = []
         self.then = datetime.now()
 
-    async def runner(self, nparray):
-        if nparray is not None:
-            if not isinstance(nparray, list):
-                image = Image.fromarray(np.uint8(nparray))
-                temp = BytesIO()
-                image.save(temp, "JPEG", dpi=(600, 400))
-                temp.seek(0)
-                image = Image.open(temp)
-                self.t.SetImage(image)
-                raw_text = self.t.GetUTF8Text()
-                if len(raw_text) > 0:
-                    text = NumberplateHandler.sanitise(raw_text)
-                    word_conf = self.t.MapWordConfidences()
-                    tess_confidence = 0
-                    for x in word_conf:
-                        if text == x[0]:
-                            tess_confidence = x[1]
-                            break
+    async def runner(self, data):
+        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        plate = {"image": data[0], "char-len": data[1]}
+        if data is not None:
+            image = Image.fromarray(np.uint8(data[0]))
+            temp = BytesIO()
+            image.save(temp, "JPEG", dpi=(600, 400))
+            temp.seek(0)
+            image = Image.open(temp)
+            self.t.SetImage(image)
+            raw_text = self.t.GetUTF8Text()
+            if len(raw_text) > 0:
+                text = NumberplateHandler.sanitise(raw_text)
+                word_conf = self.t.MapWordConfidences()
+                tess_confidence = 0
+                for x in word_conf:
+                    if text == x[0]:
+                        tess_confidence = x[1]
+                        break
 
-                    data = NumberplateHandler.validate(text)
-                    if None is not data[0]:
-                        country, province, confidence = data
-                        image = ImageUtil.compress(nparray, max_w=200)
-                        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                        confidence = confidence + round(((tess_confidence / 100) / 2), 2)
-                        plate = {"plate": text, "country": country, "province": province, "confidence": confidence, "time": now, "image": image}
-                        print("Plate:", text, "Country:", country, "Province:", province, "Confidence:", confidence, "Time:", now)
-                        return plate
-            else:
-                print("It's a list", nparray)
-        return None
+                p_data = NumberplateHandler.validate(text)
+                if None is not p_data[0]:
+                    country, province, confidence = p_data
+                    image = ImageUtil.compress(data[0], max_w=200)
+                    confidence = confidence + round(((tess_confidence / 100) / 2), 2)
+                    plate = {"plate": text, "country": country, "province": province, "confidence": confidence,
+                             "image": image, "time": now, "char-len": data[1]}
+                    #print("Plate:", text, "Country:", country, "Province:", province, "Confidence:", confidence, "Time:", now)
+        return plate
 
-    def multi(self, images, camera_mac):
+    def multi(self, images, camera_mac, original_img):
         try:
             if images is not None:
                 if len(images) > 0:
                     event_loop = asyncio.new_event_loop()
                     asyncio.set_event_loop(event_loop)
                     pool = [asyncio.ensure_future(self.runner(i)) for i in images]
-                    results = event_loop.run_until_complete(asyncio.gather(*pool))
-                    results = [x for x in results if x is not None]
-                    # results = [x for x in results]
+                    tmp = event_loop.run_until_complete(asyncio.gather(*pool))
+                    results = [x for x in tmp if len(x) > 2]
                     event_loop.close()
                     if len(results) > 0:
                         self.cached += results
@@ -78,10 +76,17 @@ class Tess:
                     now = datetime.now()
                     diff = now - self.then
                     if timedelta(minutes=1) < diff:
+                        allowed = [x for x in tmp if 5 <= x["char-len"] <= 8]
+                        now = datetime.now().strftime('%Y-%m-%d %H:%M')
+                        image = ImageUtil.compress(original_img, max_w=1080, quality=100)
+                        if len(allowed) > 0:
+                            meta = [{"time": now, "original": image, "results": allowed}]
+                            CacheHandler.save_meta("meta", now, meta)
+
                         if len(self.cached) > 0:
                             self.backdrop.cache(self.cached, camera_mac)
                             self.cached = []
-                            self.then = now
+                            self.then = datetime.now()
         except Exception as e:
             print(e)
             pass

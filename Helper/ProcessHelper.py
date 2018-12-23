@@ -55,7 +55,7 @@ class ProcessHelper:
                         asyncio.ensure_future(ImageUtil.char_roi(tmp, r, char_bounds, (char_min, char_max)), loop=loop))
 
                 potential_plates = loop.run_until_complete(asyncio.gather(*pool))
-                potential = [item[0] for item in potential_plates if item[0] is not None]
+                potential = [(item[0], item[2]) for item in potential_plates if item[0] is not None]
                 drawn_chars = [item[1] for item in potential_plates if item[1] is not None]
 
                 loop.close()
