@@ -22,7 +22,7 @@ class CameraScan:
         pool = []
         for i in range(start, end + 1):
             ip = subip + str(i)
-            pool.append(Thread(self.TCP_connect(ip, 1935, 0.3)))
+            pool.append(Thread(self.TCP_connect(ip, 1935, 1)))
 
         for p in pool:
             p.start()

@@ -32,11 +32,31 @@ class Camera:
                    self.username + "&password=" + self.password
 
     def start(self):
+        if self.mac == "":
+            for i in range(0, 5):
+                if self.mac == "":
+                    if i < 5:
+                        self.mac = self.get_mac()
+                    else:
+                        return
+                else:
+                    break
+        if self.alias or self.model == "":
+            for i in range(0, 5):
+                if self.alias or self.model == "":
+                    if i < 5:
+                        self.alias, self.model = self.get_info()
+                    else:
+                        return
+                else:
+                    break
         print("Starting Camera:\nIP:", self.ip, "MAC:", self.mac, "Model", self.model)
+        counter = 0
         while True:
             try:
-                reader = urlopen(self.url, timeout=5)
+                reader = urlopen(self.url, timeout=1)
                 if reader.status == 200:
+                    counter = 0
                     b = bytearray(reader.read())
                     npy = np.array(b, dtype=np.uint8)
                     img = cv2.imdecode(npy, -1)
@@ -51,7 +71,9 @@ class Camera:
 
             except Exception as e:
                 print("Camera", self.get_camera_data()["alias"], self.get_camera_data()["ip"], "Died", "\nReason:", e)
-                break
+                counter += 1
+                if counter > 5:
+                    break
 
     def get_mac(self):
         try:
@@ -59,11 +81,14 @@ class Camera:
                       ('password', self.password)]
             url = "http://" + self.ip + self.rest["base"]
             data = Request.get(url, params)
-            j = json.loads(data)
-            mac = j[0]['value']['LocalLink']['mac']
-            return mac
+            if data is not None:
+                j = json.loads(data)
+                mac = j[0]['value']['LocalLink']['mac']
+                return mac
         except Exception as e:
             print("Couldn't get camera", self.ip, "mac", "\nReason:", e)
+            pass
+        return ""
 
     def get_info(self):
         try:
@@ -71,12 +96,14 @@ class Camera:
                       ('password', self.password)]
             url = "http://" + self.ip + self.rest["base"]
             data = Request.get(url, params)
-            j = json.loads(data)
-            alias = j[0]["value"]["DevInfo"]["name"]
-            model = j[0]["value"]["DevInfo"]["model"]
-            return alias, model
+            if data is not None:
+                j = json.loads(data)
+                alias = j[0]["value"]["DevInfo"]["name"]
+                model = j[0]["value"]["DevInfo"]["model"]
+                return alias, model
         except Exception as e:
             print("Couldn't get camera", self.ip, "information", "\nReason", e)
+        return "", ""
 
     def get_camera_data(self):
         return dict([('mac', self.mac), ('alias', self.alias), ('ip', self.ip), ('model', self.model)])

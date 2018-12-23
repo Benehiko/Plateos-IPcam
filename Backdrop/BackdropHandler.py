@@ -134,7 +134,6 @@ class BackdropHandler:
 
     # noinspection PyMethodMayBeStatic
     def cleanup_cache(self):
-        print("Cleaning Cache")
         try:
             pathlib.Path("cache").mkdir(parents=True, exist_ok=True)
             files = [f.replace('.npy.gz', '') for f in listdir("cache") if isfile(join("cache", f))]
@@ -183,3 +182,7 @@ class BackdropHandler:
         except Exception as e:
             print(e)
             pass
+
+    def tess_save_meta(self, data):
+        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
+        CacheHandler.save_meta("meta", now, data)
