@@ -1,11 +1,11 @@
 import sys
 
 from Backdrop.Backdrop import Backdrop
-from DataHandler.PropertyHandler import PropertyHandler
+from Handlers.PropertyHandler import PropertyHandler
 
 PropertyHandler.load_app()
 PropertyHandler.load_cv()
 PropertyHandler.load_numberplate()
 runner = Backdrop()
-runner.scan()
+runner.start()
 sys.exc_info()

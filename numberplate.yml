@@ -340,5 +340,5 @@ Country:
 Confidence:
   standard: 0.5
   custom: 0.3
-  min-deviation: 1.0
+  min-deviation: 0.2
   code-char-value: 0.05

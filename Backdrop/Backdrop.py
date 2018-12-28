@@ -7,14 +7,14 @@ from Backdrop.BackdropHandler import BackdropHandler
 class Backdrop:
 
     def __init__(self):
-        self.backdrophandler = BackdropHandler(self)
+        self.backdrophandler = BackdropHandler()
 
-    def scan(self):
+    def start(self):
         while True:
             try:
-                p = Process(target=self.backdrophandler.start())
+                p = Process(target=self.backdrophandler.start)
                 p.start()
                 p.join()
             except Exception as e:
                 print(e)
-                pass
+

@@ -1,13 +1,11 @@
 import datetime
-import json
 import netifaces
 import os
 from urllib.error import URLError
-from urllib.request import urlopen
 
 import requests
 
-from Caching.CacheHandler import CacheHandler
+from Handlers.CacheHandler import CacheHandler
 
 
 class Request:
@@ -23,12 +21,12 @@ class Request:
                 d = [('plate', plate), ('province', province), ('confidence', confidence), ('time', date), ('deviceMac', mac), ('cameraMac', deviceMac)]
                 out.append(dict(d))
 
-            print("Posting:", out)
+            # print("Posting:", out)
             if Request.check_connectivity():
                 Request.send(url, out)
             else:
                 now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                CacheHandler.save("offline", now, out)
+                CacheHandler.save_cache("offline", now, out)
         else:
             print("Mac is None")
 

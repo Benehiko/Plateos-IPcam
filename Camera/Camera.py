@@ -1,16 +1,17 @@
 import json
 import random
 import string
-from threading import Thread
-from time import sleep
+from datetime import datetime, timedelta
 from urllib.request import urlopen
 
 import cv2
 import numpy as np
 
-from DataHandler.PropertyHandler import PropertyHandler
+from Handlers.PropertyHandler import PropertyHandler
+from Handlers.RequestHandler import Request
+from Handlers.ThreadHandler import ThreadWithReturnValue
 from Helper.ProcessHelper import ProcessHelper
-from Network.requestor import Request
+from cvlib.ImageUtil import ImageUtil
 
 
 class Camera:
@@ -31,7 +32,9 @@ class Camera:
                 "channel"]) + "&rs=" + self.randomcmd + "&user=" + \
                    self.username + "&password=" + self.password
 
-    def start(self):
+        self.then = datetime.now()
+
+    def start(self, q, q2):
         if self.mac == "":
             for i in range(0, 5):
                 if self.mac == "":
@@ -65,15 +68,42 @@ class Camera:
 
                         if result is not None:
                             if len(result) > 0:
-                                t = Thread(self.tess.multi(result, self.mac, img))
+                                t = ThreadWithReturnValue(target=self.tess.multi, args=(result,))
+                                # t.daemon = True
                                 t.start()
-                                t.join()
+                                tmp = t.join()
+                                if tmp is not None:
+                                    tmp, meta = self.handle_data(tmp, img)
+                                    if len(tmp) > 0:
+                                        q.put(tmp)
+                                    if len(meta) > 0:
+                                        q2.put(meta)
+
 
             except Exception as e:
                 print("Camera", self.get_camera_data()["alias"], self.get_camera_data()["ip"], "Died", "\nReason:", e)
                 counter += 1
                 if counter > 5:
                     break
+
+    def handle_data(self, data, original_img):
+        tmp = []
+        meta = []
+
+        results = [x for x in data if len(x) > 3]
+        if len(results) > 0:
+            tmp.append({"camera": self.mac, "results": results})
+
+        now = datetime.now()
+        diff = now - self.then
+        if timedelta(minutes=5) < diff:
+            allowed = [x for x in data if 5 <= x["char-len"] <= 8]
+            image = ImageUtil.compress(original_img, max_w=1080, quality=100)
+            if len(allowed) > 0:
+                time = datetime.now().strftime('%Y-%m-%d %H:%M')
+                meta.append({"camera": self.mac, "time": time, "original": image, "results": allowed})
+            self.then = datetime.now()
+        return tmp, meta
 
     def get_mac(self):
         try:
@@ -86,7 +116,7 @@ class Camera:
                 mac = j[0]['value']['LocalLink']['mac']
                 return mac
         except Exception as e:
-            print("Couldn't get camera", self.ip, "mac", "\nReason:", e)
+            print("Couldn't get Camera", self.ip, "mac", "\nReason:", e)
             pass
         return ""
 
@@ -102,7 +132,7 @@ class Camera:
                 model = j[0]["value"]["DevInfo"]["model"]
                 return alias, model
         except Exception as e:
-            print("Couldn't get camera", self.ip, "information", "\nReason", e)
+            print("Couldn't get Camera", self.ip, "information", "\nReason", e)
         return "", ""
 
     def get_camera_data(self):

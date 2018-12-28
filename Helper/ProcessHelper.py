@@ -1,7 +1,7 @@
 import asyncio
 import cv2
 
-from DataHandler.PropertyHandler import PropertyHandler
+from Handlers.PropertyHandler import PropertyHandler
 from cvlib.ContourHandler import ContourHandler
 from cvlib.CvEnums import CvEnums
 from cvlib.CvHelper import CvHelper
