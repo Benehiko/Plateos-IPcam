@@ -3,7 +3,7 @@ import asyncio
 import cv2
 import numpy as np
 
-from DataHandler.PropertyHandler import PropertyHandler
+from Handlers.PropertyHandler import PropertyHandler
 from cvlib.CvEnums import CvEnums
 
 

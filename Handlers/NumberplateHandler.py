@@ -1,11 +1,13 @@
+import copy
+import pathlib
 import re
 from difflib import SequenceMatcher
 from os import listdir
 from os.path import isfile, join
 
-from Caching.CacheHandler import CacheHandler
-from DataHandler.CompareData import CompareData
-from DataHandler.PropertyHandler import PropertyHandler
+from Handlers.CacheHandler import CacheHandler
+from Handlers.CompareData import CompareData
+from Handlers.PropertyHandler import PropertyHandler
 
 
 class NumberplateHandler:
@@ -220,15 +222,14 @@ class NumberplateHandler:
 
     @staticmethod
     def improve(plates):
+        tmp_copy = copy.deepcopy(plates)
         tmp = NumberplateHandler.remove_duplicates(plates)
         if tmp is not None:
-            tmp_copy = tmp
             for i in range(0, len(tmp)):
                 val = NumberplateHandler.search_in_cache(tmp[i])
-                (pl, pr, con, t, img) = tmp[i]
-                con = round(con + (val / 100), 2)
-                tmp[i] = (pl, pr, con, t, img)
-
+                (pl, pr, con, t) = tmp[i]
+                con = round(float(con + (val / 100)), 2)
+                tmp[i] = (pl, pr, con, t)
             out = []
             while True:
                 highest = NumberplateHandler.get_highest(tmp)
@@ -237,11 +238,10 @@ class NumberplateHandler:
                     if result is not None:
                         old_conf = [x for x in tmp_copy if x[0] == result[0] and x[3] == result[3]]
                         if len(old_conf) > 0:
-                            diff = result[2] - old_conf[0][2]
-
-                            if diff >= float(PropertyHandler.numberplate["Confidence"][
-                                                 "min-deviation"]):
+                            diff = float(result[2] - old_conf[0][2])
+                            if diff >= (PropertyHandler.numberplate["Confidence"]["min-deviation"]):
                                 out.append(result)
+
                         if len(remainder) == 0:
                             break
                         else:
@@ -255,7 +255,8 @@ class NumberplateHandler:
     def search_in_cache(plate):
         count = 0
         try:
-            files = [f.replace('.npy.gz', '') for f in listdir("cache") if isfile(join("cache", f))]
+            pathlib.Path("cache").mkdir(parents=True, exist_ok=True)
+            files = [f.replace('.npz', '') for f in listdir("cache") if isfile(join("cache", f))]
             for filename in files:
                 data = CacheHandler.loadByPlate("cache" + '/', filename, plate)
                 count = count + len(data)
@@ -292,9 +293,9 @@ class NumberplateHandler:
             plates, counts = CompareData.del_duplicates_list_tuples(l)
             if plates is not None or counts is not None:
                 for x in range(0, len(counts)):
-                    (pl, pr, con, t, img) = plates[x]
+                    (pl, pr, con, t) = plates[x]
                     con = round(con + (counts[x] / 100), 2)
-                    plates[x] = (pl, pr, con, t, img)
+                    plates[x] = (pl, pr, con, t)
 
                 return plates
         return None
@@ -305,8 +306,8 @@ class NumberplateHandler:
         if len(l) > 0:
             highest = l[0]
             for x in l:
-                _, _, con, _, _ = x
-                _, _, h, _, _ = highest
+                _, _, con, _ = x
+                _, _, h, _ = highest
                 if h < con:
                     highest = x
             return highest
@@ -324,7 +325,7 @@ class NumberplateHandler:
         similar = []
         if len(plates) > 0 and len(highest) > 0:
             for x in plates:
-                if SequenceMatcher(None, highest[0], x[0]).ratio() * 100 > 80:
+                if SequenceMatcher(None, highest[0], x[0]).ratio() * 100 > 70:
                     similar.append(x)
                 else:
                     remainder.append(x)

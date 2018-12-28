@@ -7,17 +7,16 @@ class CompareData:
     """Return List if some aren't in the file else return None"""
 
     @staticmethod
-    def compare_list_tuples(list1, list2, tuple_elem=0):
-        dup = [x for x in list1 if x[tuple_elem] in list2]
-        if len(dup) > 0:
-            dup = CompareData.improve_confidence(dup)
-        res = [x for x in list1 if x[tuple_elem] not in list2]
+    def compare_list_tuples(list1, list2):
+        dup = [x for x in list1 for y in list2 if x["plate"] == y["plate"]]
+        # if len(dup) > 0:
+        #     dup = CompareData.improve_confidence(dup)
+        res = [x for x in list1 for y in list2 if x["plate"] != y["plate"]]
         return res, dup
-
-    """Returns the cleaned array of duplicates and the counts of each duplicate"""
 
     @staticmethod
     def del_duplicates_list_tuples(l):
+        """Returns the cleaned array of duplicates and the counts of each duplicate"""
         try:
             counts = list(Counter([x[0] for x in l]).values())
             out = [list(g)[0] for _, g in groupby(l, key=lambda x: x[0])]
