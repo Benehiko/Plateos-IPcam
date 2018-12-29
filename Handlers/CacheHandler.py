@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 import pathlib
@@ -31,8 +32,8 @@ class CacheHandler:
                 cached = CacheHandler.load(directory, filename)
                 if cached is not None:
                     # Compare current data to cache for duplicates
-                    res, dup = CompareData.compare_list_tuples(arr, cached.tolist())
-                    # Non-dups gets added to the file and then added to result array for post
+                    res, dup = CompareData.compare_list_tuples(arr, copy.deepcopy(cached.tolist()))
+                    # Non-dups gets added to the file
                     if len(res) > 0:
                         rest = np.array(res)
                         out = np.concatenate((cached, rest))
@@ -40,7 +41,6 @@ class CacheHandler:
 
             # The file doesn't exist. Create a new one with the current data.
             else:
-                # result = [x[0:4] for x in arr]
                 out = np.array(arr)
                 np.savez_compressed(directory + "/" + filename, a=out)
 
@@ -58,12 +58,10 @@ class CacheHandler:
         if fi.exists():
             try:
                 arr = np.load(directory + "/" + filename + ".npz")["a"]
-                # print(repr(arr))
+                return arr
             except Exception as e:
                 print("Error on loading array", e)
-                # CacheHandler.remove(directory, filename)
-                return None
-            return arr
+                pass
         return None
 
     @staticmethod
@@ -82,8 +80,9 @@ class CacheHandler:
     def loadByPlate(directory, filename, plate):
         try:
             data = CacheHandler.load(directory, filename)
-            d = [x for x in data if x["plate"] == plate]
-            return d
+            if data is not None:
+                d = [x for x in data.tolist() if x["plate"] == plate]
+                return d
         except Exception as e:
             print(e)
             pass

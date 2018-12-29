@@ -240,8 +240,8 @@ Country:
       custom: []
       code: ['WB!']
     Namibian Vanity:
-      standard: []
-      custom: ['xzzzzzzc']
+      standard: ['xzzzzzzc']
+      custom: []
       code: ['NA!']
     Namibian Government:
       standard: ['cxnnnnn']
@@ -338,7 +338,7 @@ Country:
       custom: []
       code: ['PR!']
 Confidence:
-  standard: 0.5
-  custom: 0.3
-  min-deviation: 0.2
+  standard: 0.6
+  custom: 0.4
+  min-deviation: 0.12
   code-char-value: 0.05

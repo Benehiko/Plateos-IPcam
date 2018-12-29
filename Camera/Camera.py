@@ -69,7 +69,6 @@ class Camera:
                         if result is not None:
                             if len(result) > 0:
                                 t = ThreadWithReturnValue(target=self.tess.multi, args=(result,))
-                                # t.daemon = True
                                 t.start()
                                 tmp = t.join()
                                 if tmp is not None:
@@ -78,7 +77,6 @@ class Camera:
                                         q.put(tmp)
                                     if len(meta) > 0:
                                         q2.put(meta)
-
 
             except Exception as e:
                 print("Camera", self.get_camera_data()["alias"], self.get_camera_data()["ip"], "Died", "\nReason:", e)
@@ -97,7 +95,7 @@ class Camera:
         now = datetime.now()
         diff = now - self.then
         if timedelta(minutes=5) < diff:
-            allowed = [x for x in data if 5 <= x["char-len"] <= 8]
+            allowed = [x for x in data if 3 <= x["char-len"] <= 8]
             image = ImageUtil.compress(original_img, max_w=1080, quality=100)
             if len(allowed) > 0:
                 time = datetime.now().strftime('%Y-%m-%d %H:%M')
