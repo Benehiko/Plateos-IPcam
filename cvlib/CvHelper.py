@@ -349,7 +349,7 @@ class CvHelper:
         :return: None
         """
 
-        if any(size) is not None:
+        if None not in size:
             width, height = size
             mat = CvHelper.resize(mat, new_width=width, new_height=height)
         cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)

@@ -1,6 +1,7 @@
 import datetime
 import netifaces
 import os
+import subprocess
 from urllib.error import URLError
 
 import requests
@@ -44,16 +45,11 @@ class Request:
     def check_connectivity():
         try:
             hostname = "8.8.8.8"
-            response = os.system("ping -c 3 " + hostname)
+            response = subprocess.call(["ping", "-c", "3", hostname], stdout=subprocess.DEVNULL)
             if response == 0:
                 return True
             else:
                 return False
-            # request = urlopen('http://google.com', timeout=3)
-            # if request.status == 200:
-            #     return True
-            # else:
-            #     return False
         except Exception as e:
             print("Connectivity Check: ", e)
             pass
