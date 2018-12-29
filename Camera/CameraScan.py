@@ -19,16 +19,23 @@ class CameraScan:
 
         subip = iprange[:data[0].rfind(".") + 1]
 
-        pool = []
+        pool = set()
         for i in range(start, end + 1):
             ip = subip + str(i)
-            pool.append(Thread(self.TCP_connect(ip, 1935, 1)))
+            pool.add(Thread(self.TCP_connect(ip, 1935, 0.5)))
 
         for p in pool:
             p.start()
 
-        for p in pool:
-            p.join()
+        tmp = pool.copy()
+        while len(pool) > 0:
+            for process in tmp:
+                try:
+                    if process.is_alive() is False:
+                        pool.discard(process)
+                except Exception as e:
+                    print("Camera Scan Error", e)
+                    pass
 
         return self.valid
 

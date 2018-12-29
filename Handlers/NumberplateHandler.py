@@ -23,31 +23,35 @@ class NumberplateHandler:
         :param plate:
         :return:
         """
-        data = PropertyHandler.numberplate["Country"]
-        confidence_rule = PropertyHandler.numberplate["Confidence"]
+        try:
+            data = PropertyHandler.numberplate["Country"]
+            confidence_rule = PropertyHandler.numberplate["Confidence"]
 
-        for country in data:
-            for province in data[country]:
+            for country in data:
+                for province in data[country]:
 
-                standard_regex = data[country][province]["standard"]
-                custom_regex = data[country][province]["custom"]
-                code = data[country][province]["code"]
-                min_val, max_val = NumberplateHandler.get_min_max(standard_regex + custom_regex, code)
+                    standard_regex = data[country][province]["standard"]
+                    custom_regex = data[country][province]["custom"]
+                    code = data[country][province]["code"]
+                    min_val, max_val = NumberplateHandler.get_min_max(standard_regex + custom_regex, code)
 
-                if min_val <= len(plate) <= max_val:
+                    if min_val <= len(plate) <= max_val:
 
-                    valid_province = NumberplateHandler.contains_province(plate, standard_regex + custom_regex, code)
-                    if all(valid_province) is not False:
-                        if valid_province[1] in standard_regex:
-                            plate_type = "standard"
-                        elif valid_province[1] in custom_regex:
-                            plate_type = "custom"
-                        else:
-                            break
-                        confidence = float(confidence_rule[plate_type]) + (
-                                float(confidence_rule["code-char-value"]) * len(max(valid_province[0], key=len)))
-                        return country, province, confidence
-
+                        valid_province = NumberplateHandler.contains_province(plate, standard_regex + custom_regex,
+                                                                              code)
+                        if False not in valid_province:
+                            if valid_province[1] in standard_regex:
+                                plate_type = "standard"
+                            elif valid_province[1] in custom_regex:
+                                plate_type = "custom"
+                            else:
+                                break
+                            confidence = float(confidence_rule[plate_type]) + (
+                                    float(confidence_rule["code-char-value"]) * len(max(valid_province[0], key=len)))
+                            return country, province, confidence
+        except Exception as e:
+            print("Numberplate Validator Error", "\n", e)
+            pass
         return None, None, None
 
     @staticmethod
@@ -143,16 +147,22 @@ class NumberplateHandler:
 
     @staticmethod
     def contains_province(plate, regex, code):
-        # Regex match string, contains positions of allowed characters
-        for reg in regex:
-            # Find all positions of our enforced 'code' on the plate
-            pos = [i for i, letter in enumerate(reg) if letter == 'c']  # c = code
-            # Find all codes which it might be
-            val = [c.replace('!', '').replace('?', '') for c in code if
-                   NumberplateHandler.contains_province_helper(plate=plate, code=c, code_occurances=pos,
-                                                               regex=reg.replace('c', ''))]
-            if len(val) > 0:
-                return val, reg
+        try:
+            # Regex match string, contains positions of allowed characters
+            for reg in regex:
+                # Find all positions of our enforced 'code' on the plate
+                pos = [i for i, letter in enumerate(reg) if letter == 'c']  # c = code
+
+                if len(pos) > 0:
+                    # Find all codes which it might be
+                    val = [c.replace('!', '').replace('?', '') for c in code if
+                           NumberplateHandler.contains_province_helper(plate=plate, code=c, code_occurances=pos,
+                                                                       regex=reg.replace('c', ''))]
+                    if len(val) > 0:
+                        return val, reg
+        except Exception as e:
+            print("Contains Province Error\n", e)
+            pass
         return False, False
 
     @staticmethod
@@ -173,43 +183,53 @@ class NumberplateHandler:
         :param code_occurances: Amount of occurences of region code in regex
         :return:
         """
-        c_pos = NumberplateHandler.code_position(code)
-        r_pos = NumberplateHandler.pos_regex_code(code_occurances, regex)
-        t_code = code.replace('!', '').replace('?', '')
-        code_len = len(t_code)
-        pos = [w.start() for w in re.finditer(t_code, plate)]
-        if len(pos) == len(code_occurances):
-            plate_pos = NumberplateHandler.code_plate_pos(plate, pos, code_len)
-            counter = 0
-            tmp = ""
-            for p in plate_pos:
-                if p == c_pos == r_pos:
-                    if p == "end":
-                        if plate[-code_len:] == t_code:
-                            tmp = plate[:-code_len]
-                            counter += 1
-                    elif p == "start":
-                        if plate[0:code_len] == t_code:
-                            tmp = plate[code_len:]
-                            counter += 1
-                    elif p == "any":
-                        if plate[p:code_len] == t_code:
-                            sub1 = plate[:p]
-                            sub2 = plate[p + code_len:]
-                            tmp = sub1 + sub2
-                            counter += 1
+        try:
+            c_pos = NumberplateHandler.code_position(code)
+            r_pos = NumberplateHandler.pos_regex_code(code_occurances, regex)
+            t_code = code.replace('!', '').replace('?', '')
+            code_len = len(t_code)
+            pos = [w.start() for w in re.finditer(t_code, plate)]
+            if len(pos) == len(code_occurances):
+                plate_pos = NumberplateHandler.code_plate_pos(plate, pos, code_len)
+                counter = 0
+                tmp = ""
+                for p in plate_pos:
+                    if p == c_pos == r_pos:
+                        if p == "end":
+                            if plate[-code_len:] == t_code:
+                                tmp = plate[:-code_len]
+                                counter += 1
+                        elif p == "start":
+                            if plate[0:code_len] == t_code:
+                                tmp = plate[code_len:]
+                                counter += 1
+                        elif p == "any":
+                            for x in pos:
+                                if plate[x:code_len] == t_code:
+                                    sub1 = plate[:x]
+                                    sub2 = plate[x + code_len:]
+                                    tmp = sub1 + sub2
+                                    counter += 1
 
-            if counter == len(pos):
-                return tmp
+                if counter == len(pos):
+                    return tmp
+        except Exception as e:
+            print("Plate code position error\n", e)
+            pass
         return False
 
     @staticmethod
     def contains_province_helper(plate, code, code_occurances, regex):
-        c_less_plate = NumberplateHandler.pos_plate_code(plate, code, code_occurances, regex)
-        if c_less_plate is not False and len(c_less_plate) > 0:
-            if NumberplateHandler.get_regex_length(regex) <= len(c_less_plate) <= len(regex):
-                nothing_counter = [len(regex) - len(c_less_plate)]
-                return NumberplateHandler.parse_helper(regex, c_less_plate, 0, len(c_less_plate) - 1, nothing_counter)
+        try:
+            c_less_plate = NumberplateHandler.pos_plate_code(plate, code, code_occurances, regex)
+            if c_less_plate is not False and len(c_less_plate) > 0:
+                if NumberplateHandler.get_regex_length(regex) <= len(c_less_plate) <= len(regex):
+                    nothing_counter = [len(regex) - len(c_less_plate)]
+                    return NumberplateHandler.parse_helper(regex, c_less_plate, 0, len(c_less_plate) - 1,
+                                                           nothing_counter)
+        except Exception as e:
+            print("Contains Province Helper Error\n", e)
+            pass
         return False
 
     @staticmethod
@@ -226,7 +246,7 @@ class NumberplateHandler:
         tmp = NumberplateHandler.remove_duplicates(plates)
         if tmp is not None:
             for i in range(0, len(tmp)):
-                val = NumberplateHandler.search_in_cache(tmp[i])
+                val = NumberplateHandler.search_in_cache(tmp[i]) * 10
                 (pl, pr, con, t) = tmp[i]
                 con = round(float(con + (val / 100)), 2)
                 tmp[i] = (pl, pr, con, t)
@@ -239,7 +259,7 @@ class NumberplateHandler:
                         old_conf = [x for x in tmp_copy if x[0] == result[0] and x[3] == result[3]]
                         if len(old_conf) > 0:
                             diff = float(result[2] - old_conf[0][2])
-                            if diff >= (PropertyHandler.numberplate["Confidence"]["min-deviation"]):
+                            if diff >= float((PropertyHandler.numberplate["Confidence"]["min-deviation"])):
                                 out.append(result)
 
                         if len(remainder) == 0:
@@ -258,7 +278,7 @@ class NumberplateHandler:
             pathlib.Path("cache").mkdir(parents=True, exist_ok=True)
             files = [f.replace('.npz', '') for f in listdir("cache") if isfile(join("cache", f))]
             for filename in files:
-                data = CacheHandler.loadByPlate("cache" + '/', filename, plate)
+                data = CacheHandler.loadByPlate("cache", filename, plate)
                 count = count + len(data)
         except Exception as e:
             print(e)
@@ -279,9 +299,14 @@ class NumberplateHandler:
 
     @staticmethod
     def sanitise(text):
-        text = text.replace("\n", "")
-        text = ''.join(e for e in text if e.isalnum()).upper()
-        return text
+        try:
+            text = text.replace("\n", "")
+            text = ''.join(e for e in text if e.isalnum()).upper()
+            return text
+        except Exception as e:
+            print("Sanitise Error", e)
+            pass
+        return ""
 
     @staticmethod
     def remove_duplicates(l):
@@ -294,7 +319,7 @@ class NumberplateHandler:
             if plates is not None or counts is not None:
                 for x in range(0, len(counts)):
                     (pl, pr, con, t) = plates[x]
-                    con = round(con + (counts[x] / 100), 2)
+                    con = round(con + (counts[x] * 10 / 100), 2)
                     plates[x] = (pl, pr, con, t)
 
                 return plates

@@ -1,6 +1,5 @@
-import random
 from collections import Counter
-from itertools import groupby, islice
+from itertools import groupby
 
 
 class CompareData:
@@ -9,9 +8,7 @@ class CompareData:
     @staticmethod
     def compare_list_tuples(list1, list2):
         dup = [x for x in list1 for y in list2 if x["plate"] == y["plate"]]
-        # if len(dup) > 0:
-        #     dup = CompareData.improve_confidence(dup)
-        res = [x for x in list1 for y in list2 if x["plate"] != y["plate"]]
+        res = [x for x in list1 if x["plate"] not in list2]
         return res, dup
 
     @staticmethod
