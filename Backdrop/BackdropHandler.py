@@ -77,7 +77,6 @@ class BackdropHandler:
             for x in tmp:
                 if x not in active_ip:
                     self.add(x)
-                    self.add(x)
 
             # Use timedelta
             """Time delta to run certain checks periodically"""
