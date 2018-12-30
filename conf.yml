@@ -1,7 +1,7 @@
 camera:
   username: admin
   password: jUa2kUzi
-  iprange: 192.168.1.110-192.168.1.111
+  iprange: 192.168.1.100-192.168.1.111
   restful:
     base: /cgi-bin/api.cgi?
     snap:

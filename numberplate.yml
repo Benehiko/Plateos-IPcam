@@ -24,7 +24,7 @@ Country:
       code: ['GP!']
     Limpopo:
       standard: ['aaa+++c']
-      custom: ['xzzzzzc']
+      custom: ['xxzzzzc']
       code: ['L!']
     Western Cape:
       standard: ['c+nnnn']
@@ -338,7 +338,7 @@ Country:
       custom: []
       code: ['PR!']
 Confidence:
-  standard: 0.6
-  custom: 0.4
-  min-deviation: 0.12
+  standard: 0.3
+  custom: 0.1
+  min-deviation: 0.25
   code-char-value: 0.05
