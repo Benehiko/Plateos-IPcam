@@ -92,15 +92,15 @@ class Camera:
         if len(results) > 0:
             tmp.append({"camera": self.mac, "results": results})
 
-        now = datetime.now()
-        diff = now - self.then
-        if timedelta(minutes=5) < diff:
-            allowed = [x for x in data if 3 <= x["char-len"] <= 8]
-            image = ImageUtil.compress(original_img, max_w=1080, quality=100)
-            if len(allowed) > 0:
-                time = datetime.now().strftime('%Y-%m-%d %H:%M')
-                meta.append({"camera": self.mac, "time": time, "original": image, "results": allowed})
-            self.then = datetime.now()
+        # now = datetime.now()
+        # diff = now - self.then
+        # if timedelta(minutes=5) < diff:
+        allowed = [x for x in data if 3 <= x["char-len"] <= 8]
+        image = ImageUtil.compress(original_img, max_w=1080, quality=100)
+        if len(allowed) > 0:
+            time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            meta.append({"camera": self.mac, "time": time, "original": image, "results": allowed})
+        # self.then = datetime.now()
         return tmp, meta
 
     def get_mac(self):

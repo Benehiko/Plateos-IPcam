@@ -22,7 +22,7 @@ class CacheHandler:
     def save_cache(directory, filename, arr):
         result = []
         try:
-            pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
+            pathlib.Path(directory + "/").mkdir(parents=True, exist_ok=True)
             fi = pathlib.Path(directory + "/" + filename + ".npz")
 
             # The file exists so lets append
@@ -52,8 +52,32 @@ class CacheHandler:
         return None  # Exception is thrown
 
     @staticmethod
+    def update_plate_cache(filename, arr):
+        result = []
+        try:
+            pathlib.Path("cache/").mkdir(parents=True, exist_ok=True)
+            fi = pathlib.Path("cache/" + filename + ".npz")
+
+            if fi.exists():
+                cached = CacheHandler.load("cache", filename)
+                if cached is not None:
+                    cached = cached.tolist()
+                    for c in cached:
+                        t = [x for x in arr if c["plate"] == x["plate"]]
+                        if len(t) > 0:
+                            result += t
+                        else:
+                            result.append(c)
+                    rest = np.array(result)
+                    np.savez_compressed("cache/" + filename, a=rest)
+
+        except Exception as e:
+            print("Cache", e)
+            pass
+
+    @staticmethod
     def load(directory, filename):
-        pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
+        pathlib.Path(directory + "/").mkdir(parents=True, exist_ok=True)
         fi = pathlib.Path(directory + "/" + filename + ".npz")
         if fi.exists():
             try:
@@ -67,7 +91,7 @@ class CacheHandler:
     @staticmethod
     def remove(directory, filename):
         try:
-            pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
+            pathlib.Path(directory + "/").mkdir(parents=True, exist_ok=True)
 
             with Path(directory + "/" + filename + ".npz") as fi:
                 if fi.exists():
@@ -91,7 +115,7 @@ class CacheHandler:
     @staticmethod
     def save_meta(directory, filename, arr):
         try:
-            pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
+            pathlib.Path(directory + "/").mkdir(parents=True, exist_ok=True)
             fi = pathlib.Path(directory + "/" + filename + ".npz")
             array = np.array([arr])
             if fi.exists():
@@ -111,7 +135,7 @@ class CacheHandler:
     def save_tmp(directory, filename, arr):
         try:
             if len(arr) > 0:
-                pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
+                pathlib.Path(directory + "/").mkdir(parents=True, exist_ok=True)
                 fi = pathlib.Path(directory + "/" + filename + ".npz")
                 if fi.exists():
                     # Load in the existing cache data
@@ -130,8 +154,8 @@ class CacheHandler:
     @staticmethod
     def recover(directory, filename, outdir):
         try:
-            pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
-            pathlib.Path(outdir).mkdir(parents=True, exist_ok=True)
+            pathlib.Path(directory + "/").mkdir(parents=True, exist_ok=True)
+            pathlib.Path(outdir + "/").mkdir(parents=True, exist_ok=True)
             fi = pathlib.Path(directory + "/" + filename + ".npz")
             if fi.exists():
                 cached = CacheHandler.load(directory, filename)
@@ -156,5 +180,6 @@ class CacheHandler:
 
     @staticmethod
     def get_file_list(directory):
+        pathlib.Path(directory + "/").mkdir(parents=True, exist_ok=True)
         files = [f.replace('.npz', '') for f in listdir(directory) if isfile(join(directory, f))]
         return files

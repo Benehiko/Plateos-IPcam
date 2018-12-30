@@ -1,23 +1,23 @@
 char:
   area:
-    max: 100
-    min: 0.21
+    max: 11.64
+    min: 0.69
   height:
-    max: 96.67
-    min: 5.72
+    max: 100
+    min: 10.74
   morph:
     max: 9
     min: 9
   width:
-    max: 97.34
-    min: 0.96
+    max: 37.35
+    min: 0.69
 preprocessing:
   mask:
-    lower: 16
-    upper: 234
+    lower: 30
+    upper: 130
   morph:
-    height: 2
-    width: '6'
+    height: '1'
+    width: 1
   otsu: 255
   sobel:
     kernel: 3
@@ -26,11 +26,11 @@ shape:
     max: 90
     min: 0
   area:
-    max: 0.62
-    min: 0.01
+    max: 8.33
+    min: 0.24
   height:
-    max: 6.33
-    min: 1.19
+    max: 13.95
+    min: 3.38
   width:
-    max: 7.31
-    min: 2.23
+    max: 20
+    min: 8.62
