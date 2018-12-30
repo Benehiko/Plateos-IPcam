@@ -246,10 +246,15 @@ class NumberplateHandler:
         tmp = NumberplateHandler.remove_duplicates(plates)
         if tmp is not None:
             for i in range(0, len(tmp)):
-                val = NumberplateHandler.search_in_cache(tmp[i]) * 10
-                (pl, pr, con, t) = tmp[i]
-                con = round(float(con + (val / 100)), 2)
-                tmp[i] = (pl, pr, con, t)
+                val, cached_plate = NumberplateHandler.search_in_cache(tmp[i])
+                if val > 0:
+                    cache_conf = 0
+                    for x in cached_plate:
+                        cache_conf += (x["confidence"])
+                    cache_conf = (cache_conf / val)
+                    (pl, pr, con, t) = tmp[i]
+                    con = round(float(con + (cache_conf / 100)), 2)
+                    tmp[i] = (pl, pr, con, t)
             out = []
             while True:
                 highest = NumberplateHandler.get_highest(tmp)
@@ -274,16 +279,18 @@ class NumberplateHandler:
     @staticmethod
     def search_in_cache(plate):
         count = 0
+        cached_plates = []
         try:
             pathlib.Path("cache").mkdir(parents=True, exist_ok=True)
             files = [f.replace('.npz', '') for f in listdir("cache") if isfile(join("cache", f))]
             for filename in files:
                 data = CacheHandler.loadByPlate("cache", filename, plate)
+                cached_plates += data
                 count = count + len(data)
         except Exception as e:
             print(e)
             pass
-        return count
+        return count, cached_plates
 
     @staticmethod
     def remove_similar(plates):

@@ -72,7 +72,7 @@ class CacheHandler:
                     np.savez_compressed("cache/" + filename, a=rest)
 
         except Exception as e:
-            print("Cache", e)
+            print("Update Cache Plate Error\n", e)
             pass
 
     @staticmethod
@@ -105,7 +105,8 @@ class CacheHandler:
         try:
             data = CacheHandler.load(directory, filename)
             if data is not None:
-                d = [x for x in data.tolist() if x["plate"] == plate]
+                tmp = data.tolist()
+                d = [x for x in tmp if x["plate"] == plate]
                 return d
         except Exception as e:
             print(e)

@@ -175,8 +175,18 @@ class BackdropHandler:
                                                                                           datetime.datetime.now().strftime(
                                                                                               "%Y-%m-%d %H"), x[0])
                                                 if len(cache_res) > 0:
+                                                    # Unhashable numpy.ndarray
+                                                    seen = set()
+                                                    new_cache_res = []
+                                                    for cr in cache_res:
+
+                                                        tu = tuple(cr.items())
+                                                        if (tu[0][1], ) not in seen:
+                                                            seen.add((tu[0][1], ))
+                                                            new_cache_res.append(cr)
+
                                                     update_cache_conf = []
-                                                    for x in cache_res:
+                                                    for x in new_cache_res:
                                                         t = [y for y in tmp if
                                                              y[1] == x["plate"]]
                                                         m_t = max(t, key=lambda p: time_key(p, 4))
