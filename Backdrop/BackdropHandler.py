@@ -234,7 +234,7 @@ class BackdropHandler:
                     now = datetime.now()
                     for x in files:
                         diff = now - datetime.strptime(x, "%Y-%m-%d %H:%M")
-                        if timedelta(minutes=5) <= diff:
+                        if timedelta(minutes=8) <= diff:
                             CacheHandler.remove("tmp", x)
             except Exception as e:
                 print("Error on Cleaning tmp", e)
