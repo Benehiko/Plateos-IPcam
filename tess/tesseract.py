@@ -60,8 +60,8 @@ class Tess:
                             plate = [("plate", text), ("country", country), ("province", province),
                                      ("confidence", confidence),
                                      ("image", image), ("time", now), ("char-len", data[1])]
-                            # print("Plate:", text, "Country:", country, "Province:", province, "Confidence:", confidence,
-                            #       "Time:", now)
+                            print("Plate:", text, "Country:", country, "Province:", province, "Confidence:", confidence,
+                                  "Time:", now)
                 return dict(plate)
         except Exception as e:
             print("Tess runner error", "\n", e)
