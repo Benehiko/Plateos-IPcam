@@ -10,6 +10,8 @@ from cvlib.CvEnums import CvEnums
 
 class CvHelper:
 
+    # TODO: Add type mapping and return types to methods with correct descriptions
+
     @staticmethod
     def getTrackbarPos(property, trackbarname, default=0.1, increment_val=0.1):
         value = cv2.getTrackbarPos(property, trackbarname) * increment_val

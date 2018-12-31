@@ -11,6 +11,8 @@ from cvlib.CvHelper import CvHelper
 
 class ImageUtil:
 
+    # TODO: Add type mapping and return types to methods with correct descriptions
+
     @staticmethod
     def compress(mat, max_w=1270, max_h=720, quality=65):
         resized = CvHelper.resize(mat, new_width=max_w, new_height=max_h, interpolation=CvEnums.MAT_INTER_AREA)

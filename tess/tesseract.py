@@ -12,6 +12,8 @@ from cvlib.ImageUtil import ImageUtil
 
 class Tess:
 
+    # TODO: Add type mapping and return types to methods with correct descriptions
+
     def __init__(self):
         # noinspection PyArgumentList,PyArgumentList
         self.t = PyTessBaseAPI(psm=PSM.SINGLE_BLOCK, oem=OEM.LSTM_ONLY, lang="eng")
