@@ -275,9 +275,9 @@ class BackdropHandler:
         try:
             if Request.check_connectivity():
                 url = "http://" + self.url + self.addlocation
-                camdata = []
+                camdata = set()
                 for cam in self.cameras:
-                    camdata.append(cam.get_camera_data())
+                    camdata.add(cam.get_camera_data())
                 Request.ping_location(self.interface, url, self.alias, camdata)
         except Exception as e:
             print(e)
