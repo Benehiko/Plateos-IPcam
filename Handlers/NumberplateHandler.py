@@ -316,13 +316,13 @@ class NumberplateHandler:
         return ""
 
     @staticmethod
-    def remove_duplicates(l):
+    def remove_duplicates(data: list)->list or None:
         """
         Remove all the duplicates.
         Returns list without duplicates with increased confidence.
         """
-        if len(l) > 0:
-            plates, counts = CompareData.del_duplicates_list_tuples(l)
+        if len(data) > 0:
+            plates, counts = CompareData.del_duplicates_list_tuples(data)
             if plates is not None or counts is not None:
                 for x in range(0, len(counts)):
                     (pl, pr, con, t) = plates[x]

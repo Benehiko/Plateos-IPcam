@@ -9,6 +9,8 @@ from cvlib.CvEnums import CvEnums
 
 class ContourHandler:
 
+    # TODO: Add type mapping and return types to methods with correct descriptions
+
     def __init__(self):
         self.img_height = None
         self.img_width = None
