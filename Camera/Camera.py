@@ -16,6 +16,8 @@ from cvlib.ImageUtil import ImageUtil
 
 class Camera:
 
+    # TODO: Add type mapping and return types to methods with correct descriptions
+
     def __init__(self, ip, tess):
         self.randomcmd = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
 

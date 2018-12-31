@@ -4,6 +4,8 @@ import yaml
 
 
 class PropertyHandler:
+    # TODO: Add type mapping and return types to methods with correct descriptions
+
     numberplate = {}
     app_settings = {
         "camera": {

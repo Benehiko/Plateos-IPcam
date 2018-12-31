@@ -18,6 +18,8 @@ event = Event()
 
 class CacheHandler:
 
+    # TODO: Add type mapping and return types to methods with correct descriptions
+
     @staticmethod
     def save_cache(directory, filename, arr):
         result = []
@@ -54,6 +56,7 @@ class CacheHandler:
     @staticmethod
     def update_plate_cache(filename, arr):
         result = []
+
         try:
             pathlib.Path("cache/").mkdir(parents=True, exist_ok=True)
             fi = pathlib.Path("cache/" + filename + ".npz")
@@ -65,6 +68,7 @@ class CacheHandler:
                     for c in cached:
                         t = [x for x in arr if c["plate"] == x["plate"]]
                         if len(t) > 0:
+                            # t = max(t, key=lambda x: plate_conf(x))
                             result += t
                         else:
                             result.append(c)
@@ -76,7 +80,7 @@ class CacheHandler:
             pass
 
     @staticmethod
-    def load(directory, filename):
+    def load(directory, filename) -> np.ndarray or None:
         pathlib.Path(directory + "/").mkdir(parents=True, exist_ok=True)
         fi = pathlib.Path(directory + "/" + filename + ".npz")
         if fi.exists():
@@ -114,7 +118,7 @@ class CacheHandler:
         return []
 
     @staticmethod
-    def save_meta(directory, filename, arr):
+    def save_meta(directory: str, filename: str, arr: list):
         try:
             pathlib.Path(directory + "/").mkdir(parents=True, exist_ok=True)
             fi = pathlib.Path(directory + "/" + filename + ".npz")
@@ -133,7 +137,7 @@ class CacheHandler:
             pass
 
     @staticmethod
-    def save_tmp(directory, filename, arr):
+    def save_tmp(directory: str, filename: str, arr: list):
         try:
             if len(arr) > 0:
                 pathlib.Path(directory + "/").mkdir(parents=True, exist_ok=True)
@@ -180,7 +184,7 @@ class CacheHandler:
             pass
 
     @staticmethod
-    def get_file_list(directory):
+    def get_file_list(directory: str) -> list:
         pathlib.Path(directory + "/").mkdir(parents=True, exist_ok=True)
         files = [f.replace('.npz', '') for f in listdir(directory) if isfile(join(directory, f))]
         return files

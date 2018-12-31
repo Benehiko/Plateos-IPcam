@@ -1,6 +1,5 @@
 import datetime
 import netifaces
-import os
 import subprocess
 from urllib.error import URLError
 
@@ -11,6 +10,8 @@ from Handlers.CacheHandler import CacheHandler
 
 class Request:
 
+    # TODO: Add type mapping and return types to methods with correct descriptions
+    
     @staticmethod
     def post(interface, data, url):
         mac = Request.get_mac(interface)
@@ -19,7 +20,8 @@ class Request:
 
             for x in data:
                 plate, province, confidence, date, deviceMac = x
-                d = [('plate', plate), ('province', province), ('confidence', confidence), ('time', date), ('deviceMac', mac), ('cameraMac', deviceMac)]
+                d = [('plate', plate), ('province', province), ('confidence', confidence), ('time', date),
+                     ('deviceMac', mac), ('cameraMac', deviceMac)]
                 out.append(dict(d))
 
             # print("Posting:", out)

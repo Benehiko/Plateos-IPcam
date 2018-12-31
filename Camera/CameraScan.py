@@ -4,6 +4,8 @@ from threading import Thread
 
 class CameraScan:
 
+    # TODO: Add type mapping and return types to methods with correct descriptions
+
     def __init__(self):
         self.valid = []
 
