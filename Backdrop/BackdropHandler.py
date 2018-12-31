@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta
 import pathlib
 from multiprocessing import Process, Queue, Condition
 from os import listdir
@@ -8,8 +8,7 @@ from threading import Thread
 from Camera.Camera import Camera
 from Camera.CameraScan import CameraScan
 from Handlers.CacheHandler import CacheHandler
-from Handlers.CompareData import CompareData
-from Handlers.NumberplateHandler import NumberplateHandler
+from Handlers.CachedNumberplateHandler import CachedNumberplateHandler
 from Handlers.PropertyHandler import PropertyHandler
 from Handlers.RequestHandler import Request
 from Handlers.ThreadHandler import ThreadWithReturnValue
@@ -17,6 +16,8 @@ from tess.tesseract import Tess
 
 
 class BackdropHandler:
+
+    # TODO: Add type mapping and return types to methods with correct descriptions
 
     def __init__(self):
         # Scanner
@@ -39,7 +40,7 @@ class BackdropHandler:
 
         self.cached = []
         self.active = set()
-        self.old_time = datetime.datetime.now()
+        self.old_time = datetime.now()
 
         self.cameras = []
 
@@ -60,12 +61,12 @@ class BackdropHandler:
         self.c_upload = Condition()
 
         self.meta_time = Queue()
-        self.meta_time.put(datetime.datetime.now())
+        self.meta_time.put(datetime.now())
 
     def start(self):
-        old_time = datetime.datetime.now()
-        old_time2 = datetime.datetime.now()
-        old_time3 = datetime.datetime.now()
+        old_time = datetime.now()
+        old_time2 = datetime.now()
+        old_time3 = datetime.now()
 
         while True:
             t_tmp = Thread(target=self.tmp_queue_handler, args=(self.c_tmp,))
@@ -84,27 +85,28 @@ class BackdropHandler:
 
             # Use timedelta
             """Time delta to run certain checks periodically"""
-            now = datetime.datetime.now()
+            now = datetime.now()
             diff = now - old_time
             diff2 = now - old_time2
             diff3 = now - old_time3
 
-            if datetime.timedelta(seconds=10) < diff:
+            if timedelta(seconds=10) < diff:
                 self.check_alive()
-                t_cleanup = Thread(target=self.cleanup_cache, args=(self.c_cache, self.c_meta, self.c_tmp, self.c_upload, ))
+                t_cleanup = Thread(target=self.cleanup_cache,
+                                   args=(self.c_cache, self.c_meta, self.c_tmp, self.c_upload,))
                 t_cleanup.start()
                 t_cleanup.join()
-                old_time = datetime.datetime.now()
+                old_time = datetime.now()
 
-            if datetime.timedelta(minutes=30) < diff3:
+            if timedelta(minutes=30) < diff3:
                 Thread(target=self.ping_location).start()
-                old_time3 = datetime.datetime.now()
+                old_time3 = datetime.now()
 
-            if datetime.timedelta(minutes=10) < diff2:
+            if timedelta(minutes=10) < diff2:
                 t_offline = Thread(target=self.offline_check)
                 t_offline.start()
                 t_offline.join()
-                old_time2 = datetime.datetime.now()
+                old_time2 = datetime.now()
 
             found_camera = t_camera.join()
             active_ip = [x[0] for x in active]
@@ -140,117 +142,35 @@ class BackdropHandler:
         Save to cache.
         """
         try:
-            def time_key(item, pos):
-                return datetime.datetime.strptime(item[pos], "%Y-%m-%d %H:%M:%S")
-
             with cv_tmp:
-                file_list = CacheHandler.get_file_list("tmp")
-                tmp = []
-                if len(file_list) > 0:
-                    for x in file_list:
-                        data = CacheHandler.load("tmp", x)
-                        if data is not None:
-                            for d in data:
-                                for y in d["results"]:
-                                    tmp.append((
-                                        d["camera"], y["plate"], y["province"], y["confidence"], y["time"],
-                                        y["image"]
-                                    ))
+                temp_list = CachedNumberplateHandler.combine_tmp_data()
+                if temp_list is not None:
+                    refined_temp = CachedNumberplateHandler.improve_confidence(temp_list)
+                    if refined_temp is not None:
+                        in_cache, out_cache = CachedNumberplateHandler.compare_to_cached(refined_temp)
+                        with cv_cache:
+                            if len(in_cache) > 0:
+                                CacheHandler.update_plate_cache(datetime.now().strftime(
+                                    "%Y-%m-%d %H"), in_cache)
+                            upload_list = in_cache + out_cache
+                            with cv_upload:
+                                if len(upload_list) > 0:
+                                    upload_dict = CachedNumberplateHandler.compare_to_uploaded(upload_list)
+                                    if upload_dict is not None:
+                                        if len(upload_dict) > 0:
+                                            upload_tuple = CachedNumberplateHandler.convert_dict_to_tuple(upload_dict)
+                                            if len(upload_tuple) > 0:
+                                                upload_tuple = [x[:-1] for x in upload_tuple]
+                                                CacheHandler.save_tmp("uploaded", datetime.now().strftime("%Y-%m-%d"),
+                                                                      upload_tuple)
+                                                # self.upload_dataset(res)
+                                                print("Would have uploaded: ", upload_tuple)
 
-                    if len(tmp) > 0:
-                        c = NumberplateHandler.improve([x[1:-1] for x in tmp])
-                        if c is not None:
-                            if len(c) > 0:
-                                c = NumberplateHandler.remove_similar(c)
-                                if c is not None:
-                                    with cv_cache:
-                                        res = [x + (y[0],) for x in c for y in tmp if x[0] == y[1] and x[3] == y[4]]
-                                        res, count = CompareData.del_duplicates_list_tuples(res)
-                                        if res is not None:
-                                            if len(res) > 0:
-                                                upload_list = []
-                                                cache_res = []
-                                                for x in res:
-                                                    cache_res += CacheHandler.loadByPlate("cache",
-                                                                                          datetime.datetime.now().strftime(
-                                                                                              "%Y-%m-%d %H"), x[0])
-                                                if len(cache_res) > 0:
-                                                    # Unhashable numpy.ndarray
-                                                    seen = set()
-                                                    new_cache_res = []
-                                                    for cr in cache_res:
+                                            self.cache_queue.put(upload_dict)
+                                cv_upload.notify_all()
+                            cv_cache.notify_all()
 
-                                                        tu = tuple(cr.items())
-                                                        if (tu[0][1], ) not in seen:
-                                                            seen.add((tu[0][1], ))
-                                                            new_cache_res.append(cr)
-
-                                                    update_cache_conf = []
-                                                    for x in new_cache_res:
-                                                        t = [y for y in tmp if
-                                                             y[1] == x["plate"]]
-                                                        m_t = max(t, key=lambda p: time_key(p, 4))
-
-                                                        if len(m_t) > 0:
-                                                            new_conf = [p for p in res if p[0] == m_t[1]]
-                                                            if len(new_conf) > 0:
-                                                                if (new_conf[0][2] -
-                                                                    PropertyHandler.numberplate["Confidence"][
-                                                                        "min-deviation"]) > 0.5:
-                                                                    upload_list += [(
-                                                                            m_t[1], m_t[2], new_conf[0][2], m_t[4],
-                                                                            m_t[0])]
-                                                                    update_cache_conf.append({"plate": m_t[1], "province": m_t[2],
-                                                                     "confidence": m_t[3],
-                                                                     "time": m_t[4],
-                                                                     "camera": m_t[0], "image": m_t[5]})
-                                                    CacheHandler.update_plate_cache(datetime.datetime.now().strftime(
-                                                                                              "%Y-%m-%d %H"), update_cache_conf)
-                                                else:
-                                                    upload_list += res
-                                                with cv_upload:
-                                                    if len(upload_list) > 0:
-                                                        final_upload = []
-                                                        uploaded_today = datetime.datetime.now().strftime("%Y-%m-%d")
-                                                        uploaded_cache = CacheHandler.load("uploaded", uploaded_today)
-                                                        if uploaded_cache is not None:
-                                                            for t in upload_list:
-                                                                same_time = [x for x in uploaded_cache if
-                                                                             x[0] == t[0] and x[3] == t[3]]
-                                                                if len(same_time) == 0:
-                                                                    max_uploaded_time = max(uploaded_cache, key=lambda p: time_key(p, 3))
-
-                                                                    diff = datetime.datetime.strptime(t[3], "%Y-%m-%d %H:%M:%S") - datetime.datetime.strptime(max_uploaded_time[3], "%Y-%m-%d %H:%M:%S")
-                                                                    conf_diff = float(t[2]) - float(max_uploaded_time[2])
-                                                                    if datetime.timedelta(minutes=1) < diff and conf_diff > 0.3:
-                                                                        final_upload.append(t)
-                                                        else:
-                                                            final_upload = upload_list
-
-                                                        if len(final_upload) > 0:
-                                                            final_upload, count = CompareData.del_duplicates_list_tuples(
-                                                                final_upload)
-                                                            if final_upload is not None:
-                                                                CacheHandler.save_tmp("uploaded", uploaded_today,
-                                                                                      final_upload)
-                                                                # self.upload_dataset(res)
-                                                                print("Would have uploaded: ", final_upload)
-
-                                                                cache_data = [
-                                                                    {"plate": x[0], "province": x[1],
-                                                                     "confidence": x[2],
-                                                                     "time": x[3],
-                                                                     "camera": y[0], "image": y[5]} for x in
-                                                                    final_upload
-                                                                    for y in tmp if
-                                                                    x[0] == y[1] and x[3] == y[4]]
-
-                                                                if len(cache_data) > 0:
-                                                                    self.cache_queue.put(cache_data)
-                                                    cv_upload.notify_all()
-                                        cv_cache.notify_all()
                 cv_tmp.notify_all()
-
         except Exception as e:
             print(e)
             pass
@@ -280,10 +200,10 @@ class BackdropHandler:
                 files = CacheHandler.get_file_list("cache")
                 if len(files) > 0:
                     for x in files:
-                        file_last_date = datetime.datetime.strptime(x, "%Y-%m-%d %H")
-                        now = datetime.datetime.now()
+                        file_last_date = datetime.strptime(x, "%Y-%m-%d %H")
+                        now = datetime.now()
                         diff = now - file_last_date
-                        if datetime.timedelta(days=90) <= diff:
+                        if timedelta(days=90) <= diff:
                             CacheHandler.remove("cache", file_last_date.strftime("%Y-%m-%d %H"))
             except Exception as e:
                 print("Error on Cleaning Cache", e)
@@ -295,11 +215,11 @@ class BackdropHandler:
                 pathlib.Path("meta/").mkdir(parents=True, exist_ok=True)
                 files = CacheHandler.get_file_list("meta")
                 if len(files) > 0:
-                    now = datetime.datetime.now()
+                    now = datetime.now()
                     for x in files:
-                        file_last_date = datetime.datetime.strptime(x, "%Y-%m-%d %H:%M")
+                        file_last_date = datetime.strptime(x, "%Y-%m-%d %H:%M")
                         diff = now - file_last_date
-                        if datetime.timedelta(days=20) <= diff:
+                        if timedelta(days=20) <= diff:
                             CacheHandler.remove("meta", file_last_date.strftime("%Y-%m-%d %H:%M"))
             except Exception as e:
                 print("Error on Cleaning Meta", e)
@@ -311,10 +231,10 @@ class BackdropHandler:
                 pathlib.Path("tmp/").mkdir(parents=True, exist_ok=True)
                 files = CacheHandler.get_file_list("tmp")
                 if len(files) > 0:
-                    now = datetime.datetime.now()
+                    now = datetime.now()
                     for x in files:
-                        diff = now - datetime.datetime.strptime(x, "%Y-%m-%d %H:%M")
-                        if datetime.timedelta(minutes=5) <= diff:
+                        diff = now - datetime.strptime(x, "%Y-%m-%d %H:%M")
+                        if timedelta(minutes=5) <= diff:
                             CacheHandler.remove("tmp", x)
             except Exception as e:
                 print("Error on Cleaning tmp", e)
@@ -326,10 +246,10 @@ class BackdropHandler:
                 pathlib.Path("uploaded/").mkdir(parents=True, exist_ok=True)
                 files = CacheHandler.get_file_list("uploaded")
                 if len(files) > 0:
-                    now = datetime.datetime.now()
+                    now = datetime.now()
                     for x in files:
-                        diff = now - datetime.datetime.strptime(x, "%Y-%m-%d")
-                        if datetime.timedelta(days=2) <= diff:
+                        diff = now - datetime.strptime(x, "%Y-%m-%d")
+                        if timedelta(days=2) <= diff:
                             CacheHandler.remove("uploaded", x)
             except Exception as e:
                 print("Error on Cleaning upload", e)
@@ -371,13 +291,13 @@ class BackdropHandler:
                 if val is not None:
                     out += val
             if len(out) > 0:
-                now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
+                now = datetime.now().strftime('%Y-%m-%d %H:%M')
                 CacheHandler.save_tmp("tmp", now, out)
             cv.notify_all()
 
     def meta_queue_handler(self, cv: Condition, meta_time):
         prev_time = meta_time.get_nowait()
-        now = datetime.datetime.now()
+        now = datetime.now()
         if prev_time is not None:
             diff = now - prev_time
             with cv:
@@ -385,19 +305,19 @@ class BackdropHandler:
                 while not self.meta_queue.empty():
                     val = self.meta_queue.get_nowait()
                     if val is not None:
-                        if diff > datetime.timedelta(minutes=3):
+                        if diff > timedelta(minutes=3):
                             out += val
 
                 if len(out):
                     CacheHandler.save_meta("meta", now.strftime('%Y-%m-%d %H:%M'), out)
-                if diff > datetime.timedelta(minutes=3):
-                    now = datetime.datetime.now()
+                if diff > timedelta(minutes=3):
+                    now = datetime.now()
                     meta_time.put(now)
                 else:
                     meta_time.put(prev_time)
                 cv.notify_all()
         else:
-            now = datetime.datetime.now()
+            now = datetime.now()
             meta_time.put(now)
 
     def cache_queue_handler(self, cv: Condition):
@@ -408,6 +328,6 @@ class BackdropHandler:
                 if val is not None:
                     out += val
             if len(out) > 0:
-                now = datetime.datetime.now().strftime('%Y-%m-%d %H')
+                now = datetime.now().strftime('%Y-%m-%d %H')
                 CacheHandler.save_cache("cache", now, out)
             cv.notify_all()

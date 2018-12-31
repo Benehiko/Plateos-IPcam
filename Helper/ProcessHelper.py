@@ -10,6 +10,8 @@ from cvlib.ImageUtil import ImageUtil
 
 class ProcessHelper:
 
+    # TODO: Add type mapping and return types to methods with correct descriptions
+
     def analyse_frames(self, frame):
         if frame is not None:
             results, drawn, raw, chars = self.get_numberplate(frame)

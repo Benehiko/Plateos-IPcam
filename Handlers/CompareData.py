@@ -1,8 +1,12 @@
 from collections import Counter
+from datetime import datetime
 from itertools import groupby
 
 
 class CompareData:
+
+    # TODO: Add type mapping and return types to methods with correct descriptions
+
     """Return List if some aren't in the file else return None"""
 
     @staticmethod
@@ -12,12 +16,26 @@ class CompareData:
         return res, dup
 
     @staticmethod
-    def del_duplicates_list_tuples(l):
-        """Returns the cleaned array of duplicates and the counts of each duplicate"""
+    def del_duplicates_list_tuples(l: list) -> [list, int] or [None, None]:
+        """
+        Cleans list of tuples of any duplication while maintaining order of time (most recent preferred).
+        :param l:
+        :return: returns list of tuples and amount of duplicates (per plate).
+        """
+
+        def date_key(p, pos, dateformat):
+            return datetime.strptime(p[pos], dateformat)
+
         try:
             counts = list(Counter([x[0] for x in l]).values())
             out = [list(g)[0] for _, g in groupby(l, key=lambda x: x[0])]
-            return out, counts
+            result = []
+            for x in out:
+                tmp = [y for y in l if y[0] == x[0]]
+                max_time = max(tmp, key=lambda p: date_key(p, 3, "%Y-%m-%d %H:%M:%S"))
+                result.append(max_time)
+
+            return result, counts
         except Exception as e:
             print("Could not delete duplicates", e)
         return None, None
