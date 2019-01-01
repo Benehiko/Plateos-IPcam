@@ -114,6 +114,7 @@ class BackdropHandler:
                 for x in found_camera:
                     if x not in active_ip:
                         self.add(x)
+
             t_tmp.join()
             t_meta.join()
             t_cache.join()
@@ -164,7 +165,7 @@ class BackdropHandler:
                                                 CacheHandler.save_tmp("uploaded", datetime.now().strftime("%Y-%m-%d"),
                                                                       upload_tuple)
                                                 self.upload_dataset(upload_tuple)
-                                                #print("Would have uploaded: ", upload_tuple)
+                                                print("Would have uploaded: ", upload_tuple)
 
                                             self.cache_queue.put(upload_dict)
                                 cv_upload.notify_all()
@@ -276,9 +277,14 @@ class BackdropHandler:
             if Request.check_connectivity():
                 url = "http://" + self.url + self.addlocation
                 camdata = set()
+                data = []
                 for cam in self.cameras:
-                    camdata.add(cam.get_camera_data())
-                Request.ping_location(self.interface, url, self.alias, camdata)
+                    t = cam.get_camera_data()
+                    if t["mac"] not in camdata:
+                        camdata.add(t["mac"])
+                        data.append(t)
+                print(data)
+                Request.ping_location(self.interface, url, self.alias, data)
         except Exception as e:
             print(e)
             pass

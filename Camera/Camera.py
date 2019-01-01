@@ -59,7 +59,7 @@ class Camera:
         counter = 0
         while True:
             try:
-                reader = urlopen(self.url, timeout=1)
+                reader = urlopen(self.url, timeout=3)
                 if reader.status == 200:
                     counter = 0
                     b = bytearray(reader.read())
