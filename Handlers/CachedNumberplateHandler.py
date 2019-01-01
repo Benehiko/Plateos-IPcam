@@ -118,6 +118,7 @@ class CachedNumberplateHandler:
         :param data:
         :return:
         """
+
         def date_key(p):
             return datetime.now().strptime(p[3], "%Y-%m-%d %H:%M:%S")
 
@@ -141,9 +142,10 @@ class CachedNumberplateHandler:
                                 conf_diff = float(y["confidence"]) - float(already_uploaded_max_time[2])
                                 if timedelta(minutes=1) < time_diff and conf_diff > 0.3:
                                     result.append(y)
+                            else:
+                                result.append(y)
             else:
                 result = data
-
 
             return result
         except Exception as e:
