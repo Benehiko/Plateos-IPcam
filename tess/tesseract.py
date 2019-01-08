@@ -16,7 +16,7 @@ class Tess:
 
     def __init__(self):
         # noinspection PyArgumentList,PyArgumentList
-        self.t = PyTessBaseAPI(psm=PSM.CIRCLE_WORD, oem=OEM.LSTM_ONLY, lang="eng")
+        self.t = PyTessBaseAPI(psm=PSM.SINGLE_BLOCK, oem=OEM.LSTM_ONLY, lang="eng")
         self.t.SetVariable("load_system_dawg", "false")
         self.t.SetVariable("load_freq_dawg", "false")
         self.t.SetVariable("load_punc_dawg", "false")
