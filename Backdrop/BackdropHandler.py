@@ -98,7 +98,7 @@ class BackdropHandler:
                 t_cleanup.join()
                 old_time = datetime.now()
 
-            if timedelta(minutes=30) < diff3:
+            if timedelta(minutes=1) < diff3:
                 Thread(target=self.ping_location).start()
                 old_time3 = datetime.now()
 
@@ -161,7 +161,8 @@ class BackdropHandler:
                                         if len(upload_dict) > 0:
                                             upload_tuple = CachedNumberplateHandler.convert_dict_to_tuple(upload_dict)
                                             if len(upload_tuple) > 0:
-                                                upload_tuple = [x[:-1] for x in upload_tuple]
+                                                # Don't remove image from tuple - uploading everything with conf 0.6 >
+                                                # upload_tuple = [x[:-1] for x in upload_tuple]
                                                 CacheHandler.save_tmp("uploaded", datetime.now().strftime("%Y-%m-%d"),
                                                                       upload_tuple)
                                                 self.upload_dataset(upload_tuple)

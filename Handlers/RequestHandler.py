@@ -1,9 +1,12 @@
 import datetime
 import netifaces
 import subprocess
+from base64 import b64encode
+from io import BytesIO
 from urllib.error import URLError
 
 import requests
+from PIL import Image
 
 from Handlers.CacheHandler import CacheHandler
 
@@ -11,7 +14,7 @@ from Handlers.CacheHandler import CacheHandler
 class Request:
 
     # TODO: Add type mapping and return types to methods with correct descriptions
-    
+
     @staticmethod
     def post(interface, data, url):
         mac = Request.get_mac(interface)
@@ -19,9 +22,18 @@ class Request:
             out = []
 
             for x in data:
-                plate, province, confidence, date, deviceMac = x
+                plate, province, confidence, date, deviceMac, image = x
+                if confidence < 0.6:
+                    tmp = ""
+                else:
+                    image = Image.fromarray(image)
+                    tmp = BytesIO()
+                    image.save(tmp, "JPEG")
+                    tmp.seek(0)
+                    tmp = b64encode(tmp.read())
+
                 d = [('plate', plate), ('province', province), ('confidence', confidence), ('time', date),
-                     ('deviceMac', mac), ('cameraMac', deviceMac)]
+                     ('deviceMac', mac), ('cameraMac', deviceMac), ('image', tmp)]
                 out.append(dict(d))
 
             # print("Posting:", out)
