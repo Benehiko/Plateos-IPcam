@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cef</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-slider.min.css') }}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Navbar</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Link</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Disabled</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm">
+            <form>
+                <div class="form-group">
+                    <label for="shape-height">Shape-Height</label><br/>
+                    <span id="shape-height-min">0</span>
+                    <input type="text"
+                           id="shape-height"
+                           class="span2"
+                           value="0.1"
+                           data-slider-min="0.01"
+                           data-slider-max="20"
+                           data-slider-step="0.01"
+                           data-slider-value="[0.01, 20]"
+                           data-slider-handle="custom"/>
+                    <span id="shape-height-max">100</span><br/>
+                </div>
+                <div class="form-group">
+                    <label for="shape-width">Shape-Width</label><br/>
+                    <span id="shape-width-min">0</span>
+                    <input type="text"
+                           id="shape-width"
+                           class="span2"
+                           value="0.1"
+                           data-slider-min="0.01"
+                           data-slider-max="20"
+                           data-slider-step="0.01"
+                           data-slider-value="[0.01, 20]"
+                           data-slider-handle="custom"/>
+                    <span id="shape-width-max">100</span><br/>
+                </div>
+                <div class="form-group">
+                    <label for="shape-area">Shape-Area</label><br/>
+                    <span id="shape-area-min"></span>
+                    <input type="text"
+                           id="shape-area"
+                           class="span2"
+                           value="0.1"
+                           data-slider-min="0.01"
+                           data-slider-max="20"
+                           data-slider-step="0.01"
+                           data-slider-value="[0.01, 20]"
+                           data-slider-handle="custom"/>
+                    <span id="shape-area-max"></span><br/>
+                </div>
+                <div class="form-group">
+                    <label for="morph-width">Morph Width</label><br/>
+                    <input type="text"
+                           id="morph-width"
+                           value="1"
+                           data-slider-min="1"
+                           data-slider-max="50"
+                           data-slider-step="1"
+                           data-slider-value="2"
+                           data-slider-handle="custom"/>
+                    <span id="morph-width-value"></span><br/>
+                </div>
+                <div class="form-group">
+                    <label for="morph-height">Morph Height</label><br/>
+                    <input type="text"
+                           id="morph-height"
+                           value="1"
+                           data-slider-min="1"
+                           data-slider-max="50"
+                           data-slider-step="1"
+                           data-slider-value="2"
+                           data-slider-handle="custom"/>
+                    <span id="morph-height-value"></span><br/>
+                </div>
+                <div class="form-group">
+                    <label for="otsu">Otsu Thresh</label><br/>
+                    <input type="text"
+                           id="otsu"
+                           value="0"
+                           data-slider-min="0"
+                           data-slider-max="255"
+                           data-slider-step="1"
+                           data-slider-value="0"
+                           data-slider-handle="custom"/>
+                    <span id="otsu-value"></span><br/>
+                </div>
+                <div class="form-group">
+                    <label for="char-area">Char-Area</label><br/>
+                    <span id="char-area-min"></span>
+                    <input type="text"
+                           id="char-area"
+                           class="span2"
+                           value="0.1"
+                           data-slider-min="0.01"
+                           data-slider-max="100"
+                           data-slider-step="0.01"
+                           data-slider-value="[0.01, 100]"
+                           data-slider-handle="custom"/>
+                    <span id="char-area-max"></span><br/>
+                </div>
+                <div class="form-group">
+                    <label for="char-height">Char-Height</label><br/>
+                    <span id="char-height-min"></span>
+                    <input type="text"
+                           id="char-height"
+                           class="span2"
+                           value="0.1"
+                           data-slider-min="0.01"
+                           data-slider-max="100"
+                           data-slider-step="0.01"
+                           data-slider-value="[0.01, 100]"
+                           data-slider-handle="custom"/>
+                    <span id="char-height-max"></span><br/>
+                </div>
+                <div class="form-group">
+                    <label for="char-width">Char-Width</label><br/>
+                    <span id="char-width-min"></span>
+                    <input type="text"
+                           id="char-width"
+                           class="span2"
+                           value="0.1"
+                           data-slider-min="0.01"
+                           data-slider-max="100"
+                           data-slider-step="0.01"
+                           data-slider-value="[0.01, 100]"
+                           data-slider-handle="custom"/>
+                    <span id="char-width-max"></span><br/>
+                </div>
+                <div class="form-group">
+                    <label for="char-morph">Char Morph</label>
+                    <span id="char-morph-min"></span>
+                    <input type="text"
+                           id="char-morph"
+                           class="span2"
+                           value="1"
+                           data-slider-min="1"
+                           data-slider-max="20"
+                           data-slider-step="1"
+                           data-slider-value="[1, 20]"
+                           data-slider-handle="custom"/>
+                    <span id="char-morph-max"></span>
+                </div>
+                <div class="form-group">
+                    <label for="angle">Angle</label><br/>
+                    <span id="angle-min-value"></span>
+                    <input type="text"
+                           id="angle"
+                           class="span2"
+                           value="0"
+                           data-slider-min="0"
+                           data-slider-max="180"
+                           data-slider-step="1"
+                           data-slider-value="[0, 180]"
+                           data-slider-handle="custom"/>
+                    <span id="angle-max-value"></span><br/>
+                </div>
+                <div class="form-group">
+                    <label for="mask">Mask</label>
+                    <span id="mask-min"></span>
+                    <input type="text"
+                           id="mask"
+                           class="span2"
+                           value="0"
+                           data-slider-min="0"
+                           data-slider-max="255"
+                           data-slider-value="[0, 255]"
+                           data-slider-handle="custom"/>
+                    <span id="mask-max"></span>
+                </div>
+                <button type="button" class="btn btn-primary" id="save-sliders">Save</button>
+            </form>
+        </div>
+        <div class="col-sm">
+            <div id="image-container">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-slider.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/datahandler.js') }}"></script>
+<script src="{{ url_for('static', filename='js/post.js') }}"></script>
+</body>
+</html>

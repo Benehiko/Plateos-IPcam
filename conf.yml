@@ -14,8 +14,8 @@ camera:
 restful:
   url: 127.0.0.1
   port: 8080
-  addplate: /site/addplate
-  addlocation: /site/addlocation
+  addplate: /api/create/numberplate
+  addlocation: /api/create/devicelocation
 device:
   alias: Device1
   interface: enp2s0

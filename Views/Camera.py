@@ -12,16 +12,17 @@ from Handlers.RequestHandler import Request
 from Handlers.ThreadHandler import ThreadWithReturnValue
 from Helper.ProcessHelper import ProcessHelper
 from cvlib.ImageUtil import ImageUtil
+from tess.tesseract import Tess
 
 
 class Camera:
 
     # TODO: Add type mapping and return types to methods with correct descriptions
 
-    def __init__(self, ip, tess):
+    def __init__(self, ip):
         self.randomcmd = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
 
-        self.tess = tess
+        self.tess = Tess()
         self.ip = ip
         self.rest = PropertyHandler.app_settings["camera"]["restful"]
         self.username = PropertyHandler.app_settings["camera"]["username"]
@@ -35,6 +36,11 @@ class Camera:
                    self.username + "&password=" + self.password
 
         self.then = datetime.now()
+        self.frame = np.zeros([100, 100, 3], dtype=np.uint8)
+        self.frame.fill(255)
+        self.raw = np.zeros([100, 100, 3], dtype=np.uint8)
+        self.raw.fill(255)
+        self.data = []
 
     def start(self, q, q2):
         if self.mac == "":
@@ -56,25 +62,26 @@ class Camera:
                 else:
                     break
         print("Starting Camera:\nIP:", self.ip, "MAC:", self.mac, "Model", self.model)
-        counter = 0
         while True:
             try:
                 reader = urlopen(self.url, timeout=3)
                 if reader.status == 200:
-                    counter = 0
                     b = bytearray(reader.read())
                     npy = np.array(b, dtype=np.uint8)
                     img = cv2.imdecode(npy, -1)
+                    self.frame = img
                     if img is not None:
-                        result, __, __, __ = self.processHelper.analyse_frames(img)
+                        result, self.frame, self.raw, __ = self.processHelper.analyse_frames(img)
 
                         if result is not None:
                             if len(result) > 0:
+                                print(result)
                                 t = ThreadWithReturnValue(target=self.tess.multi, args=(result,))
                                 t.start()
                                 tmp = t.join()
                                 if tmp is not None:
                                     tmp, meta = self.handle_data(tmp, img)
+                                    self.data = tmp
                                     if len(tmp) > 0:
                                         q.put(tmp)
                                     if len(meta) > 0:
@@ -82,9 +89,7 @@ class Camera:
 
             except Exception as e:
                 print("Camera", self.get_camera_data()["alias"], self.get_camera_data()["ip"], "Died", "\nReason:", e)
-                counter += 1
-                if counter > 5:
-                    break
+                break
 
     def handle_data(self, data, original_img):
         tmp = []
@@ -137,3 +142,18 @@ class Camera:
 
     def get_camera_data(self):
         return dict([('mac', self.mac), ('alias', self.alias), ('ip', self.ip), ('model', self.model)])
+
+    def get_frame(self):
+        return self.frame
+
+    def get_name(self):
+        return self.get_mac()
+
+    def get_raw_frame(self):
+        return self.raw
+
+    def get_output(self):
+        return self.data
+
+    def get_ip(self):
+        return self.ip
