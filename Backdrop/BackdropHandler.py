@@ -5,7 +5,8 @@ from os import listdir
 from os.path import isfile, join
 from threading import Thread
 
-from Camera.Camera import Camera
+from Handlers.FrameHandler import FrameHandler
+from Views.Camera import Camera
 from Camera.CameraScan import CameraScan
 from Handlers.CacheHandler import CacheHandler
 from Handlers.CachedNumberplateHandler import CachedNumberplateHandler
@@ -40,9 +41,8 @@ class BackdropHandler:
 
         self.cached = []
         self.active = set()
+        self.cameras = set()
         self.old_time = datetime.now()
-
-        self.cameras = []
 
         # Queues for File handling
         self.tmp_queue = Queue()
@@ -62,8 +62,10 @@ class BackdropHandler:
 
         self.meta_time = Queue()
         self.meta_time.put(datetime.now())
+        self.camera_queue = None
 
-    def start(self):
+    def start(self, queue):
+        self.camera_queue = queue
         old_time = datetime.now()
         old_time2 = datetime.now()
         old_time3 = datetime.now()
@@ -126,8 +128,14 @@ class BackdropHandler:
 
     def add(self, ip):
         try:
-            tmp = Camera(ip=ip, tess=self.tess)
-            self.cameras.append(tmp)
+            tmp = Camera(ip=ip)
+            for x in self.cameras:
+                if ip == x.get_ip():
+                    return
+
+            self.cameras.add(tmp)
+            self.camera_queue.put(tmp)
+            FrameHandler.add_obj(self.camera_queue)
             p = Process(target=tmp.start, args=(self.tmp_queue, self.meta_queue))
             self.active.add((ip, p))
             p.start()
@@ -166,7 +174,7 @@ class BackdropHandler:
                                                 CacheHandler.save_tmp("uploaded", datetime.now().strftime("%Y-%m-%d"),
                                                                       upload_tuple)
                                                 self.upload_dataset(upload_tuple)
-                                                print("Would have uploaded: ", upload_tuple)
+                                                print("Would have uploaded: ", upload_tuple[:-1])
 
                                             self.cache_queue.put(upload_dict)
                                 cv_upload.notify_all()
@@ -183,6 +191,15 @@ class BackdropHandler:
             try:
                 if process[1].is_alive() is False:
                     self.active.discard(process)
+                    FrameHandler.get_all(self.camera_queue)
+                    while not self.camera_queue.empty():
+                        obj = self.camera_queue.get_nowait()
+                        for x in obj:
+                            if x.get_ip() == process[0]:
+                                FrameHandler.remove(self.camera_queue.put(x))
+                    for x in self.cameras:
+                        if x.get_ip() == process[0]:
+                            self.cameras.discard(x)
             except Exception as e:
                 print("Tried to remove process", e)
 
@@ -277,14 +294,12 @@ class BackdropHandler:
         try:
             if Request.check_connectivity():
                 url = "http://" + self.url + self.addlocation
-                camdata = set()
                 data = []
-                for cam in self.cameras:
-                    t = cam.get_camera_data()
-                    if t["mac"] not in camdata:
-                        camdata.add(t["mac"])
-                        data.append(t)
-                print(data)
+                FrameHandler.get_all(self.camera_queue)
+                while not self.camera_queue.empty():
+                    obj = self.camera_queue.get_nowait()
+                    for cam in obj:
+                        data.append(cam.get_camera_data())
                 Request.ping_location(self.interface, url, self.alias, data)
         except Exception as e:
             print(e)

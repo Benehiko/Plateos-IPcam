@@ -14,7 +14,7 @@ char:
 preprocessing:
   mask:
     lower: 16
-    upper: 234
+    upper: 175
   morph:
     height: 2
     width: '6'
@@ -26,11 +26,11 @@ shape:
     max: 90
     min: 0
   area:
-    max: 0.62
+    max: 20
     min: 0.01
   height:
-    max: 6.33
-    min: 1.19
+    max: 20
+    min: 5.57
   width:
-    max: 7.31
-    min: 2.23
+    max: 20
+    min: 8.24
