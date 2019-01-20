@@ -33,116 +33,220 @@ let get_image = function () {
 };
 
 
-$("#shape-height").bootstrapSlider({});
-$("#shape-height").on("slide", function (evt) {
-    $("#shape-height-min").text(evt.value[0]);
-    $("#shape-height-max").text(evt.value[1]);
-    let d = {
-        "height": {"min": evt.value[0], "max": evt.value[1]}
-    };
-    socket.emit("shape-height", d);
+// Shape Height
+$("#shape-height").ionRangeSlider({
+    type: "double",
+    min: 0.01,
+    max: 20,
+    step: 0.01,
+    from: 0.01,
+    to: 20,
+    grid: true,
+    grid_snap: true,
+    from_fixed: false,
+    to_fixed: false,
+    onChange: function (data) {
+        let d = {
+            "height": {"min": data.from, "max": data.to}
+        };
+        console.log(d);
+        socket.emit("shape-height", d);
+    }
+});
+// ----
+
+// Shape Width
+$("#shape-width").ionRangeSlider({
+    type: "double",
+    min: 0.01,
+    max: 20,
+    step: 0.01,
+    from: 0.01,
+    to: 20,
+    grid: true,
+    grid_snap: true,
+    from_fixed: false,
+    to_fixed: false,
+    onChange: function (data) {
+        let d = {
+            "width": {"min": data.from, "max": data.to}
+        };
+        socket.emit("shape-width", d);
+    }
+});
+// ----
+
+// Shape Area
+$("#shape-area").ionRangeSlider({
+    type: "double",
+    min: 0.01,
+    max: 20,
+    step: 0.01,
+    from: 0.01,
+    to: 20,
+    grid: true,
+    grid_snap: true,
+    to_fixed: false,
+    from_fixed: false,
+    onChange: function (data) {
+        let d = {
+            "area": {"min": data.from, "max": data.to}
+        };
+        socket.emit("shape-area", d);
+    }
 });
 
-$("#shape-width").bootstrapSlider({});
-$("#shape-width").on("slide", function (evt) {
-    $("#shape-width-min").text(evt.value[0]);
-    $("#shape-width-max").text(evt.value[1]);
-    let data = {
-        "width": {"min": evt.value[0], "max": evt.value[1]}
-    };
-    socket.emit("shape-width", data);
+// ----
+
+
+// Morph Width
+let morphwidth = $("#morph-width");
+morphwidth.ionRangeSlider({
+    type: "double",
+    min: 1,
+    max: 50,
+    from: 1,
+    grid: true,
+    grid_snap: true,
+    to_fixed: true,
+    from_fixed: false,
+    onChange: function (data) {
+        let d = {
+            "morph": {"width": data.from}
+        };
+        socket.emit("preprocessing-morph-width", d);
+    }
 });
 
-$("#shape-area").bootstrapSlider({});
-$("#shape-area").on("slide", function (evt) {
-    $("#shape-area-min").text(evt.value[0]);
-    $("#shape-area-max").text(evt.value[1]);
-    let data = {
-        "area": {"min": evt.value[0], "max": evt.value[1]}
-    };
-    socket.emit("shape-area", data);
+// ----
+
+
+// Morph Height
+$("#morph-height").ionRangeSlider({
+    type: "double",
+    min: 1,
+    max: 50,
+    from: 1,
+    grid: true,
+    grid_snap: true,
+    to_fixed: true,
+    from_fixed: false,
+    onChange: function (data) {
+        let d = {
+            "morph": {"height": data.from}
+        };
+        socket.emit("preprocessing-morph-height", d);
+    }
+});
+// ----
+
+// Char Area
+$("#char-area").ionRangeSlider({
+    type: "double",
+    min: 0.01,
+    max: 50,
+    step: 0.01,
+    from: 1,
+    to: 100,
+    grid: true,
+    grid_snap: true,
+    to_fixed: false,
+    from_fixed: false,
+    onChange: function (data) {
+        let d = {
+            "area": {"min": data.from, "max": data.to}
+        };
+        socket.emit("char-area", d)
+    }
+});
+// ----
+
+// Char Height
+$("#char-height").ionRangeSlider({
+    type: "double",
+    min: 0.01,
+    max: 100,
+    step: 0.01,
+    from: 0.01,
+    to: 100,
+    grid: true,
+    grid_snap: true,
+    to_fixed: false,
+    from_fixed: false,
+    onChange: function (data) {
+        let d = {
+            "height": {"min": data.from, "max": data.to}
+        };
+        socket.emit("char-height", d)
+    }
+});
+// ----
+
+// Char Width
+$("#char-width").ionRangeSlider({
+    type: "double",
+    min: 0.01,
+    max: 100,
+    from: 0.01,
+    to: 100,
+    step: 0.01,
+    grid: true,
+    grid_snap: true,
+    to_fixed: false,
+    from_fixed: false,
+    onChange: function (data) {
+        let d = {
+            "width": {"min": data.from, "max": data.to}
+        };
+        socket.emit("char-width", d)
+    }
+});
+// ----
+
+// Angle
+$("#angle").ionRangeSlider({
+    type: "double",
+    min: 0,
+    max: 180,
+    from: 0,
+    to: 100,
+    step: 1,
+    grid: true,
+    grid_snap: true,
+    to_fixed: false,
+    from_fixed: false,
+    onChange: function (data) {
+        let d = {
+            "angle": {
+                "min": data.from, "max": data.to
+            }
+        };
+        socket.emit("angle", d)
+    }
 });
 
-$("#morph-width").bootstrapSlider({});
-$("#morph-width").on("slide", function (evt) {
-    $("#morph-width-value").text(evt.value);
-    let data = {
-        "morph": {"height": $("#morph-height").val(), "width": evt.value}
-    };
-    socket.emit("preprocessing-morph", data);
+// ----
+
+// Mask
+$("#mask").ionRangeSlider({
+    type: "double",
+    min: 1,
+    max: 254,
+    from: 1,
+    to: 254,
+    step: 1,
+    grid: true,
+    grid_snap: true,
+    to_fixed: false,
+    from_fixed: false,
+    onChange: function (data) {
+        let d = {
+            "mask": {"lower": data.from, "upper": data.to}
+        };
+        socket.emit("mask", d);
+    }
 });
-
-$("#morph-height").bootstrapSlider({});
-$("#morph-height").on("slide", function (evt) {
-    $("#morph-height-value").text(evt.value);
-    let data = {
-        "morph": {"height": evt.value, "width": $("#morph-width").val()}
-    };
-    socket.emit("preprocessing-morph", data);
-});
-
-
-$("#char-area").bootstrapSlider({});
-$("#char-area").on("slide", function (evt) {
-    $("#char-area-min").text(evt.value[0]);
-    $("#char-area-max").text(evt.value[1]);
-    let data = {
-        "area": {"min": evt.value[0], "max": evt.value[1]}
-    };
-    socket.emit("char-area", data)
-});
-
-$("#char-height").bootstrapSlider({});
-$("#char-height").on("slide", function (evt) {
-    $("#char-height-min").text(evt.value[0]);
-    $("#char-height-max").text(evt.value[1]);
-    let data = {
-        "height": {"min": evt.value[0], "max": evt.value[1]}
-    };
-    socket.emit("char-height", data)
-});
-
-$("#char-width").bootstrapSlider({});
-$("#char-width").on("slide", function (evt) {
-    $("#char-width-min").text(evt.value[0]);
-    $("#char-width-max").text(evt.value[1]);
-    let data = {
-        "width": {"min": evt.value[0], "max": evt.value[1]}
-    };
-    socket.emit("char-width", data)
-});
-
-$("#angle").bootstrapSlider({});
-$("#angle").on("slide", function (evt) {
-    $("#angle-min-value").text(evt.value[0]);
-    $("#angle-max-value").text(evt.value[1]);
-    let data = {
-        "angle": {
-            "min": evt.value[0], "max": evt.value[1]
-        }
-    };
-    socket.emit("angle", data)
-});
-
-$("#mask").bootstrapSlider({});
-$("#mask").on("slide", function (evt) {
-    $("#mask-min").text(evt.value[0]);
-    $("#mask-max").text(evt.value[1]);
-    let data = {
-        "mask": {"lower": evt.value[0], "upper": evt.value[1]}
-    };
-    socket.emit("mask", data);
-});
-
-// $("#char-morph").bootstrapSlider({});
-// $("#char-morph").on("slide", function (evt) {
-//     $("#char-morph-min").text(evt.value[0]);
-//     $("#char-morph-max").text(evt.value[1]);
-//     let data = {
-//         "morph": {"min": evt.value[0], "max": evt.value[1]}
-//     };
-//     socket.emit("char-morph", data)
-// });
+// ----
 
 $("#save-sliders").on("click", function (evt) {
     socket.emit("save");

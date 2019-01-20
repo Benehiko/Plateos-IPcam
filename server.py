@@ -105,14 +105,23 @@ def handle_shape_a(data):
         QueueHandler.propertyhandler.set_cv_settings(tmp)
 
 
-@socketio.on("preprocessing-morph")
+@socketio.on("preprocessing-morph-height")
 def preprocessing(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
         tmp = QueueHandler.cv_queue.get()
-        tmp["preprocessing"]["morph"] = data["morph"]
+        tmp["preprocessing"]["morph"]["height"] = data["morph"]["height"]
         QueueHandler.propertyhandler.set_cv_settings(tmp)
     # PropertyHandler.cv_settings["preprocessing"]["morph"] = data["morph"]
+
+
+@socketio.on("preprocessing-morph-width")
+def preprocess_morph_width(data):
+    QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
+    while not QueueHandler.cv_queue.empty():
+        tmp = QueueHandler.cv_queue.get()
+        tmp["preprocessing"]["morph"]["width"] = data["morph"]["width"]
+        QueueHandler.propertyhandler.set_cv_settings(tmp)
 
 
 @socketio.on("char-area")
