@@ -1,6 +1,6 @@
 from multiprocessing import Queue
 
-from flask import Flask, render_template, json
+from flask import Flask, render_template, json as j
 from flask_socketio import SocketIO
 
 from Handlers.FrameHandler import FrameHandler
@@ -73,8 +73,9 @@ def get_image():
         obj = QueueHandler.obj_queue.get()
 
     if obj is not None:
-        data = json.dumps({'name': obj[0], 'image': obj[1], 'output': obj[2]})
-        socketio.emit('image', data)
+        if type(obj[1]) is bytes:
+            data = j.dumps({'name': obj[0], 'image': obj[1], 'output': obj[2]})
+            socketio.emit('image', data)
 
 
 @socketio.on("shape-height")

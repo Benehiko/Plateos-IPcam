@@ -44,7 +44,6 @@ class Camera:
         self.raw.fill(255)
         self.data = []
         self.framequeue = Queue()
-        self.output = ""
 
     def start(self, q, q2):
         if self.mac == "":
@@ -73,27 +72,26 @@ class Camera:
                     b = bytearray(reader.read())
                     npy = np.array(b, dtype=np.uint8)
                     img = cv2.imdecode(npy, -1)
-                    self.frame = img
                     if img is not None:
+                        self.frame = img
                         result, self.frame, self.raw, __ = self.processHelper.analyse_frames(img)
-
                         if result is not None:
                             if len(result) > 0:
                                 t = ThreadWithReturnValue(target=self.tess.multi, args=(result,))
                                 t.start()
                                 tmp = t.join()
                                 if tmp is not None:
-                                    self.output = [x for x in tmp if len(tmp) > 4]
                                     tmp, meta = self.handle_data(tmp, img)
                                     self.data = tmp
                                     if len(tmp) > 0:
                                         q.put(tmp)
                                     if len(meta) > 0:
                                         q2.put(meta)
-                if self.raw is None:
-                    print("raw null")
-                    self.raw = np.random.random([100, 100])
-                FrameHandler.add_obj([self.ip, np.hstack((self.frame, CvHelper.gray2rgb(self.raw))), self.output])
+                    if self.raw is None:
+                        print("raw null")
+                        self.raw = np.random.random([100, 100])
+
+                    FrameHandler.add_obj([self.ip, np.hstack((self.frame, CvHelper.gray2rgb(self.raw))), self.data])
             except Exception as e:
                 print("Camera", self.get_camera_data()["alias"], self.get_camera_data()["ip"], "Died", "\nReason:", e)
                 break
