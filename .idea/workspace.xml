@@ -2,13 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="73461767-bf7c-4bbb-a949-6252378e84fd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/static/css/ion.rangeSlider.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/slider-css.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/ion.rangeSlider.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Handlers/RequestHandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Handlers/RequestHandler.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/js/datahandler.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/datahandler.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,7 +33,7 @@
     <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_9.coverage" NAME="scratch_9 Coverage Results" MODIFIED="1545321943877" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_19.coverage" NAME="scratch_19 Coverage Results" MODIFIED="1537098407071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_6.coverage" NAME="scratch_6 Coverage Results" MODIFIED="1545311372785" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
-    <SUITE FILE_PATH="coverage/Plateos_IPcam$run.coverage" NAME="run Coverage Results" MODIFIED="1547996219610" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Plateos_IPcam$run.coverage" NAME="run Coverage Results" MODIFIED="1547999360179" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_13.coverage" NAME="scratch_13 Coverage Results" MODIFIED="1545489751927" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_10.coverage" NAME="scratch_10 Coverage Results" MODIFIED="1545357153622" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_10.coverage" NAME="scratch_10 Coverage Results" MODIFIED="1534996601711" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
@@ -82,15 +78,18 @@
     <select />
   </component>
   <component name="DockManager">
-    <window id="1">
+    <window id="2">
       <content type="file-editors">
         <state>
           <leaf>
             <file pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/static/js/datahandler.js">
+              <entry file="file://$PROJECT_DIR$/Handlers/RequestHandler.py">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="523">
-                    <caret line="132" column="22" selection-start-line="132" selection-start-column="22" selection-end-line="132" selection-end-column="22" />
+                  <state relative-caret-position="238">
+                    <caret line="31" column="79" selection-start-line="31" selection-start-column="79" selection-end-line="31" selection-end-column="79" />
+                    <folding>
+                      <element signature="e#0#13#0" expanded="true" />
+                    </folding>
                   </state>
                 </provider>
               </entry>
@@ -105,11 +104,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="266">
-              <caret line="117" column="38" lean-forward="true" selection-start-line="117" selection-start-column="38" selection-end-line="117" selection-end-column="38" />
+            <state relative-caret-position="361">
+              <caret line="77" column="40" lean-forward="true" selection-start-line="77" selection-start-column="40" selection-end-line="77" selection-end-column="40" />
               <folding>
                 <element signature="e#1#34#0" expanded="true" />
               </folding>
@@ -121,7 +120,7 @@
         <entry file="file://$PROJECT_DIR$/templates/index.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="361">
-              <caret line="78" column="46" lean-forward="true" selection-start-line="78" selection-start-column="46" selection-end-line="78" selection-end-column="46" />
+              <caret line="78" column="46" selection-start-line="78" selection-start-column="46" selection-end-line="78" selection-end-column="46" />
             </state>
           </provider>
         </entry>
@@ -164,11 +163,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Handlers/FrameHandler.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="181">
-              <caret line="39" column="36" selection-start-line="39" selection-start-column="36" selection-end-line="39" selection-end-column="36" />
+              <caret line="39" column="22" lean-forward="true" selection-start-line="39" selection-start-column="22" selection-end-line="39" selection-end-column="38" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -281,7 +280,6 @@
         <option value="$PROJECT_DIR$/cvlib/ImageUtil.py" />
         <option value="$PROJECT_DIR$/detection.yml" />
         <option value="$PROJECT_DIR$/conf.yml" />
-        <option value="$PROJECT_DIR$/Handlers/RequestHandler.py" />
         <option value="$PROJECT_DIR$/Backdrop/BackdropHandler.py" />
         <option value="$PROJECT_DIR$/Backdrop/Backdrop.py" />
         <option value="$PROJECT_DIR$/run.py" />
@@ -293,10 +291,11 @@
         <option value="$PROJECT_DIR$/templates/index.html" />
         <option value="$PROJECT_DIR$/server.py" />
         <option value="$PROJECT_DIR$/static/js/datahandler.js" />
+        <option value="$PROJECT_DIR$/Handlers/RequestHandler.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="81" />
     <option name="y" value="88" />
     <option name="width" value="1657" />
@@ -345,24 +344,27 @@
             <path>
               <item name="Plateos-IPcam" type="b2602c69:ProjectViewProjectNode" />
               <item name="Plateos-IPcam" type="462c0819:PsiDirectoryNode" />
-              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="Backdrop" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Plateos-IPcam" type="b2602c69:ProjectViewProjectNode" />
               <item name="Plateos-IPcam" type="462c0819:PsiDirectoryNode" />
-              <item name="static" type="462c0819:PsiDirectoryNode" />
-              <item name="css" type="462c0819:PsiDirectoryNode" />
+              <item name="Handlers" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Plateos-IPcam" type="b2602c69:ProjectViewProjectNode" />
               <item name="Plateos-IPcam" type="462c0819:PsiDirectoryNode" />
-              <item name="static" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
+              <item name="meta" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Plateos-IPcam" type="b2602c69:ProjectViewProjectNode" />
               <item name="Plateos-IPcam" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
+              <item name="tess" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Plateos-IPcam" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Plateos-IPcam" type="462c0819:PsiDirectoryNode" />
+              <item name="Views" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -517,12 +519,12 @@
       <workItem from="1547932614794" duration="22625000" />
       <workItem from="1547957211749" duration="1696000" />
       <workItem from="1547958925057" duration="7971000" />
-      <workItem from="1547988033510" duration="8183000" />
+      <workItem from="1547988033510" duration="9555000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="328436000" />
+    <option name="totallyTimeSpent" value="329808000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -534,15 +536,15 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="81" y="88" width="1657" height="992" extended-state="0" />
+    <frame x="67" y="27" width="1853" height="1053" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.48820058" visible="true" weight="0.23898199" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.48820058" visible="true" weight="0.21306032" />
       <window_info id="Structure" order="1" sideWeight="0.5117994" side_tool="true" weight="0.18981738" />
       <window_info anchor="bottom" id="Inspection Results" order="0" weight="0.32889965" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" weight="0.26159334" />
-      <window_info active="true" anchor="bottom" id="Run" order="3" sideWeight="0.49963155" visible="true" weight="0.30609897" />
+      <window_info anchor="bottom" id="Run" order="3" sideWeight="0.49963155" visible="true" weight="0.2860215" />
       <window_info anchor="bottom" id="Debug" order="4" weight="0.3860215" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
@@ -794,16 +796,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Handlers/RequestHandler.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="796">
-          <caret line="49" column="16" selection-start-line="49" selection-start-column="16" selection-end-line="49" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/conf.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
@@ -918,16 +910,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Handlers/FrameHandler.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="181">
-          <caret line="39" column="36" selection-start-line="39" selection-start-column="36" selection-end-line="39" selection-end-column="36" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/static/js/rSlider.min.js">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -960,27 +942,47 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/static/js/datahandler.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="16" column="6" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/templates/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="361">
-          <caret line="78" column="46" lean-forward="true" selection-start-line="78" selection-start-column="46" selection-end-line="78" selection-end-column="46" />
+          <caret line="78" column="46" selection-start-line="78" selection-start-column="46" selection-end-line="78" selection-end-column="46" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="117" column="38" lean-forward="true" selection-start-line="117" selection-start-column="38" selection-end-line="117" selection-end-column="38" />
+        <state relative-caret-position="361">
+          <caret line="77" column="40" lean-forward="true" selection-start-line="77" selection-start-column="40" selection-end-line="77" selection-end-column="40" />
           <folding>
             <element signature="e#1#34#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/datahandler.js">
+    <entry file="file://$PROJECT_DIR$/Handlers/FrameHandler.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="523">
-          <caret line="132" column="22" selection-start-line="132" selection-start-column="22" selection-end-line="132" selection-end-column="22" />
+        <state relative-caret-position="181">
+          <caret line="39" column="22" lean-forward="true" selection-start-line="39" selection-start-column="22" selection-end-line="39" selection-end-column="38" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Handlers/RequestHandler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="31" column="79" selection-start-line="31" selection-start-column="79" selection-end-line="31" selection-end-column="79" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
