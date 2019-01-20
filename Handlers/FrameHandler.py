@@ -19,13 +19,6 @@ class FrameHandler:
         try:
             if val is not None:
                 tmp = [val[0], FrameHandler.get_base64(val[1]), val[2]]
-                for x in FrameHandler.obj:
-                    if x[0] == tmp[0]:
-                        FrameHandler.obj.append(x)
-                        x[1] = tmp[1]
-                        FrameHandler.obj.append(x)
-                        FrameHandler.queues.put(x)
-                        return
                 FrameHandler.obj.append(tmp)
                 FrameHandler.queues.put(tmp)
         except Exception as e:

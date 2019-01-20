@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="73461767-bf7c-4bbb-a949-6252378e84fd" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Handlers/FrameHandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Handlers/FrameHandler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/Camera.py" beforeDir="false" afterPath="$PROJECT_DIR$/Views/Camera.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -31,7 +34,7 @@
     <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_9.coverage" NAME="scratch_9 Coverage Results" MODIFIED="1545321943877" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_19.coverage" NAME="scratch_19 Coverage Results" MODIFIED="1537098407071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_6.coverage" NAME="scratch_6 Coverage Results" MODIFIED="1545311372785" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
-    <SUITE FILE_PATH="coverage/Plateos_IPcam$run.coverage" NAME="run Coverage Results" MODIFIED="1547984151434" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Plateos_IPcam$run.coverage" NAME="run Coverage Results" MODIFIED="1547988349845" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_13.coverage" NAME="scratch_13 Coverage Results" MODIFIED="1545489751927" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_10.coverage" NAME="scratch_10 Coverage Results" MODIFIED="1545357153622" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_10.coverage" NAME="scratch_10 Coverage Results" MODIFIED="1534996601711" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
@@ -80,13 +83,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="75" column="58" selection-start-line="75" selection-start-column="52" selection-end-line="75" selection-end-column="58" />
+            <state relative-caret-position="304">
+              <caret line="76" column="20" selection-start-line="76" selection-start-column="20" selection-end-line="76" selection-end-column="20" />
               <folding>
-                <element signature="e#0#33#0" expanded="true" />
+                <element signature="e#1#34#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -95,8 +98,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Views/Camera.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="582">
-              <caret line="95" column="52" lean-forward="true" selection-start-line="95" selection-start-column="52" selection-end-line="95" selection-end-column="52" />
+            <state relative-caret-position="257">
+              <caret line="76" column="81" selection-start-line="76" selection-start-column="81" selection-end-line="76" selection-end-column="81" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -107,8 +110,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Helper/ProcessHelper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="133">
-              <caret line="21" column="54" selection-start-line="21" selection-start-column="54" selection-end-line="21" selection-end-column="54" />
+            <state relative-caret-position="-10">
+              <caret line="31" column="18" lean-forward="true" selection-start-line="31" selection-start-column="18" selection-end-line="31" selection-end-column="18" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -133,7 +136,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Handlers/PropertyHandler.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1233">
+            <state relative-caret-position="19">
               <caret line="54" column="44" selection-start-line="54" selection-start-column="44" selection-end-line="54" selection-end-column="44" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
@@ -142,11 +145,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Handlers/FrameHandler.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="249">
-              <caret line="47" column="35" selection-start-line="47" selection-start-column="35" selection-end-line="47" selection-end-column="35" />
+            <state relative-caret-position="326">
+              <caret line="20" column="71" selection-start-line="20" selection-start-column="71" selection-end-line="20" selection-end-column="71" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -157,7 +160,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Camera/CameraScan.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="19">
+            <state relative-caret-position="190">
               <caret line="11" column="8" selection-start-line="11" selection-start-column="8" selection-end-line="11" selection-end-column="8" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
@@ -169,7 +172,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/js/datahandler.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1832">
+            <state relative-caret-position="2831">
               <caret line="149" selection-start-line="149" selection-end-line="149" />
             </state>
           </provider>
@@ -187,7 +190,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>getRect</find>
       <find>inverse</find>
       <find>blur</find>
       <find>would have</find>
@@ -217,6 +219,7 @@
       <find>PropertyHand</find>
       <find>PropertyHandler</find>
       <find>PropertyHandler.cv</find>
+      <find>self.data</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$</dir>
@@ -272,21 +275,21 @@
         <option value="$PROJECT_DIR$/Backdrop/BackdropHandler.py" />
         <option value="$PROJECT_DIR$/Backdrop/Backdrop.py" />
         <option value="$PROJECT_DIR$/run.py" />
-        <option value="$PROJECT_DIR$/Views/Camera.py" />
         <option value="$PROJECT_DIR$/Handlers/PropertyHandler.py" />
         <option value="$PROJECT_DIR$/templates/index.html" />
         <option value="$PROJECT_DIR$/static/js/datahandler.js" />
-        <option value="$PROJECT_DIR$/server.py" />
+        <option value="$PROJECT_DIR$/Views/Camera.py" />
         <option value="$PROJECT_DIR$/Helper/ProcessHelper.py" />
         <option value="$PROJECT_DIR$/Handlers/FrameHandler.py" />
+        <option value="$PROJECT_DIR$/server.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="526" />
-    <option name="y" value="27" />
-    <option name="width" value="1394" />
-    <option name="height" value="929" />
+    <option name="x" value="1044" />
+    <option name="y" value="320" />
+    <option name="width" value="1647" />
+    <option name="height" value="958" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -327,46 +330,6 @@
             <path>
               <item name="Plateos-IPcam" type="b2602c69:ProjectViewProjectNode" />
               <item name="Plateos-IPcam" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Plateos-IPcam" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Plateos-IPcam" type="462c0819:PsiDirectoryNode" />
-              <item name="cache" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Plateos-IPcam" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Plateos-IPcam" type="462c0819:PsiDirectoryNode" />
-              <item name="Handlers" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Plateos-IPcam" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Plateos-IPcam" type="462c0819:PsiDirectoryNode" />
-              <item name="meta" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Plateos-IPcam" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Plateos-IPcam" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Plateos-IPcam" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Plateos-IPcam" type="462c0819:PsiDirectoryNode" />
-              <item name="tess" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Plateos-IPcam" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Plateos-IPcam" type="462c0819:PsiDirectoryNode" />
-              <item name="tmp" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Plateos-IPcam" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Plateos-IPcam" type="462c0819:PsiDirectoryNode" />
-              <item name="uploaded" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Plateos-IPcam" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Plateos-IPcam" type="462c0819:PsiDirectoryNode" />
-              <item name="Views" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -519,12 +482,13 @@
       <workItem from="1547824650329" duration="306000" />
       <workItem from="1547932614794" duration="22625000" />
       <workItem from="1547957211749" duration="1696000" />
-      <workItem from="1547958925057" duration="6115000" />
+      <workItem from="1547958925057" duration="7971000" />
+      <workItem from="1547988033510" duration="480000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="318397000" />
+    <option name="totallyTimeSpent" value="320733000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -539,12 +503,12 @@
     <frame x="67" y="27" width="1853" height="1053" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.48820058" visible="true" weight="0.21859436" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.48820058" visible="true" weight="0.21306032" />
       <window_info id="Structure" order="1" sideWeight="0.5117994" side_tool="true" weight="0.18981738" />
       <window_info anchor="bottom" id="Inspection Results" order="0" weight="0.32889965" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" weight="0.26159334" />
-      <window_info anchor="bottom" id="Run" order="3" sideWeight="0.49963155" visible="true" weight="0.29462364" />
+      <window_info anchor="bottom" id="Run" order="3" sideWeight="0.49963155" visible="true" weight="0.2860215" />
       <window_info anchor="bottom" id="Debug" order="4" weight="0.3860215" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
@@ -619,13 +583,6 @@
     </option>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file:///usr/lib/python3.6/copy.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="205">
-          <caret line="185" selection-start-line="185" selection-end-line="185" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/lib/python3.6/difflib.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="186">
@@ -889,11 +846,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/detection">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-112" />
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/detection" />
     <entry file="file://$PROJECT_DIR$/Backdrop/BackdropHandler.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="275">
@@ -918,43 +871,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/datahandler.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1832">
-          <caret line="149" selection-start-line="149" selection-end-line="149" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Handlers/PropertyHandler.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1233">
-          <caret line="54" column="44" selection-start-line="54" selection-start-column="44" selection-end-line="54" selection-end-column="44" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Camera/CameraScan.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19">
-          <caret line="11" column="8" selection-start-line="11" selection-start-column="8" selection-end-line="11" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="75" column="58" selection-start-line="75" selection-start-column="52" selection-end-line="75" selection-end-column="58" />
-          <folding>
-            <element signature="e#0#33#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/run.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="190">
@@ -972,22 +888,39 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Views/Camera.py">
+    <entry file="file://$PROJECT_DIR$/Camera/CameraScan.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="582">
-          <caret line="95" column="52" lean-forward="true" selection-start-line="95" selection-start-column="52" selection-end-line="95" selection-end-column="52" />
+        <state relative-caret-position="190">
+          <caret line="11" column="8" selection-start-line="11" selection-start-column="8" selection-end-line="11" selection-end-column="8" />
           <folding>
-            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Helper/ProcessHelper.py">
+    <entry file="file://$PROJECT_DIR$/static/js/datahandler.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="21" column="54" selection-start-line="21" selection-start-column="54" selection-end-line="21" selection-end-column="54" />
+        <state relative-caret-position="2831">
+          <caret line="149" selection-start-line="149" selection-end-line="149" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Handlers/FrameHandler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="326">
+          <caret line="20" column="71" selection-start-line="20" selection-start-column="71" selection-end-line="20" selection-end-column="71" />
           <folding>
-            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Handlers/PropertyHandler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="19">
+          <caret line="54" column="44" selection-start-line="54" selection-start-column="44" selection-end-line="54" selection-end-column="44" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1004,12 +937,35 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Handlers/FrameHandler.py">
+    <entry file="file:///usr/local/lib/python3.6/dist-packages/flask/json/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Views/Camera.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="249">
-          <caret line="47" column="35" selection-start-line="47" selection-start-column="35" selection-end-line="47" selection-end-column="35" />
+        <state relative-caret-position="257">
+          <caret line="76" column="81" selection-start-line="76" selection-start-column="81" selection-end-line="76" selection-end-column="81" />
           <folding>
-            <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Helper/ProcessHelper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-10">
+          <caret line="31" column="18" lean-forward="true" selection-start-line="31" selection-start-column="18" selection-end-line="31" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="76" column="20" selection-start-line="76" selection-start-column="20" selection-end-line="76" selection-end-column="20" />
+          <folding>
+            <element signature="e#1#34#0" expanded="true" />
           </folding>
         </state>
       </provider>
