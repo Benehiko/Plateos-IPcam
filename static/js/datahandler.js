@@ -14,9 +14,9 @@ socket.on('image', data => {
     frame.src = "data:image/jpg;base64," + j["image"];
     let frameElem = document.getElementById(j["name"]);
     frameElem.src = frame.src; //"data:image/jpg;base64," + j["image"];
-    let outputElem = document.getElementById(j["name"] + "-output");
-    console.log(j["output"]);
-    outputElem.html = j["output"]
+    //let outputElem = document.getElementById(j["name"] + "-output");
+    // console.log(j["output"]);
+    // outputElem.html = j["output"]
     // let raw = new Image();
     // raw.src = "data:image/jpg;base64," + j["raw"];
     // let rawElem = document.getElementById(j["name"]);

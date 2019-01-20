@@ -1,3 +1,4 @@
+import base64
 import datetime
 import netifaces
 import subprocess
@@ -28,7 +29,7 @@ class Request:
                     tmp = BytesIO()
                     image.save(tmp, "JPEG")
                     tmp.seek(0)
-                    tmp = b64encode(tmp.read())
+                    tmp = base64.standard_b64encode(tmp.read()).decode('utf-8')
 
                 d = [('plate', plate), ('province', province), ('confidence', confidence), ('time', date),
                      ('deviceMac', mac), ('cameraMac', deviceMac), ('image', tmp)]
