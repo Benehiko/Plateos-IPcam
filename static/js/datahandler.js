@@ -1,32 +1,31 @@
 let socket = io.connect('http://' + document.domain + ":" + location.port);
 socket.on('connect', function () {
     socket.emit('connected');
-    console.log("Connected to Server")
+});
+socket.on('image', data => {
+    let j = JSON.parse(data);
+    if (!document.getElementById(j["name"])) {
+        $("#image-container").append('<img src="" id="' + j["name"] + '" width="100%" height="100%"/>');
+        $("#image-container").append('<p id="' + j["name"] + '-output"/>');
+    }
+    //$("#image-container").append('<img src="" id="' + j["name"] + '-raw" width="100%" height="100%"/>');
 
+    let frame = new Image();
+    frame.src = "data:image/jpg;base64," + j["image"];
+    let frameElem = document.getElementById(j["name"]);
+    frameElem.src = frame.src; //"data:image/jpg;base64," + j["image"];
+    let outputElem = document.getElementById(j["name"] + "-output");
+    outputElem.innerText = j["output"]
+    // let raw = new Image();
+    // raw.src = "data:image/jpg;base64," + j["raw"];
+    // let rawElem = document.getElementById(j["name"]);
+    // rawElem.src = raw.src;
 });
 
 let get_image = function () {
-    console.log("Emitting get-image");
     socket.emit('get-image')
 };
 
-socket.on('image', function (data) {
-    console.log("Image DATA");
-    $("#image-container").append('<img src="" id="' + j["name"] + '" width="100%" height="100%"/>');
-    $("#image-container").append('<img src="" id="' + j["name"] + '-raw" width="100%" height="100%"/>');
-
-    let j = JSON.parse(data);
-
-    let frame = new Image();
-    frame.src = "data:image/jpg;base64," + j["frame"];
-    let frameElem = document.getElementById(j["name"]);
-    frameElem.src = frame.src;
-
-    let raw = new Image();
-    raw.src = "data:image/jpg;base64," + j["raw"];
-    let rawElem = document.getElementById(j["name"]);
-    rawElem.src = raw.src;
-});
 
 $("#shape-height").bootstrapSlider({});
 $("#shape-height").on("slide", function (evt) {
@@ -35,7 +34,8 @@ $("#shape-height").on("slide", function (evt) {
     let d = {
         "height": {"min": evt.value[0], "max": evt.value[1]}
     };
-    socket.emit("shape-height", d);
+    console.log("Emitting shape height");
+    socket.emit("shape-height", JSON.parse(d));
 });
 
 $("#shape-width").bootstrapSlider({});
@@ -45,7 +45,7 @@ $("#shape-width").on("slide", function (evt) {
     let data = {
         "width": {"min": evt.value[0], "max": evt.value[1]}
     };
-    socket.emit("shape-width", data);
+    socket.emit("shape-width", JSON.parse(data));
 });
 
 $("#shape-area").bootstrapSlider({});
@@ -55,7 +55,7 @@ $("#shape-area").on("slide", function (evt) {
     let data = {
         "area": {"min": evt.value[0], "max": evt.value[1]}
     };
-    socket.emit("shape-area", data);
+    socket.emit("shape-area", JSON.parse(data));
 });
 
 $("#morph-width").bootstrapSlider({});
@@ -64,7 +64,7 @@ $("#morph-width").on("slide", function (evt) {
     let data = {
         "morph": {"height": $("#morph-height").val(), "width": evt.value}
     };
-    socket.emit("preprocessing-morph", data);
+    socket.emit("preprocessing-morph", JSON.parse(data));
 });
 
 $("#morph-height").bootstrapSlider({});
@@ -73,28 +73,9 @@ $("#morph-height").on("slide", function (evt) {
     let data = {
         "morph": {"height": evt.value, "width": $("#morph-width").val()}
     };
-    socket.emit("preprocessing-morph", data);
+    socket.emit("preprocessing-morph", JSON.parse(data));
 });
 
-$("#otsu").bootstrapSlider({});
-$("#otsu").on("slide", function (evt) {
-    $("#otsu-value").text(evt.value);
-    let data = {
-        "otsu": evt.value
-    };
-    socket.emit("preprocessing-otsu", data);
-});
-
-$("#sobel").bootstrapSlider({});
-$("#sobel").on("slide", function (evt) {
-    $("#sobel-value").text(evt.value);
-    let data = {
-        "sobel": {
-            "kernel": evt.value
-        }
-    };
-    socket.emit("preprocessing-sobel", data);
-});
 
 $("#char-area").bootstrapSlider({});
 $("#char-area").on("slide", function (evt) {
@@ -103,7 +84,7 @@ $("#char-area").on("slide", function (evt) {
     let data = {
         "area": {"min": evt.value[0], "max": evt.value[1]}
     };
-    socket.emit("char-area", data)
+    socket.emit("char-area", JSON.parse(data))
 });
 
 $("#char-height").bootstrapSlider({});
@@ -113,7 +94,7 @@ $("#char-height").on("slide", function (evt) {
     let data = {
         "height": {"min": evt.value[0], "max": evt.value[1]}
     };
-    socket.emit("char-height", data)
+    socket.emit("char-height", JSON.parse(data))
 });
 
 $("#char-width").bootstrapSlider({});
@@ -123,7 +104,7 @@ $("#char-width").on("slide", function (evt) {
     let data = {
         "width": {"min": evt.value[0], "max": evt.value[1]}
     };
-    socket.emit("char-width", data)
+    socket.emit("char-width", JSON.parse(data))
 });
 
 $("#angle").bootstrapSlider({});
@@ -135,7 +116,7 @@ $("#angle").on("slide", function (evt) {
             "min": evt.value[0], "max": evt.value[1]
         }
     };
-    socket.emit("angle", data)
+    socket.emit("angle", JSON.parse(data))
 });
 
 $("#mask").bootstrapSlider({});
@@ -145,7 +126,7 @@ $("#mask").on("slide", function (evt) {
     let data = {
         "mask": {"lower": evt.value[0], "upper": evt.value[1]}
     };
-    socket.emit("mask", data);
+    socket.emit("mask", JSON.parse(data));
 });
 
 $("#char-morph").bootstrapSlider({});
@@ -155,10 +136,10 @@ $("#char-morph").on("slide", function (evt) {
     let data = {
         "morph": {"min": evt.value[0], "max": evt.value[1]}
     };
-    socket.emit("char-morph", data)
+    socket.emit("char-morph", JSON.parse(data))
 });
 $("#save-sliders").on("click", function (evt) {
     socket.emit("save");
 });
 
-setInterval(get_image, 1000);
+//setInterval(get_image, 1000);

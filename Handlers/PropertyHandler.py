@@ -1,11 +1,12 @@
 import io
+from multiprocessing import Queue
 
 import yaml
 
 
 class PropertyHandler:
     # TODO: Add type mapping and return types to methods with correct descriptions
-
+    cv_queue = Queue()
     numberplate = {}
     app_settings = {
         "camera": {
@@ -52,11 +53,14 @@ class PropertyHandler:
         },
         "preprocessing": {
             "morph": {"height": 8, "width": 20},
-            "otsu": 0,
-            "sobel": {"kernel": 3},
             "mask": {"lower": 0, "upper": 255}
         }
     }
+
+    def __init__(self):
+        self.cv_settings = PropertyHandler.load_cv()
+        PropertyHandler.cv_settings = self.cv_settings
+        self.cv_queue.put(self.cv_settings)
 
     @staticmethod
     def load_app():
@@ -93,11 +97,14 @@ class PropertyHandler:
             # Shape detection
             shape = configs.get("shape")
 
-            PropertyHandler.cv_settings = {
+            cv_settings = {
                 "shape": shape,
                 "char": char,
                 "preprocessing": preprocessing
             }
+            PropertyHandler.cv_settings = cv_settings
+            return cv_settings
+
         except Exception as e:
             print(e)
             PropertyHandler.save("detection.yml", PropertyHandler.cv_settings)
@@ -123,3 +130,17 @@ class PropertyHandler:
     def save(filename, data):
         stream = io.open(filename, 'w', encoding='utf8')
         yaml.dump(data, stream, default_flow_style=False)
+
+    @staticmethod
+    def set_cv_settings(settings):
+        while not PropertyHandler.cv_queue.empty():
+            PropertyHandler.cv_queue.get()
+        PropertyHandler.cv_queue.put(settings)
+        PropertyHandler.cv_settings = settings
+
+    @staticmethod
+    def get_cv_settings(queue):
+        while not PropertyHandler.cv_queue.empty():
+            tmp = (PropertyHandler.cv_queue.get())
+            queue.put(tmp)
+            PropertyHandler.cv_queue.put(tmp)

@@ -113,18 +113,6 @@
                     <span id="morph-height-value"></span><br/>
                 </div>
                 <div class="form-group">
-                    <label for="otsu">Otsu Thresh</label><br/>
-                    <input type="text"
-                           id="otsu"
-                           value="0"
-                           data-slider-min="0"
-                           data-slider-max="255"
-                           data-slider-step="1"
-                           data-slider-value="0"
-                           data-slider-handle="custom"/>
-                    <span id="otsu-value"></span><br/>
-                </div>
-                <div class="form-group">
                     <label for="char-area">Char-Area</label><br/>
                     <span id="char-area-min"></span>
                     <input type="text"
@@ -224,5 +212,6 @@
 <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap-slider.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/datahandler.js') }}"></script>
 </body>
 </html>

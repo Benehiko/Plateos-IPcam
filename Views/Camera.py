@@ -1,33 +1,35 @@
 import json
 import random
 import string
-from datetime import datetime, timedelta
+from datetime import datetime
+from multiprocessing import Queue
 from urllib.request import urlopen
 
 import cv2
 import numpy as np
 
+from Handlers.FrameHandler import FrameHandler
 from Handlers.PropertyHandler import PropertyHandler
 from Handlers.RequestHandler import Request
 from Handlers.ThreadHandler import ThreadWithReturnValue
 from Helper.ProcessHelper import ProcessHelper
+from cvlib.CvHelper import CvHelper
 from cvlib.ImageUtil import ImageUtil
-from tess.tesseract import Tess
 
 
 class Camera:
 
     # TODO: Add type mapping and return types to methods with correct descriptions
 
-    def __init__(self, ip):
+    def __init__(self, ip, tess, cv_q):
         self.randomcmd = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
 
-        self.tess = Tess()
+        self.tess = tess
         self.ip = ip
         self.rest = PropertyHandler.app_settings["camera"]["restful"]
         self.username = PropertyHandler.app_settings["camera"]["username"]
         self.password = PropertyHandler.app_settings["camera"]["password"]
-        self.processHelper = ProcessHelper()
+        self.processHelper = ProcessHelper(cv_q)
         self.mac = self.get_mac()
         self.alias, self.model = self.get_info()
         self.url = "http://" + ip + self.rest["base"] + "cmd=" + self.rest["snap"]["cmd"] + "&channel=" + str(
@@ -38,9 +40,12 @@ class Camera:
         self.then = datetime.now()
         self.frame = np.zeros([100, 100, 3], dtype=np.uint8)
         self.frame.fill(255)
-        self.raw = np.zeros([100, 100, 3], dtype=np.uint8)
+        self.raw = np.random.random([100, 100])
         self.raw.fill(255)
         self.data = []
+        self.framequeue = Queue()
+        self.output = ""
+
 
     def start(self, q, q2):
         if self.mac == "":
@@ -75,18 +80,21 @@ class Camera:
 
                         if result is not None:
                             if len(result) > 0:
-                                print(result)
                                 t = ThreadWithReturnValue(target=self.tess.multi, args=(result,))
                                 t.start()
                                 tmp = t.join()
                                 if tmp is not None:
+                                    self.output = [x['plate'] for x in tmp if len(tmp) > 3]
                                     tmp, meta = self.handle_data(tmp, img)
                                     self.data = tmp
                                     if len(tmp) > 0:
                                         q.put(tmp)
                                     if len(meta) > 0:
                                         q2.put(meta)
-
+                if self.raw is None:
+                    print("raw null")
+                    self.raw = np.random.random([100, 100])
+                FrameHandler.add_obj([self.ip, np.hstack((self.frame, CvHelper.gray2rgb(self.raw))), self.output])
             except Exception as e:
                 print("Camera", self.get_camera_data()["alias"], self.get_camera_data()["ip"], "Died", "\nReason:", e)
                 break

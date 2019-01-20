@@ -63,9 +63,11 @@ class BackdropHandler:
         self.meta_time = Queue()
         self.meta_time.put(datetime.now())
         self.camera_queue = None
+        self.cv_q = None
 
-    def start(self, queue):
+    def start(self, queue, cv_q):
         self.camera_queue = queue
+        self.cv_q = cv_q
         old_time = datetime.now()
         old_time2 = datetime.now()
         old_time3 = datetime.now()
@@ -128,14 +130,14 @@ class BackdropHandler:
 
     def add(self, ip):
         try:
-            tmp = Camera(ip=ip)
+            tmp = Camera(ip=ip, tess=self.tess, cv_q=self.cv_q)
             for x in self.cameras:
                 if ip == x.get_ip():
                     return
 
             self.cameras.add(tmp)
-            self.camera_queue.put(tmp)
-            FrameHandler.add_obj(self.camera_queue)
+            # self.camera_queue.put(tmp)
+            # FrameHandler.add_obj(self.camera_queue)
             p = Process(target=tmp.start, args=(self.tmp_queue, self.meta_queue))
             self.active.add((ip, p))
             p.start()
@@ -171,10 +173,11 @@ class BackdropHandler:
                                             if len(upload_tuple) > 0:
                                                 # Don't remove image from tuple - uploading everything with conf 0.6 >
                                                 # upload_tuple = [x[:-1] for x in upload_tuple]
+                                                uploaded = [x[:-1] for x in upload_tuple]
                                                 CacheHandler.save_tmp("uploaded", datetime.now().strftime("%Y-%m-%d"),
-                                                                      upload_tuple)
+                                                                      uploaded)
                                                 self.upload_dataset(upload_tuple)
-                                                print("Would have uploaded: ", upload_tuple[:-1])
+                                                print("Uploading: ", uploaded)
 
                                             self.cache_queue.put(upload_dict)
                                 cv_upload.notify_all()
@@ -191,22 +194,25 @@ class BackdropHandler:
             try:
                 if process[1].is_alive() is False:
                     self.active.discard(process)
-                    FrameHandler.get_all(self.camera_queue)
-                    while not self.camera_queue.empty():
-                        obj = self.camera_queue.get_nowait()
-                        for x in obj:
-                            if x.get_ip() == process[0]:
-                                FrameHandler.remove(self.camera_queue.put(x))
+                    # FrameHandler.get_all(self.camera_queue)
+                    # while not self.camera_queue.empty():
+                    #     obj = self.camera_queue.get_nowait()
+                    #     for x in obj:
+                    #         if x.get_ip() == process[0]:
+                    #             FrameHandler.remove(self.camera_queue.put(x))
                     for x in self.cameras:
                         if x.get_ip() == process[0]:
                             self.cameras.discard(x)
+                            break
             except Exception as e:
                 print("Tried to remove process", e)
 
     def upload_dataset(self, data):
         try:
             url = "http://" + self.url + self.addplate
-            Request.post(self.interface, data, url)
+            if Request.post(self.interface, data, url) is False:
+                now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                CacheHandler.save_cache("offline", now, data)
         except Exception as e:
             print(e)
             pass
@@ -278,7 +284,7 @@ class BackdropHandler:
     def offline_check(self):
         if Request.check_connectivity():
             try:
-                pathlib.Path("offline").mkdir(parents=True, exist_ok=True)
+                pathlib.Path("offline/").mkdir(parents=True, exist_ok=True)
                 files = [f.replace('.npz', '') for f in listdir("offline") if isfile(join("offline", f))]
                 if len(files) > 0:
                     for x in files:
@@ -295,11 +301,13 @@ class BackdropHandler:
             if Request.check_connectivity():
                 url = "http://" + self.url + self.addlocation
                 data = []
-                FrameHandler.get_all(self.camera_queue)
-                while not self.camera_queue.empty():
-                    obj = self.camera_queue.get_nowait()
-                    for cam in obj:
-                        data.append(cam.get_camera_data())
+                for x in self.cameras:
+                    data.append(x.get_camera_data())
+                # FrameHandler.get_all(self.camera_queue)
+                # while not self.camera_queue.empty():
+                #     obj = self.camera_queue.get_nowait()
+                #     for cam in obj:
+                #         data.append(cam.get_camera_data())
                 Request.ping_location(self.interface, url, self.alias, data)
         except Exception as e:
             print(e)

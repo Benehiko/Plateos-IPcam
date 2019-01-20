@@ -1,6 +1,6 @@
 import base64
-import sys
 from io import BytesIO
+from multiprocessing import Queue
 from threading import Thread
 
 import cv2
@@ -11,19 +11,25 @@ from cvlib.ImageUtil import ImageUtil
 
 
 class FrameHandler:
-    obj = set()
+    obj = []
+    queues = Queue()
 
     @staticmethod
-    def add_obj(queue):
+    def add_obj(val):
         try:
-            print("Adding Camera")
-            val = queue.get()
-            print(val)
-            if len(val) > 0:
-                FrameHandler.obj.add(val)
+            if val is not None:
+                tmp = [val[0], FrameHandler.get_base64(val[1]), val[2]]
+                for x in FrameHandler.obj:
+                    if x[0] == tmp[0]:
+                        FrameHandler.obj.append(x)
+                        x[1] = tmp[1]
+                        FrameHandler.obj.append(x)
+                        FrameHandler.queues.put(x)
+                        return
+                FrameHandler.obj.append(tmp)
+                FrameHandler.queues.put(tmp)
         except Exception as e:
-            print("Adding Camera error", e)
-            sys.exc_traceback()
+            print("Adding Camera error\n", e)
 
     @staticmethod
     def search(name):
@@ -35,9 +41,9 @@ class FrameHandler:
     @staticmethod
     def get_base64(mat):
         if mat is not None:
-            compress = ImageUtil.compress(mat, max_w=640, quality=20)
+            compress = ImageUtil.compress(mat, max_w=480, quality=50)
             retval, buffer = cv2.imencode('.jpg', compress)
-            b64 = base64.standard_b64encode(buffer)
+            b64 = base64.b64encode(buffer)
             return b64
         return ''
 
@@ -58,10 +64,8 @@ class FrameHandler:
 
     @staticmethod
     def get_all(queue):
-        queue.put(FrameHandler.obj)
-
-    @staticmethod
-    def remove(queue):
-        while not queue.empty():
-            val = queue.get_nowait()
-            FrameHandler.obj.discard(val)
+        while not FrameHandler.queues.empty():
+            obj = FrameHandler.queues.get()
+            arr = base64.b64decode(obj[1])
+            # image = Image.open(temp)
+            queue.put([obj[0], obj[1], obj[2]])

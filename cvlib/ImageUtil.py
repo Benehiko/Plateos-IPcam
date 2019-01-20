@@ -1,4 +1,5 @@
 import math
+from multiprocessing import Queue
 
 import cv2
 import numpy as np
@@ -21,9 +22,9 @@ class ImageUtil:
         return decoded
 
     @staticmethod
-    async def process_for_tess(data):
-        k = (int(PropertyHandler.cv_settings["char"]["morph"]["min"]),
-             int(PropertyHandler.cv_settings["char"]["morph"]["max"]))
+    async def process_for_tess(data, settings):
+        k = (int(settings["char"]["morph"]["min"]),
+             int(settings["char"]["morph"]["max"]))
         d = data[0].copy()
         morph = CvHelper.morph(d, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_RECTANGLE,
                                kernel_size=k, iterations=2)
@@ -61,23 +62,22 @@ class ImageUtil:
         """
 
     @staticmethod
-    def process_for_shape_detection_bright_backlight(image):
+    def process_for_shape_detection_bright_backlight(image, settings):
         try:
-            values = PropertyHandler.cv_settings["preprocessing"]
+            values = settings["preprocessing"]
             illum = ImageUtil.illumination_correction(image.copy())
-            mask_setup = PropertyHandler.cv_settings["preprocessing"]["mask"]
+            mask_setup = settings["preprocessing"]["mask"]
             lower = np.array(int(mask_setup["lower"]))
             upper = np.array(int(mask_setup["upper"]))
             img = CvHelper.greyscale(illum)
             mask = cv2.inRange(img, lower, upper)
             # blur = CvHelper.gaussian_blur(mask, kernel_size=3)
             # sobelx = CvHelper.sobel(mask, kernel_size=3)  # int(values["sobel"]["kernel"]))
-            otsu = CvHelper.adaptive_thresholding(mask, int(values["otsu"]))
+            otsu = CvHelper.adaptive_thresholding(mask, 255)
             morph = CvHelper.morph(otsu, CvEnums.MORPH_CLOSE,
                                    kernel_size=(int(values["morph"]["width"]), int(values["morph"]["height"])),
                                    kernel_shape=CvEnums.K_ELLIPSE,
                                    iterations=2)
-
             # CvHelper.display("ShapeDetect", morph.copy(), size=(640, 480))
             return morph
         except Exception as e:
