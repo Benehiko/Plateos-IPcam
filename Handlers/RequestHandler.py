@@ -8,8 +8,6 @@ from urllib.error import URLError
 import requests
 from PIL import Image
 
-from Handlers.CacheHandler import CacheHandler
-
 
 class Request:
 
@@ -38,22 +36,22 @@ class Request:
 
             # print("Posting:", out)
             if Request.check_connectivity():
-                Request.send(url, out)
-            else:
-                now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                CacheHandler.save_cache("offline", now, out)
+                return Request.send(url, out)
+
         else:
             print("Mac is None")
+        return False
 
     @staticmethod
     def send(url, data):
         try:
-            r = requests.post(url, json=data)
-            print(r.text)
-            return True
+            r = requests.post(url, json=data, timeout=3)
+            if r.status_code == 200:
+                return True
         except Exception as e:
-            print("Error\n", e)
-            return False
+            print("Post Error\n", e)
+            pass
+        return False
 
     @staticmethod
     def check_connectivity():
@@ -68,6 +66,19 @@ class Request:
             print("Connectivity Check: ", e)
             pass
 
+        return False
+
+    @staticmethod
+    def custom_check_connectivity(url):
+        try:
+            hostname = url
+            response = subprocess.call(["ping", "-c", "3", hostname], stdout=subprocess.DEVNULL)
+            if response == 0:
+                return True
+
+        except Exception as e:
+            print("Custom Connectivity Check", e)
+            pass
         return False
 
     @staticmethod

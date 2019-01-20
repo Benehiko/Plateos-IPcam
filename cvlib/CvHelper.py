@@ -317,6 +317,15 @@ class CvHelper:
         return cv2.cvtColor(mat, cv2.COLOR_BGR2RGB)
 
     @staticmethod
+    def gray2rgb(mat):
+        """
+        Convert Gray to RGB
+        :param mat:
+        :return:
+        """
+        return cv2.cvtColor(mat, cv2.COLOR_GRAY2RGB)
+
+    @staticmethod
     def inverse(mat):
         """
         Inverses the colour scheme of a greyscale or binary image

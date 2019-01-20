@@ -3,7 +3,6 @@ import asyncio
 import cv2
 import numpy as np
 
-from Handlers.PropertyHandler import PropertyHandler
 from cvlib.CvEnums import CvEnums
 
 
@@ -121,7 +120,7 @@ class ContourHandler:
         ratio_h_w = (h / w)
         return 0.8 <= ratio_w_h <= 20 or 0.1 <= ratio_h_w <= 1.5
 
-    def get_rectangles(self, contours, mat_width, mat_height, area_bounds=(0.5, 5), min_point=(10, 10),
+    def get_rectangles(self, contours, settings, mat_width, mat_height, area_bounds=(0.5, 5), min_point=(10, 10),
                        max_point=(60, 60)):
         """
         Get rectangles from contours
@@ -153,7 +152,8 @@ class ContourHandler:
         if len(cnt_cache) > 0:
             # Keep element if it is not False
             # cnt_cache = [x for x in cnt_cache if not ContourHandler.polygon_test(cnt_cache, ContourHandler.get_rotated_rect(ContourHandler.get_approx(x)))]
-            pool = [asyncio.ensure_future(ContourHandler.contour_helper(cnt), loop=event_loop) for cnt in cnt_cache]
+            pool = [asyncio.ensure_future(ContourHandler.contour_helper(cnt, settings), loop=event_loop) for cnt in
+                    cnt_cache]
             resultset = event_loop.run_until_complete(asyncio.gather(*pool))
 
             for r in resultset:
@@ -170,16 +170,16 @@ class ContourHandler:
         return rect_arr, box_corrected, angles
 
     @staticmethod
-    async def contour_helper(cnt):
+    async def contour_helper(cnt, settings):
         approx = ContourHandler.get_approx(cnt)
         # if len(approx) == 4:
         rect = ContourHandler.get_rotated_rect(approx)
         angle = ContourHandler.in_correct_angle(rect)
-        angles = PropertyHandler.cv_settings["shape"]["angle"]
-        min = int(angles["min"])
-        max = int(angles["max"])
+        angles = settings["shape"]["angle"]
+        minimum = -int(angles["min"])
+        maximum = -int(angles["max"])
 
-        if angle > -30 or angle < -100 or angle < -150:
+        if maximum < angle < minimum:  # angle > -30 or angle < -100 or angle < -150:
             box = cv2.boxPoints(rect)
             box = np.int0(box)
             if ContourHandler.correct_ratio(rect):

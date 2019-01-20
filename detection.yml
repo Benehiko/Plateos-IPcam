@@ -18,9 +18,6 @@ preprocessing:
   morph:
     height: 2
     width: '6'
-  otsu: 255
-  sobel:
-    kernel: 3
 shape:
   angle:
     max: 90
