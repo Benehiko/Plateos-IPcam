@@ -33,9 +33,9 @@ class ProcessHelper:
         chars = None
 
         try:
-            PropertyHandler.get_cv_settings(self.cv_q)
-            settings = PropertyHandler.load_cv()
-            if not self.cv_q.empty():
+            self.propertyHandler.get_cv_settings(self.cv_q)
+            settings = self.propertyHandler.cv_settings
+            while not self.cv_q.empty():
                 settings = self.cv_q.get()
 
                 # if len(settings) == 0:

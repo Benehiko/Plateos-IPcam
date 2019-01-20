@@ -13,11 +13,11 @@ char:
     min: 0.69
 preprocessing:
   mask:
-    lower: 16
-    upper: 175
+    lower: 10
+    upper: 197
   morph:
     height: 2
-    width: '6'
+    width: '9'
 shape:
   angle:
     max: 90
