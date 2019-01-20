@@ -45,7 +45,7 @@ class FrameHandler:
             retval, buffer = cv2.imencode('.jpg', compress)
             b64 = base64.b64encode(buffer)
             return b64
-        return ''
+        return base64.b64encode('')
 
     @staticmethod
     def get_blob(mat):
@@ -66,6 +66,5 @@ class FrameHandler:
     def get_all(queue):
         while not FrameHandler.queues.empty():
             obj = FrameHandler.queues.get()
-            arr = base64.b64decode(obj[1])
             # image = Image.open(temp)
             queue.put([obj[0], obj[1], obj[2]])
