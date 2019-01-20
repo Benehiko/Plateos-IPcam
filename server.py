@@ -73,7 +73,7 @@ def get_image():
         obj = QueueHandler.obj_queue.get()
 
     if obj is not None:
-        if type(obj[1]) is bytes:
+        if type(obj[1]) is str:
             data = j.dumps({'name': obj[0], 'image': obj[1], 'output': obj[2]})
             socketio.emit('image', data)
 

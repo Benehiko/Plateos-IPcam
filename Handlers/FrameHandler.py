@@ -36,9 +36,9 @@ class FrameHandler:
         if mat is not None:
             compress = ImageUtil.compress(mat, max_w=480, quality=50)
             retval, buffer = cv2.imencode('.jpg', compress)
-            b64 = base64.b64encode(buffer)
-            return b64
-        return base64.b64encode('')
+            b64 = base64.standard_b64encode(buffer)
+            return b64.decode('utf-8')
+        return ""
 
     @staticmethod
     def get_blob(mat):
