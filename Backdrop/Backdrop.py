@@ -15,12 +15,11 @@ class Backdrop:
     def start(self):
         while True:
             p = Process(target=self.backdrophandler.start, args=(self.obj_queue, self.cv_queue))
+            p.start()
             p2 = Process(target=server.start, args=(self.obj_queue, self.cv_queue))
             p2.start()
-            p.start()
-
             try:
-                p2.join()
                 p.join()
+                p2.join()
             except KeyboardInterrupt:
                 break

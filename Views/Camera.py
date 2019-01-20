@@ -46,7 +46,6 @@ class Camera:
         self.framequeue = Queue()
         self.output = ""
 
-
     def start(self, q, q2):
         if self.mac == "":
             for i in range(0, 5):
@@ -84,7 +83,7 @@ class Camera:
                                 t.start()
                                 tmp = t.join()
                                 if tmp is not None:
-                                    self.output = [x['plate'] for x in tmp if len(tmp) > 3]
+                                    self.output = [x for x in tmp if len(tmp) > 4]
                                     tmp, meta = self.handle_data(tmp, img)
                                     self.data = tmp
                                     if len(tmp) > 0:
