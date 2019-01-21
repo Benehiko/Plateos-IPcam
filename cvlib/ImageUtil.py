@@ -23,13 +23,30 @@ class ImageUtil:
 
     @staticmethod
     async def process_for_tess(data, settings):
+        """
+        This seems to work the best.
+        The Image also NEEDS to be inverted with a padding of at least 10px
+        (https://groups.google.com/forum/?utm_medium=email&utm_source=footer#!msg/tesseract-ocr/v26a-RYPSOE/2Sppq61GBwAJ)
+        Morph Dilate on Binarised (otsu) image
+        :param data:  Binarised Otsu Image
+        :param settings: Morph Kernel Min and Max
+        :return:
+        """
         k = (int(settings["char"]["morph"]["min"]),
              int(settings["char"]["morph"]["max"]))
         d = data[0].copy()
-        morph = CvHelper.morph(d, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_RECTANGLE,
-                               kernel_size=k, iterations=2)
-        diff = CvHelper.subtract(morph, d)
-        diff = CvHelper.inverse(diff)
+        row, col = d.shape[:2]
+        bottom = d[row - 2:row, 0:col]
+        mean = cv2.mean(bottom)[0]
+
+        bordersize = 10
+        border = cv2.copyMakeBorder(d, top=bordersize, bottom=bordersize, left=bordersize, right=bordersize,
+                                    borderType=cv2.BORDER_CONSTANT, value=[mean, mean, mean])
+
+        morph = CvHelper.morph(border, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_RECTANGLE,
+                               kernel_size=k, iterations=4)
+        # diff = CvHelper.subtract(morph, d)
+        diff = CvHelper.inverse(morph)
         # morph = CvHelper.morph(diff, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_RECTANGLE,
         #                        kernel_size=(5, 5), iterations=1)
         return diff, data[1]
@@ -73,13 +90,16 @@ class ImageUtil:
             mask = cv2.inRange(img, lower, upper)
             # blur = CvHelper.gaussian_blur(mask, kernel_size=3)
             # sobelx = CvHelper.sobel(mask, kernel_size=3)  # int(values["sobel"]["kernel"]))
-            otsu = CvHelper.adaptive_thresholding(mask, 255)
+            otsu = CvHelper.otsu_binary(mask, int(values["otsu"]))
             morph = CvHelper.morph(otsu, CvEnums.MORPH_CLOSE,
                                    kernel_size=(int(values["morph"]["width"]), int(values["morph"]["height"])),
-                                   kernel_shape=CvEnums.K_ELLIPSE,
+                                   kernel_shape=CvEnums.K_RECTANGLE,
                                    iterations=2)
+            canny = CvHelper.erode(morph, kernel_shape=CvEnums.K_ELLIPSE,
+                                   kernel_size=(int(values["canny"]["min"]), (int(values["canny"]["max"]))),
+                                   iterations=4)
             # CvHelper.display("ShapeDetect", morph.copy(), size=(640, 480))
-            return morph
+            return canny
         except Exception as e:
             print(e)
             pass
@@ -199,6 +219,14 @@ class ImageUtil:
 
     @staticmethod
     async def char_roi(mat, rectangle, char_bounds, char_points):
+        """
+        Don't change anything here. It's not necessary.
+        :param mat:
+        :param rectangle:
+        :param char_bounds:
+        :param char_points:
+        :return:
+        """
         tmp = mat.copy()
         potential_plate = ImageUtil.auto_crop(tmp, rectangle)
         # norm_illum = ImageUtil.illumination_correction(potential_plate)

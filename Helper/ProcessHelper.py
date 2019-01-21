@@ -78,6 +78,7 @@ class ProcessHelper:
 
                 drawn = CvHelper.draw_boxes(drawn, boxes, CvEnums.COLOUR_GREEN, 5)
                 chars = drawn_chars
+                # Potential is a list of Binarised (otsu) images
                 if len(potential) > 0:
                     loop = asyncio.new_event_loop()
                     asyncio.set_event_loop(loop)

@@ -73,8 +73,8 @@ def get_image():
         obj = QueueHandler.obj_queue.get()
 
     if obj is not None:
-        if type(obj[1]) is str:
-            data = j.dumps({'name': obj[0], 'image': obj[1]})
+        if type(obj[1]) is str and type(obj[2]) is str:
+            data = j.dumps({'name': obj[0], 'image': obj[1], 'plates': obj[2]})
             socketio.emit('image', data)
 
 
@@ -151,6 +151,15 @@ def char_height(data):
         QueueHandler.propertyhandler.set_cv_settings(tmp)
 
 
+@socketio.on("char-morph")
+def char_morph(data):
+    QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
+    while not QueueHandler.cv_queue.empty():
+        tmp = QueueHandler.cv_queue.get()
+        tmp["char"]["morph"] = data["char"]["morph"]
+        QueueHandler.propertyhandler.set_cv_settings(tmp)
+
+
 @socketio.on("angle")
 def angle(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
@@ -169,13 +178,21 @@ def mask(data):
         QueueHandler.propertyhandler.set_cv_settings(tmp)
 
 
-@socketio.on("char-morph")
+@socketio.on("otsu")
 def char_morph(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
         tmp = QueueHandler.cv_queue.get()
-        tmp["char"]["morph"] = data["morph"]
+        tmp["preprocessing"]["otsu"] = data["otsu"]
         QueueHandler.propertyhandler.set_cv_settings(tmp)
+
+
+@socketio.on("canny")
+def canny(data):
+    QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
+    while not QueueHandler.cv_queue.empty():
+        tmp = QueueHandler.cv_queue.get()
+        tmp["preprocessing"]["canny"] = data["canny"]
 
 
 @socketio.on("save")

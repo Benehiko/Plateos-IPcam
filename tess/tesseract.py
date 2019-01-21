@@ -11,12 +11,24 @@ from cvlib.ImageUtil import ImageUtil
 
 
 class Tess:
+    """
+    https://github.com/tesseract-ocr/tesseract/wiki/ImproveQuality#binarisation
+    Sparse_Text_OSD seems to be the most accurate, WHILE RAW_LINE and SINGLE_BLOCK seems to be the fastest (inaccurate).
+
+    Don't use LSTM and Tesseract Original together. Only LSTM (Trained Model).
+
+    What seems to work the best is to Morph Dilate with a dilation of size 2x2 and shape Rectangle on an otsu bin image.
+    Padding is also necessary (https://groups.google.com/forum/?utm_medium=email&utm_source=footer#!msg/tesseract-ocr/v26a-RYPSOE/2Sppq61GBwAJ)
+    Although it is said to remove boarders, still pad the text with 10px
+
+    Upped the DPI to a 720p image
+    """
 
     # TODO: Add type mapping and return types to methods with correct descriptions
 
     def __init__(self):
         # noinspection PyArgumentList,PyArgumentList
-        self.t = PyTessBaseAPI(psm=PSM.SINGLE_BLOCK, oem=OEM.LSTM_ONLY, lang="eng")
+        self.t = PyTessBaseAPI(psm=PSM.SPARSE_TEXT_OSD, oem=OEM.LSTM_ONLY, lang="eng")
         self.t.SetVariable("load_system_dawg", "false")
         self.t.SetVariable("load_freq_dawg", "false")
         self.t.SetVariable("load_punc_dawg", "false")
@@ -36,7 +48,7 @@ class Tess:
                 plate = {"image": data[0], "char-len": data[1], "time": ms}
                 image = Image.fromarray(np.uint8(data[0]))
                 temp = BytesIO()
-                image.save(temp, "JPEG", dpi=(600, 400))
+                image.save(temp, "JPEG", dpi=(1280, 720))
                 temp.seek(0)
                 image = Image.open(temp)
                 self.t.SetImage(image)

@@ -18,7 +18,7 @@ class FrameHandler:
     def add_obj(val):
         try:
             if val is not None:
-                tmp = [val[0], FrameHandler.get_base64(val[1]), val[2]]
+                tmp = [val[0], FrameHandler.get_base64(val[1]), FrameHandler.get_base64(val[2])]
                 FrameHandler.obj.append(tmp)
                 FrameHandler.queues.put(tmp)
         except Exception as e:
@@ -34,7 +34,7 @@ class FrameHandler:
     @staticmethod
     def get_base64(mat):
         if mat is not None:
-            compress = ImageUtil.compress(mat, max_w=480, quality=50)
+            compress = ImageUtil.compress(mat, max_w=480, quality=80)
             retval, buffer = cv2.imencode('.jpg', compress)
             b64 = base64.standard_b64encode(buffer)
             return b64.decode('utf-8')
