@@ -60,4 +60,4 @@ class FrameHandler:
         while not FrameHandler.queues.empty():
             obj = FrameHandler.queues.get()
             # image = Image.open(temp)
-            queue.put([obj[0], obj[1])
+            queue.put([obj[0], obj[1]])
