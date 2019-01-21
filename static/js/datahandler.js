@@ -5,15 +5,27 @@ socket.on('connect', function () {
 socket.on('image', data => {
     let j = JSON.parse(data);
     if (!document.getElementById(j["name"])) {
+        $("#image-container").append('<div class="col-sm">');
         $("#image-container").append('<img src="" id="' + j["name"] + '" width="100%" height="100%"/>');
         $("#image-container").append('<p id="' + j["name"] + '-output"/>');
+        $("#image-container").append('<img src="" id="' + j["name"] + '-plates" width="100%" height="100"/>');
+        $("#image-container").append('</div>');
     }
     //$("#image-container").append('<img src="" id="' + j["name"] + '-raw" width="100%" height="100%"/>');
 
     let frame = new Image();
     frame.src = "data:image/jpg;base64," + j["image"];
     let frameElem = document.getElementById(j["name"]);
-    frameElem.src = frame.src; //"data:image/jpg;base64," + j["image"];
+    frameElem.src = frame.src;
+
+    if (j["plates"] !== "") {
+        let plates = new Image();
+        plates.src = "data:image/jpg;base64," + j["plates"];
+        let platesElem = document.getElementById(j["name"] + "-plates");
+        platesElem.src = plates.src
+    }
+
+    //"data:image/jpg;base64," + j["image"];
     //let outputElem = document.getElementById(j["name"] + "-output");
     // console.log(j["output"]);
     // outputElem.html = j["output"]
@@ -37,10 +49,10 @@ let get_image = function () {
 $("#shape-height").ionRangeSlider({
     type: "double",
     min: 0.01,
-    max: 20,
+    max: 100,
     step: 0.01,
     from: 0.01,
-    to: 20,
+    to: 100,
     grid: true,
     grid_snap: true,
     from_fixed: false,
@@ -49,7 +61,6 @@ $("#shape-height").ionRangeSlider({
         let d = {
             "height": {"min": data.from, "max": data.to}
         };
-        console.log(d);
         socket.emit("shape-height", d);
     }
 });
@@ -59,10 +70,10 @@ $("#shape-height").ionRangeSlider({
 $("#shape-width").ionRangeSlider({
     type: "double",
     min: 0.01,
-    max: 20,
+    max: 100,
     step: 0.01,
     from: 0.01,
-    to: 20,
+    to: 100,
     grid: true,
     grid_snap: true,
     from_fixed: false,
@@ -80,10 +91,10 @@ $("#shape-width").ionRangeSlider({
 $("#shape-area").ionRangeSlider({
     type: "double",
     min: 0.01,
-    max: 20,
+    max: 100,
     step: 0.01,
     from: 0.01,
-    to: 20,
+    to: 100,
     grid: true,
     grid_snap: true,
     to_fixed: false,
@@ -203,6 +214,35 @@ $("#char-width").ionRangeSlider({
 });
 // ----
 
+//Char Morph Dilate
+$("#char-morph").ionRangeSlider({
+    type: "double",
+    min: 1,
+    max: 9,
+    from: 1,
+    to: 9,
+    step: 1,
+    grid: true,
+    grid_snap: true,
+    to_fixed: false,
+    from_fixed: false,
+    onChange: function (data) {
+        let d = {
+            "char": {
+                "morph":
+                    {
+                        "min":
+                        data.from,
+                        "max": data.to
+                    }
+            }
+        };
+        socket.emit("char-morph", d)
+    }
+});
+// ----
+
+
 // Angle
 $("#angle").ionRangeSlider({
     type: "double",
@@ -247,6 +287,45 @@ $("#mask").ionRangeSlider({
     }
 });
 // ----
+
+// Otsu
+$("#otsu").ionRangeSlider({
+    type: "double",
+    min: 0,
+    max: 255,
+    from: 0,
+    to: 255,
+    step: 1,
+    grid: true,
+    grid_snap: true,
+    to_fixed: true,
+    from_fixed: false,
+    onChange: function (data) {
+        let d = {
+            "otsu": data.from
+        };
+        socket.emit("otsu", d);
+    }
+});
+
+$("#canny").ionRangeSlider({
+    type: "double",
+    min: 1,
+    max: 20,
+    from: 1,
+    to: 20,
+    step: 1,
+    grid: true,
+    grid_snap: true,
+    to_fixed: false,
+    from_fixed: false,
+    onChange: function (data) {
+        let d = {
+            "canny": {"min": data.from, "max": data.to}
+        };
+        socket.emit("canny", d);
+    }
+});
 
 $("#save-sliders").on("click", function (evt) {
     socket.emit("save");

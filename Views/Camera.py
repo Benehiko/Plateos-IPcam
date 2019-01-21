@@ -90,8 +90,16 @@ class Camera:
                     if self.raw is None:
                         print("raw null")
                         self.raw = np.random.random([100, 100])
+                    plate_pics = None
+                    for x in self.data:
+                        if "results" in x:
+                            for y in x["results"]:
+                                if plate_pics is not None:
+                                    plate_pics = np.hstack((plate_pics, y["image"]))
+                                else:
+                                    plate_pics = y["image"]
 
-                    FrameHandler.add_obj([self.ip, np.hstack((self.frame, CvHelper.gray2rgb(self.raw))), self.data])
+                    FrameHandler.add_obj([self.ip, np.hstack((self.frame, CvHelper.gray2rgb(self.raw))), plate_pics])
             except Exception as e:
                 print("Camera", self.get_camera_data()["alias"], self.get_camera_data()["ip"], "Died", "\nReason:", e)
                 break
