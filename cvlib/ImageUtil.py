@@ -44,9 +44,9 @@ class ImageUtil:
         #                             borderType=cv2.BORDER_CONSTANT, value=[mean, mean, mean])
 
         morph = CvHelper.morph(d, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_RECTANGLE,
-                               kernel_size=k, iterations=2)
-        diff = CvHelper.subtract(morph, d)
-        diff = CvHelper.inverse(diff)
+                               kernel_size=k, iterations=4)
+        #diff = CvHelper.subtract(morph, d)
+        diff = CvHelper.inverse(morph)
         return diff, data[1]
 
     """
@@ -88,17 +88,17 @@ class ImageUtil:
             mask = cv2.inRange(img, lower, upper)
             # blur = CvHelper.gaussian_blur(mask, kernel_size=3)
             # sobelx = CvHelper.sobel(mask, kernel_size=3)  # int(values["sobel"]["kernel"]))
-
-            morph = CvHelper.morph(mask, CvEnums.MORPH_CLOSE,
+            otsu = CvHelper.otsu_binary(mask, int(values["otsu"]))
+            morph = CvHelper.morph(otsu, CvEnums.MORPH_CLOSE,
                                    kernel_size=(int(values["morph"]["width"]), int(values["morph"]["height"])),
                                    kernel_shape=CvEnums.K_ELLIPSE,
                                    iterations=2)
-            otsu = CvHelper.otsu_binary(morph, int(values["otsu"]))
+
             # erode = CvHelper.erode(morph, kernel_shape=CvEnums.K_ELLIPSE,
             #                        kernel_size=(int(values["erode"]["min"]), (int(values["erode"]["max"]))),
             #                        iterations=2)
             # CvHelper.display("ShapeDetect", morph.copy(), size=(640, 480))
-            return otsu
+            return morph
         except Exception as e:
             print(e)
             pass

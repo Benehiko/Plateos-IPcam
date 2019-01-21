@@ -28,7 +28,7 @@ class Tess:
 
     def __init__(self):
         # noinspection PyArgumentList,PyArgumentList
-        self.t = PyTessBaseAPI(psm=PSM.SINGLE_BLOCK, oem=OEM.LSTM_ONLY, lang="eng")
+        self.t = PyTessBaseAPI(psm=PSM.SPARSE_TEXT_OSD, oem=OEM.LSTM_ONLY, lang="eng")
         self.t.SetVariable("load_system_dawg", "false")
         self.t.SetVariable("load_freq_dawg", "false")
         self.t.SetVariable("load_punc_dawg", "false")
@@ -49,7 +49,7 @@ class Tess:
                 plate = {"image": data[0], "char-len": data[1], "time": ms}
                 image = Image.fromarray(np.uint8(data[0]))
                 temp = BytesIO()
-                image.save(temp, "JPEG", dpi=(1280, 720))
+                image.save(temp, "JPEG", dpi=(600, 400))
                 temp.seek(0)
                 image = Image.open(temp)
                 self.t.SetImage(image)
