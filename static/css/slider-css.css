@@ -1,0 +1,6 @@
+.slider-handle.custom::before {
+    line-hight: 20px;
+    font-size: 20px;
+    content: '\2503';
+    color: #16181b;
+}

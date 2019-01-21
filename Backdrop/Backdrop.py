@@ -1,22 +1,25 @@
-from multiprocessing import Process
-from threading import Thread
+from multiprocessing import Process, Queue
 
+import server
 from Backdrop.BackdropHandler import BackdropHandler
-from Network.PortScanner import PortScanner
 
 
 # noinspection PyBroadException
 class Backdrop:
 
-    def __init__(self, args, iprange, url):
-        self.backdrophandler = BackdropHandler(self, scanner=PortScanner(), iprange=iprange, args=args, url=url)
+    def __init__(self):
+        self.obj_queue = Queue()
+        self.cv_queue = Queue()
+        self.backdrophandler = BackdropHandler()
 
-    def scan(self):
+    def start(self):
         while True:
+            p = Process(target=self.backdrophandler.start, args=(self.obj_queue, self.cv_queue))
+            p.start()
+            p2 = Process(target=server.start, args=(self.obj_queue, self.cv_queue))
+            p2.start()
             try:
-                p = Process(target=self.backdrophandler.start())
-                p.start()
                 p.join()
-            except Exception as e:
-                print(e)
-                pass
+                p2.join()
+            except KeyboardInterrupt:
+                break

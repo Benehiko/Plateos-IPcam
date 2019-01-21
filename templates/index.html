@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cef</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-slider.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/slider-css.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ion.rangeSlider.min.css') }}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/camera">Camera</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    Dropdown
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#">Disabled</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm">
+            <form>
+                <div class="form-group">
+                    <label for="shape-height">Shape-Height</label><br/>
+                    <input type="text"
+                           id="shape-height"
+                           class="js-range-slider"
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="shape-width">Shape-Width</label><br/>
+                    <input type="text"
+                           id="shape-width"
+                           class="js-range-slider"/>
+                </div>
+                <div class="form-group">
+                    <label for="shape-area">Shape-Area</label><br/>
+                    <input type="text"
+                           id="shape-area"
+                           class="js-range-slider"/>
+                </div>
+                <div class="form-group">
+                    <label for="morph-width">Morph Width</label><br/>
+                    <input type="text"
+                           id="morph-width"/>
+                </div>
+
+                <div class="form-group">
+                    <label for="morph-height">Morph Height</label><br/>
+                    <input type="text"
+                           id="morph-height"/>
+                </div>
+
+                <button type="button" class="btn btn-primary" id="save-sliders">Save</button>
+            </form>
+        </div>
+        <div class="col-sm">
+            <form>
+
+
+                <div class="form-group">
+                    <label for="char-area">Char-Area</label><br/>
+                    <input type="text"
+                           id="char-area"
+                           class="js-range-slider"/>
+                </div>
+
+                <div class="form-group">
+                    <label for="char-height">Char-Height</label><br/>
+                    <input type="text"
+                           id="char-height"
+                           class="js-range-slider"/>
+                </div>
+
+                <div class="form-group">
+                    <label for="char-width">Char-Width</label><br/>
+                    <input type="text"
+                           id="char-width"
+                           class="js-range-slider"/>
+                </div>
+
+                <div class="form-group">
+                    <label for="char-morph">Char Morph Dilate</label><br/>
+                    <input type="text"
+                           id="char-morph"
+                           class="js-range-slider"/>
+                </div>
+
+                <div class="form-group">
+                    <label for="angle">Angle</label><br/>
+                    <input type="text"
+                           id="angle"
+                           class="js-range-slider"/>
+                </div>
+
+
+            </form>
+        </div>
+        <div class="col-sm">
+            <form>
+                <div class="form-group">
+                    <label for="mask">Mask</label>
+                    <input type="text"
+                           id="mask"
+                           class="js-range-slider"/>
+                </div>
+                
+                <div class="form-group">
+                    <label for="otsu">Otsu</label>
+                    <input type="text"
+                           id="otsu"
+                           class="js-range-slider"/>
+                </div>
+                <div class="form-group">
+                    <label for="canny">Canny</label>
+                    <input type="text"
+                           id="canny"
+                           class="js-range-slider"/>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <div id="image-container">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-slider.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ion.rangeSlider.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/datahandler.js') }}"></script>
+</body>
+</html>

@@ -1,19 +1,34 @@
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime
+from io import BytesIO
 from tesserocr import PyTessBaseAPI, PSM, OEM
 
 import numpy as np
 from PIL import Image
-from io import BytesIO
+
+from Handlers.NumberplateHandler import NumberplateHandler
 from cvlib.ImageUtil import ImageUtil
-from numberplate.Numberplate import Numberplate
 
 
 class Tess:
+    """
+    https://github.com/tesseract-ocr/tesseract/wiki/ImproveQuality#binarisation
+    Sparse_Text_OSD seems to be the most accurate, WHILE RAW_LINE and SINGLE_BLOCK seems to be the fastest (inaccurate).
 
-    def __init__(self, backdrop):
+    Don't use LSTM and Tesseract Original together. Only LSTM (Trained Model).
+
+    What seems to work the best is to Morph Dilate with a dilation of size 2x2 and shape Rectangle on an otsu bin image.
+    Padding is also necessary (https://groups.google.com/forum/?utm_medium=email&utm_source=footer#!msg/tesseract-ocr/v26a-RYPSOE/2Sppq61GBwAJ)
+    Although it is said to remove boarders, still pad the text with 10px
+
+    Upped the DPI to a 720p image
+    """
+
+    # TODO: Add type mapping and return types to methods with correct descriptions
+
+    def __init__(self):
         # noinspection PyArgumentList,PyArgumentList
-        self.t = PyTessBaseAPI(psm=PSM.CIRCLE_WORD, oem=OEM.LSTM_ONLY, lang="eng")
+        self.t = PyTessBaseAPI(psm=PSM.SPARSE_TEXT_OSD, oem=OEM.LSTM_ONLY, lang="eng")
         self.t.SetVariable("load_system_dawg", "false")
         self.t.SetVariable("load_freq_dawg", "false")
         self.t.SetVariable("load_punc_dawg", "false")
@@ -24,50 +39,59 @@ class Tess:
         self.t.SetVariable("tessedit_create_hocr", "0")
         self.t.SetVariable("textord_force_make_prop_words", "false")
         self.t.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-        self.backdrop = backdrop
-        self.cached = []
-        self.then = datetime.now()
 
-    async def runner(self, nparray):
-        if nparray is not None:
-            if not isinstance(nparray, list):
-                image = Image.fromarray(np.uint8(nparray))
+    async def runner(self, data):
+        try:
+            now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            ms = datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+            if data is not None:
+                plate = {"image": data[0], "char-len": data[1], "time": ms}
+                image = Image.fromarray(np.uint8(data[0]))
                 temp = BytesIO()
-                image.save(temp, "JPEG", dpi=(300, 300))
+                image.save(temp, "JPEG", dpi=(1280, 720))
                 temp.seek(0)
                 image = Image.open(temp)
                 self.t.SetImage(image)
                 raw_text = self.t.GetUTF8Text()
-                tess_confidence = self.t.AllWordConfidences()
-                if any(item >= 80 for item in tess_confidence):
-                    text = Numberplate.sanitise(raw_text)
-                    plate_type, confidence = Numberplate.validate(text, use_provinces=True)
-                    if plate_type is not None and confidence > 0:
-                        image = ImageUtil.compress(nparray, max_w=200)
-                        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                        plate = (text, plate_type, confidence, now, image)
-                        self.backdrop.callback_tess(plate)
-                        return plate
-            else:
-                print("It's a list", nparray)
+                if len(raw_text) > 0:
+                    text = NumberplateHandler.sanitise(raw_text)
+                    if len(text) > 0:
+                        word_conf = self.t.MapWordConfidences()
+                        tess_confidence = 0
+                        if len(word_conf) > 0:
+                            for x in word_conf:
+                                if text == x[0]:
+                                    tess_confidence = x[1]
+                                    break
+
+                        p_data = NumberplateHandler.validate(text)
+                        if None not in p_data:
+                            country, province, confidence = p_data
+                            image = ImageUtil.compress(data[0], max_w=200)
+                            confidence = confidence + round(float((tess_confidence / 100) / 2), 2)
+                            plate = [("plate", text), ("country", country), ("province", province),
+                                     ("confidence", confidence),
+                                     ("image", image), ("time", now), ("char-len", data[1])]
+                            print("Plate:", text, "Country:", country, "Province:", province, "Confidence:", confidence,
+                                  "Time:", now)
+                return dict(plate)
+        except Exception as e:
+            print("Tess runner error", "\n", e)
+            pass
         return None
 
     def multi(self, images):
-        if images is not None:
-            if len(images) > 0:
-                event_loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(event_loop)
-                pool = [asyncio.ensure_future(self.runner(i)) for i in images]
-                results = event_loop.run_until_complete(asyncio.gather(*pool))
-                results = [x for x in results if x is not None]
-                event_loop.close()
-                if len(results) > 0:
-                    self.cached = self.cached + results
-
-                now = datetime.now()
-                diff = now - self.then
-                if timedelta(seconds=30) < diff:
-                    if len(self.cached) > 0:
-                        self.backdrop.cache(self.cached)
-                        self.cached = []
-                        self.then = now
+        out = None
+        try:
+            if images is not None:
+                if len(images) > 0:
+                    event_loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(event_loop)
+                    pool = [asyncio.ensure_future(self.runner(i)) for i in images]
+                    tmp = event_loop.run_until_complete(asyncio.gather(*pool))
+                    out = [x for x in tmp if x is not None]
+                    event_loop.close()
+        except Exception as e:
+            print("Tesseract Error", e)
+            pass
+        return out
