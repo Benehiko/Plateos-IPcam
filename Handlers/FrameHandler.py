@@ -61,3 +61,8 @@ class FrameHandler:
             obj = FrameHandler.queues.get()
             # image = Image.open(temp)
             queue.put([obj[0], obj[1]])
+
+    @staticmethod
+    def clean():
+        while not FrameHandler.queues.empty():
+            FrameHandler.queues.get()
