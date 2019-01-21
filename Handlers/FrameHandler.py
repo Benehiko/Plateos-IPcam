@@ -18,7 +18,7 @@ class FrameHandler:
     def add_obj(val):
         try:
             if val is not None:
-                tmp = [val[0], FrameHandler.get_base64(val[1]), FrameHandler.get_base64(val[2])]
+                tmp = [val[0], FrameHandler.get_base64(val[1])]
                 FrameHandler.obj.append(tmp)
                 FrameHandler.queues.put(tmp)
         except Exception as e:
@@ -60,4 +60,4 @@ class FrameHandler:
         while not FrameHandler.queues.empty():
             obj = FrameHandler.queues.get()
             # image = Image.open(temp)
-            queue.put([obj[0], obj[1], obj[2]])
+            queue.put([obj[0], obj[1])
