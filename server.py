@@ -74,7 +74,7 @@ def get_image():
 
     if obj is not None:
         if type(obj[1]) is str and type(obj[2]) is str:
-            data = j.dumps({'name': obj[0], 'image': obj[1], 'plates': obj[2]})
+            data = j.dumps({'name': obj[0], 'image': obj[1]})
             socketio.emit('image', data)
 
 
