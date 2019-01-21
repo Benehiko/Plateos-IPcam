@@ -56,7 +56,7 @@ class PropertyHandler:
             "morph": {"height": 8, "width": 20},
             "mask": {"lower": 0, "upper": 255},
             "otsu": 0,
-            "canny": {"min": 0, "max": 255}
+            "erode": {"min": 0, "max": 255}
         }
     }
 
