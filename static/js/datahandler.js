@@ -8,7 +8,7 @@ socket.on('image', data => {
         $("#image-container").append('<div class="col-sm">');
         $("#image-container").append('<img src="" id="' + j["name"] + '" width="100%" height="100%"/>');
         $("#image-container").append('<p id="' + j["name"] + '-output"/>');
-        $("#image-container").append('<img src="" id="' + j["name"] + '-plates" width="100%" height="100"/>');
+        //$("#image-container").append('<img src="" id="' + j["name"] + '-plates" width="100%" height="100"/>');
         $("#image-container").append('</div>');
     }
     //$("#image-container").append('<img src="" id="' + j["name"] + '-raw" width="100%" height="100%"/>');
@@ -18,12 +18,12 @@ socket.on('image', data => {
     let frameElem = document.getElementById(j["name"]);
     frameElem.src = frame.src;
 
-    if (j["plates"] !== "") {
-        let plates = new Image();
-        plates.src = "data:image/jpg;base64," + j["plates"];
-        let platesElem = document.getElementById(j["name"] + "-plates");
-        platesElem.src = plates.src
-    }
+    // if (j["plates"] !== "") {
+    //     let plates = new Image();
+    //     plates.src = "data:image/jpg;base64," + j["plates"];
+    //     let platesElem = document.getElementById(j["name"] + "-plates");
+    //     platesElem.src = plates.src
+    // }
 
     //"data:image/jpg;base64," + j["image"];
     //let outputElem = document.getElementById(j["name"] + "-output");
