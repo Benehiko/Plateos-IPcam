@@ -39,6 +39,7 @@ class Tess:
         self.t.SetVariable("tessedit_create_hocr", "0")
         self.t.SetVariable("textord_force_make_prop_words", "false")
         self.t.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+        print("Tess Version", self.t.Version())
 
     async def runner(self, data):
         try:

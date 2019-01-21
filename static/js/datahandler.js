@@ -155,10 +155,10 @@ $("#morph-height").ionRangeSlider({
 $("#char-area").ionRangeSlider({
     type: "double",
     min: 0.01,
-    max: 50,
+    max: 1,
     step: 0.01,
     from: 1,
-    to: 100,
+    to: 1,
     grid: true,
     grid_snap: true,
     to_fixed: false,
@@ -176,10 +176,10 @@ $("#char-area").ionRangeSlider({
 $("#char-height").ionRangeSlider({
     type: "double",
     min: 0.01,
-    max: 100,
+    max: 1,
     step: 0.01,
     from: 0.01,
-    to: 100,
+    to: 1,
     grid: true,
     grid_snap: true,
     to_fixed: false,
@@ -197,9 +197,9 @@ $("#char-height").ionRangeSlider({
 $("#char-width").ionRangeSlider({
     type: "double",
     min: 0.01,
-    max: 100,
+    max: 1,
     from: 0.01,
-    to: 100,
+    to: 1,
     step: 0.01,
     grid: true,
     grid_snap: true,
@@ -249,7 +249,7 @@ $("#angle").ionRangeSlider({
     min: 0,
     max: 180,
     from: 0,
-    to: 100,
+    to: 180,
     step: 1,
     grid: true,
     grid_snap: true,
@@ -308,12 +308,12 @@ $("#otsu").ionRangeSlider({
     }
 });
 
-$("#canny").ionRangeSlider({
+$("#erode").ionRangeSlider({
     type: "double",
     min: 1,
-    max: 20,
-    from: 1,
-    to: 20,
+    max: 8,
+    from: 2,
+    to: 3,
     step: 1,
     grid: true,
     grid_snap: true,
@@ -321,9 +321,9 @@ $("#canny").ionRangeSlider({
     from_fixed: false,
     onChange: function (data) {
         let d = {
-            "canny": {"min": data.from, "max": data.to}
+            "erode": {"min": data.from, "max": data.to}
         };
-        socket.emit("canny", d);
+        socket.emit("erode", d);
     }
 });
 

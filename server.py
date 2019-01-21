@@ -187,12 +187,13 @@ def char_morph(data):
         QueueHandler.propertyhandler.set_cv_settings(tmp)
 
 
-@socketio.on("canny")
-def canny(data):
+@socketio.on("erode")
+def erode(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
         tmp = QueueHandler.cv_queue.get()
-        tmp["preprocessing"]["canny"] = data["canny"]
+        tmp["preprocessing"]["erode"] = data["erode"]
+        QueueHandler.propertyhandler.set_cv_settings(tmp)
 
 
 @socketio.on("save")
