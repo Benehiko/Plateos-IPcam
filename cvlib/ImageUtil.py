@@ -44,7 +44,7 @@ class ImageUtil:
                                     borderType=cv2.BORDER_CONSTANT, value=[mean, mean, mean])
 
         morph = CvHelper.morph(border, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_RECTANGLE,
-                               kernel_size=k, iterations=4)
+                               kernel_size=k, iterations=1)
         # diff = CvHelper.subtract(morph, d)
         diff = CvHelper.inverse(morph)
         # morph = CvHelper.morph(diff, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_RECTANGLE,
@@ -97,7 +97,7 @@ class ImageUtil:
                                    iterations=2)
             canny = CvHelper.erode(morph, kernel_shape=CvEnums.K_ELLIPSE,
                                    kernel_size=(int(values["canny"]["min"]), (int(values["canny"]["max"]))),
-                                   iterations=4)
+                                   iterations=2)
             # CvHelper.display("ShapeDetect", morph.copy(), size=(640, 480))
             return canny
         except Exception as e:
