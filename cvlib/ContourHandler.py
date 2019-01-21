@@ -54,7 +54,7 @@ class ContourHandler:
 
     @staticmethod
     def get_approx(cnt):
-        epsilon = 0.015 * cv2.arcLength(cnt, True)
+        epsilon = 0.01 * cv2.arcLength(cnt, True)
         approx = cv2.approxPolyDP(cnt, epsilon, True)
         return approx
 
@@ -83,21 +83,22 @@ class ContourHandler:
         r_height = h * 100 / self.img_height
 
         # 0.5 , 10 , 60, 60
-        return (rect_min_area <= r_area <= rect_max_area) and (height_min <= r_height <= height_max) and (
-                width_min <= r_width <= width_max)
+        return (height_min <= r_height <= height_max) and (
+                width_min <= r_width <= width_max) and (rect_min_area <= r_area <= rect_max_area)
 
     @staticmethod
-    def in_correct_angle(rect):
+    def standardise_angle(rect):
         """
-        Correct OpenCV angles to 180 degree plain
+        Correct OpenCV angles to 180 degree plain positive integer
         :param rect:
         :return:
         """
         (__, (w, h), angle) = rect
+        # print(rect)
         if w < h:
-            angle = angle - 90
-        # if w > h:
-        #     angle = angle + 90
+            angle = angle + 180
+        else:
+            angle = angle + 90
         #
         # if angle < -180:
         #     angle = angle + 360
@@ -172,21 +173,19 @@ class ContourHandler:
     @staticmethod
     async def contour_helper(cnt, settings):
         approx = ContourHandler.get_approx(cnt)
-        # if len(approx) == 4:
         rect = ContourHandler.get_rotated_rect(approx)
-        angle = ContourHandler.in_correct_angle(rect)
+        angle = ContourHandler.standardise_angle(rect)
         angles = settings["shape"]["angle"]
-        minimum = -int(angles["min"])
-        maximum = -int(angles["max"])
-
-        if maximum < angle < minimum:  # angle > -30 or angle < -100 or angle < -150:
+        minimum = int(angles["min"])
+        maximum = int(angles["max"])
+        if maximum >= angle >= minimum:  # angle > -30 or angle < -100 or angle < -150:
             box = cv2.boxPoints(rect)
             box = np.int0(box)
-            if ContourHandler.correct_ratio(rect):
-                ((x, y), __, __) = rect
-                x = int(x)
-                y = int(y)
-                return rect, box, (angle, (x, y))
+            # if ContourHandler.correct_ratio(rect):
+            ((x, y), __, __) = rect
+            x = int(x)
+            y = int(y)
+            return rect, box, (angle, (x, y))
         return None, None, None
         # return rect_arr, box_corrected, angles
 
@@ -225,7 +224,7 @@ class ContourHandler:
         for cnt in cnt_cache:
             approx = ContourHandler.get_approx(cnt)
             rect = ContourHandler.get_rotated_rect(approx)
-            angle = ContourHandler.in_correct_angle(rect)
+            angle = ContourHandler.standardise_angle(rect)
             if angle >= -50 or angle >= -120:
                 rect_array.append(rect)
                 box = cv2.boxPoints(rect)

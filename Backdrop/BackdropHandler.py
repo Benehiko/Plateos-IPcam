@@ -99,7 +99,12 @@ class BackdropHandler:
                 t_cleanup = Thread(target=self.cleanup_cache,
                                    args=(self.c_cache, self.c_meta, self.c_tmp, self.c_upload,))
                 t_cleanup.start()
+
+                # Clean Gui Images
+                t_gui = Thread(target=FrameHandler.clean)
+                t_gui.start()
                 t_cleanup.join()
+                t_gui.join()
                 old_time = datetime.now()
 
             if timedelta(minutes=1) < diff3:
@@ -326,29 +331,30 @@ class BackdropHandler:
             cv.notify_all()
 
     def meta_queue_handler(self, cv: Condition, meta_time):
-        prev_time = meta_time.get_nowait()
-        now = datetime.now()
-        if prev_time is not None:
-            diff = now - prev_time
-            with cv:
-                out = []
-                while not self.meta_queue.empty():
-                    val = self.meta_queue.get_nowait()
-                    if val is not None:
-                        if diff > timedelta(minutes=3):
-                            out += val
-
-                if len(out):
-                    CacheHandler.save_meta("meta", now.strftime('%Y-%m-%d %H:%M'), out)
-                if diff > timedelta(minutes=3):
-                    now = datetime.now()
-                    meta_time.put(now)
-                else:
-                    meta_time.put(prev_time)
-                cv.notify_all()
-        else:
+        while not meta_time.empty():
+            prev_time = meta_time.get_nowait()
             now = datetime.now()
-            meta_time.put(now)
+            if prev_time is not None:
+                diff = now - prev_time
+                with cv:
+                    out = []
+                    while not self.meta_queue.empty():
+                        val = self.meta_queue.get_nowait()
+                        if val is not None:
+                            if diff > timedelta(minutes=3):
+                                out += val
+
+                    if len(out):
+                        CacheHandler.save_meta("meta", now.strftime('%Y-%m-%d %H:%M'), out)
+                    if diff > timedelta(minutes=3):
+                        now = datetime.now()
+                        meta_time.put(now)
+                    else:
+                        meta_time.put(prev_time)
+                    cv.notify_all()
+            else:
+                now = datetime.now()
+                meta_time.put(now)
 
     def cache_queue_handler(self, cv: Condition):
         with cv:
