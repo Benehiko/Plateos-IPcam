@@ -10,6 +10,15 @@ from cvlib.CvEnums import CvEnums
 
 class CvHelper:
 
+    # TODO: Add type mapping and return types to methods with correct descriptions
+
+    @staticmethod
+    def getTrackbarPos(property, trackbarname, default=0.1, increment_val=0.1):
+        value = cv2.getTrackbarPos(property, trackbarname) * increment_val
+        if value < 1:
+            value = default
+        return value
+
     @staticmethod
     def convert_scale_abs(mat):
         return cv2.convertScaleAbs(mat)
@@ -27,7 +36,7 @@ class CvHelper:
         return cv2.addWeighted(src1=mat, alpha=alpha, src2=mat2, beta=beta, gamma=gamma)
 
     @staticmethod
-    def erode(mat, kernel_shape=CvEnums.K_ELLIPSE, kernel_size=5, iterations=1):
+    def erode(mat, kernel_shape=CvEnums.K_ELLIPSE, kernel_size=(5, 5), iterations=1):
         """
         https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_morphological_ops/py_morphological_ops.html
         It erodes away the boundaries of foreground object (Always try to keep foreground in white)
@@ -37,12 +46,14 @@ class CvHelper:
         :param mat: greyscale image
         :return: eroded image
         """
-        kernel = cv2.getStructuringElement(kernel_shape.value, kernel_size)
+        # kernel = cv2.getStructuringElement(kernel_shape.value, kernel_size)
+        kernel = np.ones(kernel_size, np.uint8)
         erosion = cv2.erode(mat, kernel, iterations=iterations)
         return erosion
 
     @staticmethod
-    def morph(mat, gradient_type=CvEnums.MORPH_GRADIENT, kernel_shape=CvEnums.K_ELLIPSE, kernel_size=(5, 5), iterations=1):
+    def morph(mat, gradient_type=CvEnums.MORPH_GRADIENT, kernel_shape=CvEnums.K_ELLIPSE, kernel_size=(5, 5),
+              iterations=1):
         """
         Morphological transformations are some simple operations based on the image shape. It is normally performed
         on binarise images. It needs two inputs, one is our original image, second one is called structuring element or
@@ -94,7 +105,7 @@ class CvHelper:
         return cv2.threshold(mat, thresh, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]  # 1
 
     @staticmethod
-    def dilate(mat, kernel_shape=CvEnums.K_RECTANGLE, kernel_size=5, iterations=1):
+    def dilate(mat, kernel_shape=CvEnums.K_RECTANGLE, kernel_size=(5, 5), iterations=1):
         """
         It is just opposite of erosion. Here, a pixel element is ‘1’ if atleast one pixel under the kernel is ‘1’. So
         it increases the white region in the image or size of foreground object increases. Normally, in cases like
@@ -107,8 +118,8 @@ class CvHelper:
         :param iterations:
         :return:
         """
-        kernel = cv2.getStructuringElement(kernel_shape.value, (kernel_size, kernel_size))
-        # kernel = np.ones((kernel_size, kernel_size), np.uint8)
+        # kernel = cv2.getStructuringElement(shape=kernel_shape.value, ksize=kernel_size)
+        kernel = np.ones(kernel_size, np.uint8)
         dilate = cv2.dilate(mat, kernel, iterations=iterations)
         return dilate
 
@@ -122,8 +133,8 @@ class CvHelper:
 
         """
         sobelx = cv2.Sobel(mat, cv2.CV_8U, 1, 0, ksize=kernel_size)
-        #abs_mat = np.absolute(sobely)
-        return sobelx #np.uint8(abs_mat)
+        abs_mat = np.absolute(sobelx)
+        return abs_mat  # np.uint8(abs_mat)
 
     @staticmethod
     def laplacian(mat, kernel_size=11):
@@ -196,8 +207,8 @@ class CvHelper:
         blur = CvHelper.blur(mat_grey, kernel_size=3)
         upper_threshold = lower_threshold * ratio
         edges = cv2.Canny(blur, lower_threshold, upper_threshold)
-        #mask = edges != 0
-        #dst = mat_src * (mask[:, :, None].astype(mat_src.dtype))
+        # mask = edges != 0
+        # dst = mat_src * (mask[:, :, None].astype(mat_src.dtype))
         return edges
 
     @staticmethod
@@ -255,11 +266,9 @@ class CvHelper:
         kernel = (kernel_size, kernel_size)
         return cv2.blur(mat, kernel)
 
-
     @staticmethod
     def median_blur(mat, kernel_size=5):
         return cv2.medianBlur(mat, kernel_size)
-
 
     @staticmethod
     def resize(mat, new_width=None, new_height=None, interpolation=CvEnums.MAT_INTER_AREA):
@@ -308,6 +317,15 @@ class CvHelper:
         return cv2.cvtColor(mat, cv2.COLOR_BGR2RGB)
 
     @staticmethod
+    def gray2rgb(mat):
+        """
+        Convert Gray to RGB
+        :param mat:
+        :return:
+        """
+        return cv2.cvtColor(mat, cv2.COLOR_GRAY2RGB)
+
+    @staticmethod
     def inverse(mat):
         """
         Inverses the colour scheme of a greyscale or binary image
@@ -342,12 +360,11 @@ class CvHelper:
         :return: None
         """
 
-        if any(size) is not None:
+        if None not in size:
             width, height = size
             mat = CvHelper.resize(mat, new_width=width, new_height=height)
         cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
         cv2.imshow(window_name, mat)
-
 
     @staticmethod
     def destroy_window(window_name):
@@ -424,7 +441,7 @@ class CvHelper:
     @staticmethod
     def write_mat(mat, path, filename):
         pathlib.Path(path).mkdir(parents=False, exist_ok=True)
-        cv2.imwrite(path+filename, mat)
+        cv2.imwrite(path + filename, mat)
 
     @staticmethod
     def create_background_subtractor_knn(frame_amount, threshold, detect_shadows=True):
@@ -438,7 +455,8 @@ class CvHelper:
         return cv2.createBackgroundSubtractorKNN(frame_amount, threshold, detect_shadows)
 
     @staticmethod
-    def copy_make_border(mat, sides=(0, 0, 0, 0), border_type=CvEnums.BORDER_CONSTANT, border_colour=CvEnums.COLOUR_WHITE):
+    def copy_make_border(mat, sides=(0, 0, 0, 0), border_type=CvEnums.BORDER_CONSTANT,
+                         border_colour=CvEnums.COLOUR_WHITE):
         """
         https://docs.opencv.org/3.1.0/d3/df2/tutorial_py_basic_ops.html If you want to create a border around the
         image, something like a photo frame, you can use cv2.copyMakeBorder() function. But it has more applications
@@ -450,7 +468,8 @@ class CvHelper:
         :return:
         """
         top, bottom, left, right = sides
-        return cv2.copyMakeBorder(src=mat, top=top, bottom=bottom, left=left, right=right, borderType=border_type.value, value=border_colour.value)
+        return cv2.copyMakeBorder(src=mat, top=top, bottom=bottom, left=left, right=right, borderType=border_type.value,
+                                  value=border_colour.value)
 
     @staticmethod
     def box_points(rectangles):
@@ -517,8 +536,8 @@ class CvHelper:
         y = math.ceil(y)
         w = math.ceil(w)
         h = math.ceil(h)
-        size = (x+w, y+h)
-        center = (x+ (w/2), y+(h/2))
+        size = (x + w, y + h)
+        center = (x + (w / 2), y + (h / 2))
         return cv2.getRectSubPix(mat, patchSize=size, center=center)
 
     @staticmethod

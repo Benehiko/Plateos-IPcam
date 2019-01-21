@@ -1,0 +1,344 @@
+# Codes used:
+# c: placeholder for province code position
+# a: compulsory letter (A-Z)
+# b: letter (A-Z) or nothing
+# x: compulsory character (A-Z) or (0-9)
+# z: character (A-Z, 0-9) or nothing
+# n: numbers (0-9) or nothing
+# +: compulsory digit (0-9)
+# Capital Letters: literal standard characters
+# Private vehicles may not contain Vowls
+# Format:
+# Country:
+#    Province:
+#       standard: [entry1, entry2,...] *Note for standard numberplates
+#       custom: [entry1, entry2,...] *Note for custom numberplates | can also be left empty []
+#       code: [code1, code2] *Note add ! infront or behind char to indicate position, ? for any position
+#       eg. !GP (infront), GP! (Behind), GP? (anywhere)
+
+Country:
+  South Africa:
+    Gauteng:
+      standard: ['aaa+++c', 'aa++aac']
+      custom: ['xzzzzzc']
+      code: ['GP!']
+    Limpopo:
+      standard: ['aaa+++c']
+      custom: ['xxzzzzc']
+      code: ['L!']
+    Western Cape:
+      standard: ['c+nnnn']
+      custom: ['xzzzzzc']
+      code: ['!CA', '!CAB', '!CAC', '!CAD', '!CAE', '!CAF',
+             '!CAG', '!CAH', '!CAJ', '!CAL', '!CAM', '!CAN',
+             '!CAO', '!CAP','!CAR','!CAS', '!CAT', '!CAU',
+             '!CAV', '!CAW', '!CAY', '!CAZ', '!CB', '!CBA',
+             '!CBB', '!CBC', '!CBE', '!CBF', '!CBG', '!CBH',
+             '!CBJ', '!CBK', '!CBL', '!CBM', '!CBN', '!CBO',
+             '!CBP', '!CBR', '!CBS', '!CBT', '!CBU', '!CBV',
+             '!CBW', '!CBX', '!CBY', '!CBZ', '!CC', '!CCA',
+             '!CCB', '!CCC', '!CCD', '!CCE', '!CCF', '!CCG',
+             '!CCH', '!CCJ', '!CCK', '!CCL', '!CCM', '!CCN',
+             '!CCO', '!CCP', '!CCR', '!CCS', '!CCT', '!CCU',
+             '!CCW', '!CCX', '!CD', '!CDA', '!CDL', '!CDX',
+             '!CDZ', '!CE', '!CEA', '!CEB', '!CEC', '!CED',
+             '!CEE', '!CEF', '!CEG', '!CEH', '!CEJ', '!CEK',
+             '!CEL', '!CEM', '!CEN', '!CEO', '!CEP', '!CER',
+             '!CES', '!CET', '!CEU', '!CEV', '!CEW', '!CEX',
+             '!CEY', '!CEZ', '!CF', '!CFA', '!CFB', '!CFC',
+             '!CFD', '!CFG', '!CFH', '!CFK', '!CFM', '!CFO',
+             '!CFP', '!CFR', '!CFS', '!CG', '!CH', '!CJ', '!CK',
+             '!CL', '!CM', '!CN', '!CO', '!CR', '!CS', '!CT',
+             '!CU', '!CV', '!CW', '!CWB', '!CX', '!CY', '!CZ',
+             '!DK', '!DW', 'WP!']
+    KwaZulu-Natal:
+      standard: ['c+nnnn', '++nnnnc']
+      custom: ['xzzzzzc']
+      code: ['!KZN', '!NZ', '!NX', '!NW',
+             '!NV', '!NUZ', '!NUT', '!NUR',
+             '!NUM', '!NUL', '!NUF', '!NUD',
+             '!NUB', '!NU', '!NTU', '!NT',
+             '!NS', '!NRB', '!NR', '!NPS',
+             '!NPP', '!NPNC', '!NPN', '!NPC',
+             '!NPB', '!NPA', '!NP', '!NO',
+             '!NND', '!NN', '!NMR', '!NMG',
+             '!NMA', '!NM', '!NKU', '!NKR',
+             '!NKK', '!NKA', '!NK', '!NJ', '!NIX',
+             '!NIP', '!NIN', '!NIM', '!NHL',
+             '!NH', '!NGL', '!NF', '!NES',
+             '!NE', '!NDW', '!NDM', '!NDH',
+             '!NDE', '!NDC', 'ND?', '!NCX',
+             '!NCW', '!NCV', '!NCO', '!NC',
+             '!NBB', '!NBA', '!NB', '!NA', 'ZN!']
+    Mpumalanga:
+      standard: ['aaa+++c']
+      custom: ['xzzzzzc']
+      code: ['MP!']
+    Eastern Cape:
+      standard: ['aaa+++c']
+      custom: ['xzzzzzc']
+      code: ['EC!']
+    Northen Cape:
+      standard: ['aaa+++c']
+      custom: ['xzzzzzc']
+      code: ['NC!']
+    Free State:
+      standard: ['aaa+++c']
+      custom: ['xzzzzzc']
+      code: ['FS!']
+    North West:
+      standard: ['aaa+++c']
+      custom: ['xzzzzzc']
+      code: ['NW!']
+    South African Diplomatic:
+      standard: ['+++c+++D', 'cBBB+++D']
+      custom: []
+      code: ['D?', 'S?']
+    South African Government:
+      standard: ['caa+++c']
+      custom: []
+      code: ['G?']
+    South African Police:
+      standard: ['caa+++c']
+      custom: []
+      code: ['B?']
+    South African Military:
+      standard: ['aaa+++c']
+      custom: []
+      code: ['M!']
+  Namibia:
+    Windhoek:
+      standard: ['N++++++c']
+      custom: []
+      code: ['W!']
+    Aranos:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['AR!']
+    Bethnanie:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['B!']
+    Eenhana:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['EN!']
+    Grootfontein:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['G!']
+    Cobabis:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['GO!']
+    Keetmanshoop:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['K!']
+    Karasburg:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['KA!']
+    Khorixas:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['KH!']
+    Katima Mulilo:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['KM!']
+    Karibib:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['KR!']
+    Luderitz:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['L!']
+    Mariental:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['M!']
+    Maltahohe:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['MA!']
+    Ondangwa:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['ND!']
+    Okahandja:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['OH!']
+    Outjo:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['OJ!']
+    Okakarara:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['OK!']
+    Omaruru:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['OM!']
+    Otjinene:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['ON!']
+    Opuwo:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['OP!']
+    Oranjemund:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['OR!']
+    Otjiwarongo:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['OT!']
+    Otavi:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['OV!']
+    Rehoboth:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['R!']
+    Ruacana:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['RC!']
+    Rundu:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['RU!']
+    Swakopmund:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['S!']
+    Oshakati:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['SH!']
+    Tsumeb:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['T!']
+    Usakos:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['U!']
+    Outapi:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['UP!']
+    Walvis Bay:
+      standard: ['N+++nnnc']
+      custom: []
+      code: ['WB!']
+    Namibian Vanity:
+      standard: ['xzzzzzzc']
+      custom: []
+      code: ['NA!']
+    Namibian Government:
+      standard: ['cxnnnnn']
+      custom: []
+      code: ['!GRN']
+    Namibian Police:
+      standard: ['cxnnnnn']
+      custom: []
+      code: ['!POL']
+    Namibian Diplomatic:
+      standard: ['+++c++N']
+      custom: []
+      code: ['CD?']
+    Namibian Military:
+      standard: ['cxnnnnn']
+      custom: []
+      code: ['!NDF']
+  Lesotho:
+    Maserru:
+      standard: ['c++++']
+      custom: []
+      code: ['!A']
+    Butha Buthe:
+      standard: ['c++++']
+      custom: []
+      code: ['!B']
+    Leribe:
+      standard: ['c++++']
+      custom: []
+      code: ['!C']
+    Berea:
+      standard: ['c++++']
+      custom: []
+      code: ['!D']
+    Mafetang:
+      standard: ['c++++']
+      custom: []
+      code: ['!E']
+    Mohales Hoek:
+      standard: ['c++++']
+      custom: []
+      code: ['!F']
+    Quthing:
+      standard: ['c++++']
+      custom: []
+      code: ['!G']
+    Qachas Nek:
+      standard: ['c++++']
+      custom: []
+      code: ['!G']
+    Mokhotlong:
+      standard: ['c++++']
+      custom: []
+      code: ['!J']
+    Thaba Tseka:
+      standard: ['c++++']
+      custom: []
+      code: ['!K']
+    Lesotho Government:
+      standard: ['c++++']
+      custom: []
+      code: ['!W','!X','!Y','!Z']
+  Swaziland:
+    Swaziland:
+      standard: ['ac+++aa']
+      custom: []
+      code: ['SD?']
+    Hhohho:
+      standard: ['aSD+++ac']
+      custom: []
+      code: ['H!']
+    Lubombo:
+      standard: ['aSD+++ac']
+      custom: []
+      code: ['L!']
+    Manzini:
+      standard: ['aSD+++ac']
+      custom: []
+      code: ['M!']
+    Shiselweni:
+      standard: ['aSD+++ac']
+      custom: []
+      code: ['S!']
+    Swaziland Diplomatic:
+      standard: ['aSDc+++']
+      custom: []
+      code: ['CD?']
+    Swaziland Police:
+      standard: ['aSD+++c']
+      custom: []
+      code: ['PO!']
+    Swaziland Government:
+      standard: ['aSD+++c']
+      custom: []
+      code: ['PR!']
+Confidence:
+  standard: 0.3
+  custom: 0.1
+  min-deviation: 0.25
+  code-char-value: 0.05
