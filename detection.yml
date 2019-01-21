@@ -1,37 +1,37 @@
 char:
   area:
-    max: 11.64
-    min: 0.69
+    max: 50
+    min: 0.01
   height:
     max: 100
-    min: 10.74
+    min: 0.01
   morph:
     max: 2
     min: 2
   width:
-    max: 37.35
-    min: 0.69
+    max: 100
+    min: 0.01
 preprocessing:
-  canny:
-    max: 255
-    min: 0
+  erode:
+    max: 2
+    min: 2
   mask:
     lower: 1
-    upper: 124
+    upper: 122
   morph:
     height: 2
-    width: 9
+    width: 1
   otsu: 0
 shape:
   angle:
-    max: 49
-    min: 0
+    max: 163
+    min: 11
   area:
-    max: 100
-    min: 0.01
+    max: 3.4
+    min: 0.52
   height:
-    max: 39.05
-    min: 8.33
+    max: 67.07
+    min: 1.03
   width:
-    max: 68.94
-    min: 15.97
+    max: 66.89
+    min: 1.37
