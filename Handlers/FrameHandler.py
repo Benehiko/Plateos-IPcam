@@ -34,7 +34,7 @@ class FrameHandler:
     @staticmethod
     def get_base64(mat):
         if mat is not None:
-            compress = ImageUtil.compress(mat, max_w=1080, quality=80)
+            compress = ImageUtil.compress(mat, max_w=480, quality=80)
             retval, buffer = cv2.imencode('.jpg', compress)
             b64 = base64.standard_b64encode(buffer)
             return b64.decode('utf-8')
