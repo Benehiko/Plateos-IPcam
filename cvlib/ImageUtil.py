@@ -1,5 +1,7 @@
 import math
+from datetime import datetime
 from multiprocessing import Queue
+from time import sleep
 
 import cv2
 import numpy as np
@@ -35,19 +37,23 @@ class ImageUtil:
         k = (int(settings["char"]["morph"]["min"]),
              int(settings["char"]["morph"]["max"]))
         d = data[0].copy()
+
+
+        morph = CvHelper.morph(d, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_RECTANGLE,
+                               kernel_size=k, iterations=2)
+        diff = CvHelper.subtract(morph, d)
+        #diff = CvHelper.inverse(diff)
         # row, col = d.shape[:2]
         # bottom = d[row - 2:row, 0:col]
         # mean = cv2.mean(bottom)[0]
         #
         # bordersize = 10
-        # border = cv2.copyMakeBorder(d, top=bordersize, bottom=bordersize, left=bordersize, right=bordersize,
+        # border = cv2.copyMakeBorder(diff, top=bordersize, bottom=bordersize, left=bordersize, right=bordersize,
         #                             borderType=cv2.BORDER_CONSTANT, value=[mean, mean, mean])
-
-        morph = CvHelper.morph(d, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_RECTANGLE,
-                               kernel_size=k, iterations=4)
-        #diff = CvHelper.subtract(morph, d)
-        diff = CvHelper.inverse(morph)
-        return diff, data[1]
+        now = datetime.now().strftime("%Y-%m-%d %H:%m:%s.%f")
+        # CvHelper.write_mat(diff, "../plateos-files/images/", now+".jpg")
+        sleep(0.2)
+        return d, data[1]
 
     """
     Too Experimental for now
