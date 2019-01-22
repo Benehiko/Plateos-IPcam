@@ -181,7 +181,7 @@ class ContourHandler:
         if maximum >= angle >= minimum:  # angle > -30 or angle < -100 or angle < -150:
             box = cv2.boxPoints(rect)
             box = np.int0(box)
-            # if ContourHandler.correct_ratio(rect):
+            #if ContourHandler.correct_ratio(rect):
             ((x, y), __, __) = rect
             x = int(x)
             y = int(y)
