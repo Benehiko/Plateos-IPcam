@@ -68,9 +68,8 @@ class BackdropHandler:
     def start(self, queue, cv_q):
         self.camera_queue = queue
         self.cv_q = cv_q
-        old_time = datetime.now()
-        old_time2 = datetime.now()
-        old_time3 = datetime.now()
+
+        event_time = event_time2 = event_time3 = event_time4 = datetime.now()
 
         while True:
             t_tmp = Thread(target=self.tmp_queue_handler, args=(self.c_tmp,))
@@ -80,8 +79,6 @@ class BackdropHandler:
             t_meta.start()
             t_cache.start()
 
-            active = self.active
-
             # print("Current Active cameras", active)
             t_camera = ThreadWithReturnValue(target=self.scanner.scan,
                                              args=(PropertyHandler.app_settings["camera"]["iprange"],))
@@ -90,39 +87,44 @@ class BackdropHandler:
             # Use timedelta
             """Time delta to run certain checks periodically"""
             now = datetime.now()
-            diff = now - old_time
-            diff2 = now - old_time2
-            diff3 = now - old_time3
+            diff = now - event_time
+            diff2 = now - event_time2
+            diff3 = now - event_time3
+            diff4 = now - event_time4
 
             if timedelta(seconds=10) < diff:
                 self.check_alive()
-                t_cleanup = Thread(target=self.cleanup_cache,
-                                   args=(self.c_cache, self.c_meta, self.c_tmp, self.c_upload,))
-                t_cleanup.start()
-
                 # Clean Gui Images
                 t_gui = Thread(target=FrameHandler.clean)
                 t_gui.start()
-                t_cleanup.join()
+                found_camera = t_camera.join()
+                if len(found_camera) > 0:
+                    for x in found_camera:
+                        self.add(x)
                 t_gui.join()
-                old_time = datetime.now()
+                event_time = datetime.now()
 
-            if timedelta(minutes=1) < diff3:
-                Thread(target=self.ping_location).start()
-                old_time3 = datetime.now()
+            if timedelta(minutes=1) < diff2:
+                ping_thread = Thread(target=self.ping_location)
+                tmp_cleanup = Thread(target=self.cleanup_temp, args=(self.c_tmp,))
+                ping_thread.start()
+                tmp_cleanup.start()
+                ping_thread.join()
+                tmp_cleanup.join()
+                event_time2 = datetime.now()
 
-            if timedelta(minutes=10) < diff2:
+            if timedelta(minutes=10) < diff3:
                 t_offline = Thread(target=self.offline_check)
                 t_offline.start()
                 t_offline.join()
-                old_time2 = datetime.now()
+                event_time3 = datetime.now()
 
-            found_camera = t_camera.join()
-            active_ip = [x[0] for x in active]
-            if len(found_camera) > 0:
-                for x in found_camera:
-                    if x not in active_ip:
-                        self.add(x)
+            if timedelta(hours=20) < diff4:
+                t_cleanup = Thread(target=self.cleanup_cache,
+                                   args=(self.c_cache, self.c_meta, self.c_upload,))
+                t_cleanup.start()
+                t_cleanup.join()
+                event_time4 = datetime.now()
 
             t_tmp.join()
             t_meta.join()
@@ -135,14 +137,13 @@ class BackdropHandler:
 
     def add(self, ip):
         try:
-            tmp = Camera(ip=ip, tess=self.tess, cv_q=self.cv_q)
+
             for x in self.cameras:
                 if ip == x.get_ip():
                     return
 
+            tmp = Camera(ip=ip, tess=self.tess, cv_q=self.cv_q)
             self.cameras.add(tmp)
-            # self.camera_queue.put(tmp)
-            # FrameHandler.add_obj(self.camera_queue)
             p = Process(target=tmp.start, args=(self.tmp_queue, self.meta_queue))
             self.active.add((ip, p))
             p.start()
@@ -199,13 +200,8 @@ class BackdropHandler:
             try:
                 if process[1].is_alive() is False:
                     self.active.discard(process)
-                    # FrameHandler.get_all(self.camera_queue)
-                    # while not self.camera_queue.empty():
-                    #     obj = self.camera_queue.get_nowait()
-                    #     for x in obj:
-                    #         if x.get_ip() == process[0]:
-                    #             FrameHandler.remove(self.camera_queue.put(x))
-                    for x in self.cameras:
+                    shallow_cameras = self.cameras.copy()
+                    for x in shallow_cameras:
                         if x.get_ip() == process[0]:
                             self.cameras.discard(x)
                             break
@@ -222,11 +218,27 @@ class BackdropHandler:
             print(e)
             pass
 
+    def cleanup_temp(self, cv_tmp: Condition):
+        with cv_tmp:
+            try:
+                pathlib.Path("../plateos-files/tmp/").mkdir(parents=True, exist_ok=True)
+                files = CacheHandler.get_file_list("tmp")
+                if len(files) > 0:
+                    now = datetime.now()
+                    for x in files:
+                        diff = now - datetime.strptime(x, "%Y-%m-%d %H:%M")
+                        if timedelta(minutes=10) <= diff:
+                            CacheHandler.remove("tmp", x)
+            except Exception as e:
+                print("Error on Cleaning tmp", e)
+                pass
+            cv_tmp.notify_all()
+
     # noinspection PyMethodMayBeStatic
-    def cleanup_cache(self, cv_cache: Condition, cv_meta: Condition, cv_tmp: Condition, cv_upload: Condition):
+    def cleanup_cache(self, cv_cache: Condition, cv_meta: Condition, cv_upload: Condition):
         with cv_cache:
             try:
-                pathlib.Path("cache/").mkdir(parents=True, exist_ok=True)
+                pathlib.Path("../plateos-files/cache/").mkdir(parents=True, exist_ok=True)
                 files = CacheHandler.get_file_list("cache")
                 if len(files) > 0:
                     for x in files:
@@ -242,7 +254,7 @@ class BackdropHandler:
 
         with cv_meta:
             try:
-                pathlib.Path("meta/").mkdir(parents=True, exist_ok=True)
+                pathlib.Path("../plateos-files/meta/").mkdir(parents=True, exist_ok=True)
                 files = CacheHandler.get_file_list("meta")
                 if len(files) > 0:
                     now = datetime.now()
@@ -256,24 +268,9 @@ class BackdropHandler:
                 pass
             cv_meta.notify_all()
 
-        with cv_tmp:
-            try:
-                pathlib.Path("tmp/").mkdir(parents=True, exist_ok=True)
-                files = CacheHandler.get_file_list("tmp")
-                if len(files) > 0:
-                    now = datetime.now()
-                    for x in files:
-                        diff = now - datetime.strptime(x, "%Y-%m-%d %H:%M")
-                        if timedelta(minutes=8) <= diff:
-                            CacheHandler.remove("tmp", x)
-            except Exception as e:
-                print("Error on Cleaning tmp", e)
-                pass
-            cv_tmp.notify_all()
-
         with cv_upload:
             try:
-                pathlib.Path("uploaded/").mkdir(parents=True, exist_ok=True)
+                pathlib.Path("../plateos-files/uploaded/").mkdir(parents=True, exist_ok=True)
                 files = CacheHandler.get_file_list("uploaded")
                 if len(files) > 0:
                     now = datetime.now()
@@ -289,8 +286,8 @@ class BackdropHandler:
     def offline_check(self):
         if Request.check_connectivity():
             try:
-                pathlib.Path("offline/").mkdir(parents=True, exist_ok=True)
-                files = [f.replace('.npz', '') for f in listdir("offline") if isfile(join("offline", f))]
+                pathlib.Path("../plateos-files/offline/").mkdir(parents=True, exist_ok=True)
+                files = [f.replace('.npz', '') for f in listdir("../plateos-files/offline") if isfile(join("../plateos-files/offline", f))]
                 if len(files) > 0:
                     for x in files:
                         tmp = CacheHandler.load("offline", x).tolist()
