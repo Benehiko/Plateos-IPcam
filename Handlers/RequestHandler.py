@@ -22,7 +22,7 @@ class Request:
 
             for x in data:
                 plate, province, confidence, date, deviceMac, image = x
-                if confidence < 0.6:
+                if confidence < 0.4:
                     tmp = ""
                 else:
                     image = Image.fromarray(image)
