@@ -49,10 +49,10 @@ let get_image = function () {
 $("#shape-height").ionRangeSlider({
     type: "double",
     min: 0.01,
-    max: 100,
+    max: 20,
     step: 0.01,
-    from: 0.01,
-    to: 100,
+    from: 1,
+    to: 10,
     grid: true,
     grid_snap: true,
     from_fixed: false,
@@ -70,10 +70,10 @@ $("#shape-height").ionRangeSlider({
 $("#shape-width").ionRangeSlider({
     type: "double",
     min: 0.01,
-    max: 100,
+    max: 20,
     step: 0.01,
-    from: 0.01,
-    to: 100,
+    from: 1,
+    to: 10,
     grid: true,
     grid_snap: true,
     from_fixed: false,
@@ -91,10 +91,10 @@ $("#shape-width").ionRangeSlider({
 $("#shape-area").ionRangeSlider({
     type: "double",
     min: 0.01,
-    max: 100,
+    max: 10,
     step: 0.01,
     from: 0.01,
-    to: 100,
+    to: 1,
     grid: true,
     grid_snap: true,
     to_fixed: false,
@@ -331,4 +331,4 @@ $("#save-sliders").on("click", function (evt) {
     socket.emit("save");
 });
 
-setInterval(get_image, 2000);
+setInterval(get_image, 500);

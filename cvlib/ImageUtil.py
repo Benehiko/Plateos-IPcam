@@ -24,7 +24,7 @@ class ImageUtil:
         return decoded
 
     @staticmethod
-    async def process_for_tess(data, settings):
+    async def process_for_tess(data):
         """
         This seems to work the best.
         The Image also NEEDS to be inverted with a padding of at least 10px
@@ -34,26 +34,21 @@ class ImageUtil:
         :param settings: Morph Kernel Min and Max
         :return:
         """
-        k = (int(settings["char"]["morph"]["min"]),
-             int(settings["char"]["morph"]["max"]))
+
+        # Greyscale Deskewed Image
         d = data[0].copy()
 
+        # Rescale image
+        d = cv2.resize(d, None, fx=1.5, fy=1.5, interpolation=cv2.INTER_CUBIC)
 
-        morph = CvHelper.morph(d, gradient_type=CvEnums.MORPH_DILATE, kernel_shape=CvEnums.K_RECTANGLE,
-                               kernel_size=k, iterations=2)
-        diff = CvHelper.subtract(morph, d)
-        #diff = CvHelper.inverse(diff)
-        # row, col = d.shape[:2]
-        # bottom = d[row - 2:row, 0:col]
-        # mean = cv2.mean(bottom)[0]
-        #
-        # bordersize = 10
-        # border = cv2.copyMakeBorder(diff, top=bordersize, bottom=bordersize, left=bordersize, right=bordersize,
-        #                             borderType=cv2.BORDER_CONSTANT, value=[mean, mean, mean])
-        now = datetime.now().strftime("%Y-%m-%d %H:%m:%s.%f")
-        # CvHelper.write_mat(diff, "../plateos-files/images/", now+".jpg")
-        sleep(0.2)
-        return d, data[1]
+        # Remove some noise
+        dilate = CvHelper.dilate(d, kernel_size=(1, 1), iterations=1)
+        erode = CvHelper.erode(dilate, kernel_size=(1, 1), iterations=1)
+
+        # Apply thresholding
+        otsu = CvHelper.otsu_binary(erode, thresh=0)
+
+        return otsu, data[1]
 
     """
     Too Experimental for now
@@ -86,19 +81,20 @@ class ImageUtil:
     def process_for_shape_detection_bright_backlight(image, settings):
         try:
             values = settings["preprocessing"]
-            illum = ImageUtil.illumination_correction(image.copy())
+            illum = ImageUtil.illumination_correction(image.copy(), settings["preprocessing"]["mask"])
             mask_setup = settings["preprocessing"]["mask"]
             lower = np.array(int(mask_setup["lower"]))
             upper = np.array(int(mask_setup["upper"]))
             img = CvHelper.greyscale(illum)
-            mask = cv2.inRange(img, lower, upper)
+            # mask = cv2.inRange(img, lower, upper)
             # blur = CvHelper.gaussian_blur(mask, kernel_size=3)
             # sobelx = CvHelper.sobel(mask, kernel_size=3)  # int(values["sobel"]["kernel"]))
-            otsu = CvHelper.otsu_binary(mask, int(values["otsu"]))
-            morph = CvHelper.morph(otsu, CvEnums.MORPH_CLOSE,
+            blur = CvHelper.bilateralFilter(img)
+            otsu = CvHelper.otsu_binary(blur, int(values["otsu"]))
+            morph = CvHelper.morph(otsu, CvEnums.MORPH_ERODE,
                                    kernel_size=(int(values["morph"]["width"]), int(values["morph"]["height"])),
-                                   kernel_shape=CvEnums.K_ELLIPSE,
-                                   iterations=2)
+                                   kernel_shape=CvEnums.K_RECTANGLE,
+                                   iterations=1)
 
             # erode = CvHelper.erode(morph, kernel_shape=CvEnums.K_ELLIPSE,
             #                        kernel_size=(int(values["erode"]["min"]), (int(values["erode"]["max"]))),
@@ -239,7 +235,7 @@ class ImageUtil:
         # Grey Image -> Thresh
         greyscale = CvHelper.greyscale(potential_plate)
         deskew = ImageUtil.deskew(greyscale)
-        blur = CvHelper.gaussian_blur(deskew, kernel_size=5)
+        blur = CvHelper.gaussian_blur(deskew.copy(), kernel_size=5)
         thresh = CvHelper.otsu_binary(blur, 0)
 
         contours, __ = ContourHandler.find_contours(thresh.copy(), ret_mode=CvEnums.RETR_LIST,
@@ -251,7 +247,7 @@ class ImageUtil:
                                                             char_bounds=char_bounds, points=char_points)
             if 2 <= len(roi) <= 12:
                 drawn = CvHelper.draw_boxes(potential_plate, boxs, thickness=1, colour=CvEnums.COLOUR_GREEN)
-                return thresh, drawn, len(roi)
+                return deskew, drawn, len(roi)
 
         return None, None
 
@@ -275,8 +271,20 @@ class ImageUtil:
         return rotated_mat
 
     @staticmethod
-    def illumination_correction(mat):
-        lab = CvHelper.bgr2lab(mat)
+    def illumination_correction(mat, mask_vals):
+
+        lower = np.array(int(mask_vals["lower"]))
+        upper = np.array(int(mask_vals["upper"]))
+
+        hsv = cv2.cvtColor(mat, cv2.COLOR_BGR2HSV)
+        h, s, v = CvHelper.split(hsv)
+        lightval = np.average(v)
+        # print(lightval)
+        v = cv2.inRange(v, lower, upper)
+        # v = CvHelper.otsu_binary(mask, 0)
+        hsv = CvHelper.merge((h, s, v))
+        bgr = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+        lab = CvHelper.bgr2lab(bgr)
         l, a, b = CvHelper.split(lab)
         equ = CvHelper.equalise_hist(l, by_tile=True, tile_size=(3, 3))
         img = CvHelper.merge((equ, a, b))
