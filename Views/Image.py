@@ -30,7 +30,13 @@ class Image:
 
         while self.active:
             self.frame = img
-            result, self.frame, self.raw, chars = self.processHelper.analyse_frames(img.copy())
+            result, drawn, raw, chars = self.processHelper.analyse_frames(img.copy())
+
+            if drawn is not None:
+                self.frame = drawn
+
+            if raw is not None:
+                self.raw = raw
 
             if chars is not None:
                 self.char = chars
@@ -41,9 +47,7 @@ class Image:
                     t = ThreadWithReturnValue(target=self.tess.multi, args=(result,))
                     t.start()
                     self.data = t.join()
-            if self.raw is None:
-                print("raw null")
-                self.raw = np.random.random([100, 100])
+
             FrameHandler.add_obj([self.filename, np.hstack((self.frame, CvHelper.gray2rgb(self.raw)))])
 
     def set_active(self, val):

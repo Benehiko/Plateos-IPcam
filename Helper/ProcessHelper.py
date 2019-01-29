@@ -1,5 +1,4 @@
 import asyncio
-from multiprocessing import Queue
 
 import cv2
 
@@ -18,6 +17,9 @@ class ProcessHelper:
         self.propertyHandler = PropertyHandler()
 
     def analyse_frames(self, frame):
+        width, height, __ = frame.shape
+        frame = frame[0 + int(0.1 * height):-int(0.15 * height), :]
+
         if frame is not None:
             results, drawn, raw, chars = self.get_numberplate(frame)
             if results is not None:
@@ -82,7 +84,7 @@ class ProcessHelper:
                 if len(potential) > 0:
                     loop = asyncio.new_event_loop()
                     asyncio.set_event_loop(loop)
-                    pool = [asyncio.ensure_future(ImageUtil.process_for_tess(data=p, settings=settings), loop=loop)
+                    pool = [asyncio.ensure_future(ImageUtil.process_for_tess(data=p), loop=loop)
                             for
                             p in
                             potential]
