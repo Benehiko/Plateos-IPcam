@@ -40,30 +40,15 @@ class Camera:
         self.then = datetime.now()
         self.frame = np.zeros([100, 100, 3], dtype=np.uint8)
         self.frame.fill(255)
-        self.raw = np.random.random([100, 100])
+        self.raw = np.zeros([100, 100, 3], dtype=np.uint8)
         self.raw.fill(255)
         self.data = []
         self.framequeue = Queue()
 
     def start(self, q, q2):
         if self.mac == "":
-            for i in range(0, 5):
-                if self.mac == "":
-                    if i < 5:
-                        self.mac = self.get_mac()
-                    else:
-                        return
-                else:
-                    break
-        if self.alias or self.model == "":
-            for i in range(0, 5):
-                if self.alias or self.model == "":
-                    if i < 5:
-                        self.alias, self.model = self.get_info()
-                    else:
-                        return
-                else:
-                    break
+            return
+
         print("Starting Camera:\nIP:", self.ip, "MAC:", self.mac, "Model", self.model)
         while True:
             try:
@@ -74,7 +59,14 @@ class Camera:
                     img = cv2.imdecode(npy, -1)
                     if img is not None:
                         self.frame = img
-                        result, self.frame, self.raw, __ = self.processHelper.analyse_frames(img)
+                        result, drawn, raw, __ = self.processHelper.analyse_frames(img)
+
+                        if drawn is not None:
+                            self.frame = drawn
+
+                        if raw is not None:
+                            self.raw = raw
+
                         if result is not None:
                             if len(result) > 0:
                                 t = ThreadWithReturnValue(target=self.tess.multi, args=(result,))
@@ -87,17 +79,9 @@ class Camera:
                                         q.put(tmp)
                                     if len(meta) > 0:
                                         q2.put(meta)
-                    if self.raw is None:
-                        print("raw null")
-                        self.raw = np.random.random([100, 100])
-                    # plate_pics = None
-                    # for x in self.data:
-                    #     if "results" in x:
-                    #         for y in x["results"]:
-                    #             if plate_pics is not None:
-                    #                 plate_pics = np.hstack((plate_pics, y["image"]))
-                    #             else:
-                    #                 plate_pics = y["image"]
+
+                    if self.model == "" or self.alias == "":
+                        self.model, self.alias = self.get_info()
 
                     FrameHandler.add_obj([self.ip, np.hstack((self.frame, CvHelper.gray2rgb(self.raw)))])
             except Exception as e:

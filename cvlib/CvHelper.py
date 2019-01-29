@@ -36,7 +36,7 @@ class CvHelper:
         return cv2.addWeighted(src1=mat, alpha=alpha, src2=mat2, beta=beta, gamma=gamma)
 
     @staticmethod
-    def erode(mat, kernel_shape=CvEnums.K_ELLIPSE, kernel_size=(5, 5), iterations=1):
+    def erode(mat, kernel_size=(5, 5), iterations=1):
         """
         https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_morphological_ops/py_morphological_ops.html
         It erodes away the boundaries of foreground object (Always try to keep foreground in white)
@@ -105,7 +105,7 @@ class CvHelper:
         return cv2.threshold(mat, thresh, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]  # 1
 
     @staticmethod
-    def dilate(mat, kernel_shape=CvEnums.K_RECTANGLE, kernel_size=(5, 5), iterations=1):
+    def dilate(mat, kernel_size=(5, 5), iterations=1):
         """
         It is just opposite of erosion. Here, a pixel element is ‘1’ if atleast one pixel under the kernel is ‘1’. So
         it increases the white region in the image or size of foreground object increases. Normally, in cases like
@@ -168,13 +168,15 @@ class CvHelper:
         return cv2.calcHist([mat], [0], None, [256], [0, 256])
 
     @staticmethod
-    def adaptive_thresholding(mat, max_val=255, thresh_type=CvEnums.THRESH_GAUSSIAN, block_size=11, C=2):
+    def adaptive_thresholding(mat, max_val=255, thresh_type=CvEnums.THRESH_GAUSSIAN, thresh_type2=CvEnums.THRESH_INV,
+                              block_size=11, C=2):
         """
         In the previous section, we used a global value as threshold value. But it may not be good in all the
         conditions where image has different lighting conditions in different areas. In that case, we go for adaptive
         thresholding. In this, the algorithm calculate the threshold for a small regions of the image. So we get
         different thresholds for different regions of the same image and it gives us better results for images with
         varying illumination.
+        :param thresh_type2: THREASH_BINARY OR THRESH_BINARY_INV
         :param C:
         :param block_size:
         :param max_val:
@@ -182,7 +184,7 @@ class CvHelper:
         :param thresh_type: CvEnums THRESH_GAUSSIAN or THRESH_MEAN
         :return:
         """
-        t = cv2.adaptiveThreshold(mat, max_val, thresh_type.value, cv2.THRESH_BINARY_INV, block_size, C)
+        t = cv2.adaptiveThreshold(mat, max_val, thresh_type.value, thresh_type2.value, block_size, C)
         return t
 
     @staticmethod

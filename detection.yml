@@ -4,34 +4,34 @@ char:
     min: 0.1
   height:
     max: 100
-    min: 24.3
+    min: 0.1
   morph:
     max: 9
-    min: 2
+    min: 1
   width:
-    max: 53.4
-    min: 0.01
+    max: 100
+    min: 0.1
 preprocessing:
   erode:
     max: 255
     min: 0
   mask:
-    lower: 1
-    upper: 102
+    lower: 60
+    upper: 239
   morph:
-    height: 2
-    width: 2
-  otsu: 0
+    height: 4
+    width: 6
+  otsu: 130
 shape:
   angle:
-    max: 116
-    min: 51
+    max: 111
+    min: 60
   area:
-    max: 1.13
-    min: 0.02
+    max: 1.2
+    min: 0.03
   height:
-    max: 8.61
-    min: 0.65
+    max: 18.28
+    min: 0.51
   width:
-    max: 8.47
-    min: 0.69
+    max: 17.55
+    min: 0.55
