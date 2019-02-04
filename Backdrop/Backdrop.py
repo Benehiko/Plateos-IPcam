@@ -10,11 +10,12 @@ class Backdrop:
     def __init__(self):
         self.obj_queue = Queue()
         self.cv_queue = Queue()
+        self.frames_queue = Queue()
         self.backdrophandler = BackdropHandler()
 
     def start(self):
         while True:
-            p = Process(target=self.backdrophandler.start, args=(self.obj_queue, self.cv_queue))
+            p = Process(target=self.backdrophandler.start, args=(self.obj_queue, self.cv_queue, self.frames_queue))
             p.start()
             p2 = Process(target=server.start, args=(self.obj_queue, self.cv_queue))
             p2.start()

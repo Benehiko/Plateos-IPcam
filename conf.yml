@@ -19,3 +19,12 @@ restful:
 device:
   alias: MBTLynnwood
   interface: enp2s0
+rates:
+  location-update: 60
+  temp-keep: 480
+  meta-keep: 1728000
+  cache-keep: 7776000
+  uploaded-keep: 172800
+  meta-rate: 180
+processing:
+  max-workers: 16
