@@ -36,7 +36,19 @@ class PropertyHandler:
         "device": {
             "alias": "",
             "interface": ""
+        },
+        "rates": {
+            "location-update": 60,
+            "temp-keep": 480,
+            "meta-keep": 1728000,
+            "cache-keep": 7776000,
+            "uploaded-keep": 172800,
+            "meta-rate": 180
+        },
+        "processing": {
+            "max-workers": 4
         }
+
     }
 
     cv_settings = {
@@ -78,10 +90,18 @@ class PropertyHandler:
             # Restful API Settings
             restful = configs.get("restful")
 
+            # Rates Settings
+            rates = configs.get("rates")
+
+            # Processing Settings
+            processing = configs.get("processing")
+
             PropertyHandler.app_settings = {
                 "camera": camera,
                 "device": device,
-                "restful": restful
+                "restful": restful,
+                "rates": rates,
+                "processing": processing
             }
         except Exception as e:
             print(e)

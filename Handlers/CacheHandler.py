@@ -62,7 +62,7 @@ class CacheHandler:
             fi = pathlib.Path(CacheHandler.base + "cache/" + filename + ".npz")
 
             if fi.exists():
-                cached = CacheHandler.load(CacheHandler.base + "cache", filename)
+                cached = CacheHandler.load("cache", filename)
                 if cached is not None:
                     cached = cached.tolist()
                     for c in cached:
@@ -186,6 +186,6 @@ class CacheHandler:
     @staticmethod
     def get_file_list(directory: str) -> list:
         pathlib.Path(CacheHandler.base + directory + "/").mkdir(parents=True, exist_ok=True)
-        files = [f.replace('.npz', '') for f in listdir(CacheHandler.base + directory) if
+        files = [f.replace('.npz', '') for f in listdir(CacheHandler.base + directory + "/") if
                  isfile(join(CacheHandler.base + directory, f))]
         return files
