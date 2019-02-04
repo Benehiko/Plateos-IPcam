@@ -1,4 +1,5 @@
 import base64
+from datetime import datetime, timedelta
 from io import BytesIO
 from multiprocessing import Queue
 from threading import Thread
@@ -64,5 +65,13 @@ class FrameHandler:
 
     @staticmethod
     def clean():
-        while not FrameHandler.queues.empty():
-            FrameHandler.queues.get()
+        t = datetime.now()
+        while True:
+            if timedelta(seconds=10) < (datetime.now() - t):
+                try:
+                    while not FrameHandler.queues.empty():
+                        print("Cleaning Frames...")
+                        FrameHandler.queues.get_nowait()
+                except Exception as e:
+                    pass
+                t = datetime.now()

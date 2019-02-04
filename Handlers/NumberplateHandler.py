@@ -281,8 +281,9 @@ class NumberplateHandler:
         count = 0
         cached_plates = []
         try:
-            pathlib.Path("cache").mkdir(parents=True, exist_ok=True)
-            files = [f.replace('.npz', '') for f in listdir("cache") if isfile(join("cache", f))]
+            pathlib.Path("../plateos-files/cache/").mkdir(parents=True, exist_ok=True)
+            files = [f.replace('.npz', '') for f in listdir("../plateos-files/cache/") if
+                     isfile(join("../plateos-files/cache", f))]
             for filename in files:
                 data = CacheHandler.loadByPlate("cache", filename, plate)
                 cached_plates += data
@@ -316,7 +317,7 @@ class NumberplateHandler:
         return ""
 
     @staticmethod
-    def remove_duplicates(data: list)->list or None:
+    def remove_duplicates(data: list) -> list or None:
         """
         Remove all the duplicates.
         Returns list without duplicates with increased confidence.

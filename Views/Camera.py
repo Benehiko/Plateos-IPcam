@@ -3,33 +3,25 @@ import random
 import string
 from datetime import datetime
 from multiprocessing import Queue
+from time import sleep
 from urllib.request import urlopen
 
 import cv2
 import numpy as np
 
-from Handlers.FrameHandler import FrameHandler
 from Handlers.PropertyHandler import PropertyHandler
 from Handlers.RequestHandler import Request
-from Handlers.ThreadHandler import ThreadWithReturnValue
-from Helper.ProcessHelper import ProcessHelper
-from cvlib.CvHelper import CvHelper
 from cvlib.ImageUtil import ImageUtil
 
 
 class Camera:
 
-    # TODO: Add type mapping and return types to methods with correct descriptions
-
-    def __init__(self, ip, tess, cv_q):
+    def __init__(self, ip):
         self.randomcmd = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
-
-        self.tess = tess
         self.ip = ip
         self.rest = PropertyHandler.app_settings["camera"]["restful"]
         self.username = PropertyHandler.app_settings["camera"]["username"]
         self.password = PropertyHandler.app_settings["camera"]["password"]
-        self.processHelper = ProcessHelper(cv_q)
         self.mac = self.get_mac()
         self.alias, self.model = self.get_info()
         self.url = "http://" + ip + self.rest["base"] + "cmd=" + self.rest["snap"]["cmd"] + "&channel=" + str(
@@ -45,7 +37,7 @@ class Camera:
         self.data = []
         self.framequeue = Queue()
 
-    def start(self, q, q2):
+    def start(self, q_frames):
         if self.mac == "":
             return
 
@@ -58,32 +50,10 @@ class Camera:
                     npy = np.array(b, dtype=np.uint8)
                     img = cv2.imdecode(npy, -1)
                     if img is not None:
-                        self.frame = img
-                        result, drawn, raw, __ = self.processHelper.analyse_frames(img)
-
-                        if drawn is not None:
-                            self.frame = drawn
-
-                        if raw is not None:
-                            self.raw = raw
-
-                        if result is not None:
-                            if len(result) > 0:
-                                t = ThreadWithReturnValue(target=self.tess.multi, args=(result,))
-                                t.start()
-                                tmp = t.join()
-                                if tmp is not None:
-                                    tmp, meta = self.handle_data(tmp, img)
-                                    self.data = tmp
-                                    if len(tmp) > 0:
-                                        q.put(tmp)
-                                    if len(meta) > 0:
-                                        q2.put(meta)
-
-                    if self.model == "" or self.alias == "":
-                        self.model, self.alias = self.get_info()
-
-                    FrameHandler.add_obj([self.ip, np.hstack((self.frame, CvHelper.gray2rgb(self.raw)))])
+                        if self.model == "" or self.alias == "":
+                            self.model, self.alias = self.get_info()
+                        q_frames.put({"mac": self.mac, "ip": self.ip, "image": img})
+                sleep(1)
             except Exception as e:
                 print("Camera", self.get_camera_data()["alias"], self.get_camera_data()["ip"], "Died", "\nReason:", e)
                 break
