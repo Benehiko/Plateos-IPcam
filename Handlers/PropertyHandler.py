@@ -96,6 +96,7 @@ class PropertyHandler:
             # Processing Settings
             processing = configs.get("processing")
 
+
             PropertyHandler.app_settings = {
                 "camera": camera,
                 "device": device,

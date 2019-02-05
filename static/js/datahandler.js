@@ -331,4 +331,4 @@ $("#save-sliders").on("click", function (evt) {
     socket.emit("save");
 });
 
-setInterval(get_image, 500);
+setInterval(get_image, 2000);

@@ -7,10 +7,10 @@ class CameraScan:
     # TODO: Add type mapping and return types to methods with correct descriptions
 
     def __init__(self):
-        self.valid = []
+        self.valid = set()
 
     def scan(self, iprange):
-        self.valid = []
+        self.valid = set()
 
         data = iprange.split("-")
         start = data[0]
@@ -48,7 +48,7 @@ class CameraScan:
         # noinspection PyBroadException
         try:
             TCPsock.connect((ip, port_number))
-            self.valid.append(ip)
+            self.valid.add(ip)
         except:
             pass
 
