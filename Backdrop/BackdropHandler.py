@@ -162,11 +162,11 @@ class BackdropHandler:
         try:
 
             for x in cameras:
-                if ip == x.get_ip():
+                if ip == x[0]:
                     return False
 
             tmp = Camera(ip=ip)
-            cameras.add(tmp)
+            cameras.add((ip, tmp))
             p = Process(target=tmp.start, args=(self.frames_q,))
             active.add((ip, p))
             p.start()
@@ -236,7 +236,7 @@ class BackdropHandler:
                         self.active.discard(process)
                         shallow_cameras = self.cameras.copy()
                         for x in shallow_cameras:
-                            if x.get_ip() == process[0]:
+                            if x[0] == process[0]:
                                 self.cameras.discard(x)
                                 break
                 except Exception as e:
@@ -385,7 +385,7 @@ class BackdropHandler:
                         url = "http://" + self.url + self.addlocation
                         data = []
                         for x in self.cameras:
-                            data.append(x.get_camera_data())
+                            data.append(x[1].get_camera_data())
                         Request.ping_location(self.interface, url, self.alias, data)
                 except Exception as e:
                     print("Ping Location Error", e)
