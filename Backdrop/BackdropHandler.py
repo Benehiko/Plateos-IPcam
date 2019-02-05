@@ -232,7 +232,7 @@ class BackdropHandler:
             except Exception as e:
                 print(e)
                 pass
-            sleep(10)
+            sleep(0.2)
 
     def check_alive(self):
         """
@@ -412,17 +412,22 @@ class BackdropHandler:
         :return:
         """
         while True:
-            with cv:
-                print("Saving Temp...")
-                out = []
-                while not tmp_queue.empty():
-                    val = tmp_queue.get_nowait()
-                    if val is not None:
-                        out += val
-                if len(out) > 0:
-                    now = datetime.now().strftime('%Y-%m-%d %H:%M')
-                    CacheHandler.save_tmp("tmp", now, out)
+            try:
+                with cv:
+                    out = []
+                    while not tmp_queue.empty():
+                        val = tmp_queue.get_nowait()
+                        if val is not None:
+                            out += val
+                    if len(out) > 0:
+                        print("Saving Temp...")
+                        now = datetime.now().strftime('%Y-%m-%d %H:%M')
+                        CacheHandler.save_tmp("tmp", now, out)
+            except Exception as e:
+                pass
+            else:
                 cv.notify_all()
+                sleep(0.2)
 
     def meta_queue_handler(self, cv: Condition, meta_time):
         """

@@ -67,10 +67,9 @@ class FrameHandler:
     def clean():
         t = datetime.now()
         while True:
-            if timedelta(seconds=10) < (datetime.now() - t):
+            if timedelta(seconds=2) < (datetime.now() - t):
                 try:
                     while not FrameHandler.queues.empty():
-                        print("Cleaning Frames...")
                         FrameHandler.queues.get_nowait()
                 except Exception as e:
                     pass
