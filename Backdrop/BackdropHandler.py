@@ -198,6 +198,7 @@ class BackdropHandler:
                 with cv_tmp:
                     temp_list = CachedNumberplateHandler.combine_tmp_data()
                     if temp_list is not None:
+                        print("Building Confidence...")
                         refined_temp = CachedNumberplateHandler.improve_confidence(temp_list)
                         if refined_temp is not None:
                             in_cache, out_cache = CachedNumberplateHandler.compare_to_cached(refined_temp)
@@ -420,6 +421,7 @@ class BackdropHandler:
                     now = datetime.now().strftime('%Y-%m-%d %H:%M')
                     CacheHandler.save_tmp("tmp", now, out)
                 cv.notify_all()
+            sleep(10)
 
     def meta_queue_handler(self, cv: Condition, meta_time):
         """
@@ -453,6 +455,7 @@ class BackdropHandler:
                 else:
                     now = datetime.now()
                     meta_time.put(now)
+            sleep(10)
 
     def cache_queue_handler(self, cv: Condition):
         """
@@ -471,6 +474,7 @@ class BackdropHandler:
                     now = datetime.now().strftime('%Y-%m-%d %H')
                     CacheHandler.save_cache("cache", now, out)
                 cv.notify_all()
+            sleep(10)
 
     def process_frames(self, tmp_q, meta_q, frames_q):
         process = ProcessHelper(self.cv_q)
@@ -487,6 +491,7 @@ class BackdropHandler:
             # Val contains {"mac": mac, "ip": ip, "image": img}
             # Camera_data is list of Val
             if len(camera_data) > 0:
+                print("Processing Batched Frames...")
                 with ThreadPoolExecutor(max_workers=int(self.processing["max-workers"])) as executor:
                     futures = {executor.submit(process.analyse_frames, data["image"]): data for data in camera_data}
                     for future in concurrent.futures.as_completed(futures):
@@ -509,7 +514,7 @@ class BackdropHandler:
                                     allowed = [x for x in tmp if 3 <= x["char-len"] <= 8]
                                     if len(allowed) > 0:
                                         time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                                        t_image = ImageUtil.compress(og_img, max_w=1080, quality=100)
+                                        t_image = ImageUtil.compress(og_img, max_w=1080, quality=60)
                                         meta.append(
                                             {"camera": mac, "time": time, "original": t_image, "results": allowed})
 
