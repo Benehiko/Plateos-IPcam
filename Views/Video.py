@@ -1,4 +1,5 @@
 from threading import Thread
+from time import sleep
 
 import cv2
 import numpy as np
@@ -10,7 +11,8 @@ from tess.tesseract import Tess
 class Video:
 
     def __init__(self, filename):
-        self.path = filename
+        self.base = "/mnt/data/SoftwareDevelopment/GitHub/plateos-files/videos/"
+        self.path = self.base + filename
         self.filename = ""
         self.set_name(filename)
         self.active = True
@@ -18,12 +20,11 @@ class Video:
         self.frame.fill(255)
         self.raw = np.zeros([100, 100, 3], dtype=np.uint8)
         self.raw.fill(255)
-        self.processHelper = ProcessHelper()
         self.char = []
         self.char_raw = []
         self.tess = Tess()
 
-    def start(self):
+    def start(self, q_frames):
 
         while True:
 
@@ -35,25 +36,8 @@ class Video:
 
                 ret, frame = cap.read()
                 if ret:
-                    result, drawn, raw, chars = self.processHelper.analyse_frames(frame.copy())
-                    if raw is not None:
-                        self.raw = raw
-
-                    if drawn is not None:
-                        self.frame = drawn
-                    else:
-                        self.frame = frame
-
-                    if chars is not None:
-                        self.char = chars
-
-                    if result is not None:
-                        if len(result) > 0:
-                            self.char_raw = result
-                            t = Thread(self.tess.multi(result))
-                            t.start()
-                            t.join()
-
+                    q_frames.put({"mac": self.filename, "ip": self.filename, "image": frame})
+                sleep(1)
             cap.release()
 
     def set_active(self, val):
@@ -77,3 +61,9 @@ class Video:
 
     def get_char_raw(self):
         return self.char_raw
+
+    def get_camera_data(self):
+        return dict([('mac', self.filename), ('alias', 'VideoFeed'), ('ip', self.filename), ('model', 'V1')])
+
+    def get_info(self):
+        return 'VideoFeed', 'V1'
