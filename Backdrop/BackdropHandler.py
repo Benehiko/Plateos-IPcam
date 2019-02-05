@@ -423,11 +423,10 @@ class BackdropHandler:
                         print("Saving Temp...")
                         now = datetime.now().strftime('%Y-%m-%d %H:%M')
                         CacheHandler.save_tmp("tmp", now, out)
+                    cv.notify_all()
             except Exception as e:
                 pass
-            else:
-                cv.notify_all()
-                sleep(0.2)
+            sleep(0.2)
 
     def meta_queue_handler(self, cv: Condition, meta_time):
         """
