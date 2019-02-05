@@ -81,7 +81,7 @@ class BackdropHandler:
         self.cv_q = cv_q
         self.frames_q = frames_q
 
-        scan_helper = Thread(target=self.scan_helper)
+        scan_helper = Thread(target=self.scan_helper, args=(self.cameras, self.active,))
         scan_helper.start()
 
         process_frames = Process(target=self.process_frames, args=(self.tmp_queue, self.meta_queue, self.frames_q))
@@ -131,7 +131,7 @@ class BackdropHandler:
         scan_helper.join()
         process_frames.join()
 
-    def scan_helper(self):
+    def scan_helper(self, cameras, active):
         """
         Scan cameras on the network
 
@@ -144,10 +144,20 @@ class BackdropHandler:
                                                  args=(PropertyHandler.app_settings["camera"]["iprange"],))
                 t_camera.start()
                 found_camera = t_camera.join()
+                non_active = set()
                 if len(found_camera) > 0:
+                    tmp_cameras = [x[0] for x in cameras]
                     for x in found_camera:
-                        self.add(x, self.cameras, self.active)
+                        if x not in tmp_cameras:
+                            non_active.add(x)
 
+                    if len(non_active) > 0:
+                        for x in non_active:
+                            tmp = Camera(ip=x)
+                            cameras.add((x, tmp))
+                            p = Process(target=tmp.start, args=(self.frames_q,))
+                            active.add((x, p))
+                            p.start()
                 t = datetime.now()
 
     def add(self, ip, cameras, active):
@@ -161,14 +171,14 @@ class BackdropHandler:
         """
         try:
 
-            for x in cameras:
+            for x in self.cameras:
                 if ip == x[0]:
                     return False
 
             tmp = Camera(ip=ip)
-            cameras.add((ip, tmp))
+            self.cameras.add((ip, tmp))
             p = Process(target=tmp.start, args=(self.frames_q,))
-            active.add((ip, p))
+            self.active.add((ip, p))
             p.start()
         except Exception as e:
             print(e)
@@ -270,7 +280,7 @@ class BackdropHandler:
                 print("Cleaning up temp...")
                 with cv_tmp:
                     try:
-                        #pathlib.Path("../plateos-files/tmp/").mkdir(parents=True, exist_ok=True)
+                        # pathlib.Path("../plateos-files/tmp/").mkdir(parents=True, exist_ok=True)
                         files = CacheHandler.get_file_list("tmp")
                         if len(files) > 0:
                             now = datetime.now()
@@ -300,7 +310,7 @@ class BackdropHandler:
                 print("Cleaning up cache...")
                 with cv_cache:
                     try:
-                        #pathlib.Path("../plateos-files/cache/").mkdir(parents=True, exist_ok=True)
+                        # pathlib.Path("../plateos-files/cache/").mkdir(parents=True, exist_ok=True)
                         files = CacheHandler.get_file_list("cache")
                         if len(files) > 0:
                             for x in files:
@@ -316,7 +326,7 @@ class BackdropHandler:
 
                 with cv_meta:
                     try:
-                        #pathlib.Path("../plateos-files/meta/").mkdir(parents=True, exist_ok=True)
+                        # pathlib.Path("../plateos-files/meta/").mkdir(parents=True, exist_ok=True)
                         files = CacheHandler.get_file_list("meta")
                         if len(files) > 0:
                             now = datetime.now()
@@ -332,7 +342,7 @@ class BackdropHandler:
 
                 with cv_upload:
                     try:
-                        #pathlib.Path("../plateos-files/uploaded/").mkdir(parents=True, exist_ok=True)
+                        # pathlib.Path("../plateos-files/uploaded/").mkdir(parents=True, exist_ok=True)
                         files = CacheHandler.get_file_list("uploaded")
                         if len(files) > 0:
                             now = datetime.now()
