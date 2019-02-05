@@ -2,6 +2,7 @@ import copy
 import json
 import os
 import pathlib
+import time
 from os import listdir
 from os.path import isfile, join
 from pathlib import Path
@@ -26,6 +27,8 @@ class CacheHandler:
         try:
             pathlib.Path(CacheHandler.base + directory + "/").mkdir(parents=True, exist_ok=True)
             fi = pathlib.Path(CacheHandler.base + directory + "/" + filename + ".npz")
+            pathlib.Path(CacheHandler.base + directory + "/images/").mkdir(parents=True, exist_ok=True)
+            fi2 = pathlib.Path(CacheHandler.base + directory + "/images/" + filename + ".npz")
 
             # The file exists so lets append
             if fi.exists():
@@ -45,6 +48,19 @@ class CacheHandler:
             else:
                 out = np.array(arr)
                 np.savez_compressed(CacheHandler.base + directory + "/" + filename, a=out)
+
+            if fi2.exists():
+                cached = CacheHandler.load(CacheHandler.base + directory + "/images", filename)
+                if cached is not None:
+                    res, dup = CompareData.compare_list_tuples(arr, copy.deepcopy(cached.tolist()))
+                    # Non-dups gets added to the file
+                    if len(res) > 0:
+                        rest = np.array(res)
+                        out = np.concatenate((cached, rest))
+                        np.savez_compressed(CacheHandler.base + directory + "/images/" + filename, a=out)
+            else:
+                out = np.array(arr)
+                np.savez_compressed(CacheHandler.base + directory + "/images/" + filename, a=out)
 
             # Return the result even though it might be empty.
             return result
@@ -86,10 +102,13 @@ class CacheHandler:
         if fi.exists():
             try:
                 arr = np.load(CacheHandler.base + directory + "/" + filename + ".npz")["a"]
-                return arr
+                # return arr
             except Exception as e:
                 print("Error on loading array", e)
-                pass
+                CacheHandler.remove(directory, filename)
+            else:
+                return arr
+
         return None
 
     @staticmethod
@@ -137,7 +156,7 @@ class CacheHandler:
             pass
 
     @staticmethod
-    def save_tmp(directory: str, filename: str, arr: list):
+    def save_upload(directory: str, filename: str, arr: list):
         try:
             if len(arr) > 0:
                 pathlib.Path(CacheHandler.base + directory + "/").mkdir(parents=True, exist_ok=True)
@@ -152,6 +171,45 @@ class CacheHandler:
                 else:
                     out = np.array(arr)
                     np.savez_compressed(CacheHandler.base + directory + "/" + filename, a=out)
+        except Exception as e:
+            print("Error saving upload data", e)
+
+    @staticmethod
+    def save_tmp(directory: str, filename: str, arr: list):
+        try:
+            if len(arr) > 0:
+                pathlib.Path(CacheHandler.base + directory + "/").mkdir(parents=True, exist_ok=True)
+                fi = pathlib.Path(CacheHandler.base + directory + "/" + filename + ".npz")
+                pathlib.Path(CacheHandler.base + directory + "/images/").mkdir(parents=True, exist_ok=True)
+                fi2 = pathlib.Path(CacheHandler.base + directory + "/images" + filename + ".npz")
+                only_text = []
+                for y in arr:
+                    camera = y["camera"]
+                    results = [{"plate": x["plate"], "country": x["country"], "province": x["province"],
+                                "confidence": x["confidence"],
+                                "time": x["time"], "char-len": x["char-len"]} for x in y["results"]]
+                    only_text.append({"camera": camera, "results": results})
+                if fi.exists():
+                    # Load in the existing cache data
+                    cached = CacheHandler.load(CacheHandler.base + directory, filename)
+                    if cached is not None:
+                        out = np.array(only_text)
+                        out = np.concatenate((cached, out))
+                        np.savez_compressed(CacheHandler.base + directory + "/" + filename, a=out)
+                else:
+                    out = np.array(only_text)
+                    np.savez_compressed(CacheHandler.base + directory + "/" + filename, a=out)
+
+                if fi2.exists():
+                    cached = CacheHandler.load(CacheHandler.base + directory + "/images", filename)
+                    if cached is not None:
+                        out = np.array(arr)
+                        out = np.concatenate((cached, out))
+                        np.savez_compressed(CacheHandler.base + directory + "/images/" + filename, a=out)
+                else:
+                    out = np.array(arr)
+                    np.savez_compressed(CacheHandler.base + directory + "/images/" + filename, a=out)
+
         except Exception as e:
             print("Error saving temp", e)
             pass
