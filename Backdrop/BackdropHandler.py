@@ -17,6 +17,7 @@ from Handlers.CachedNumberplateHandler import CachedNumberplateHandler
 from Handlers.PropertyHandler import PropertyHandler
 from Handlers.RequestHandler import Request
 from Handlers.ThreadHandler import ThreadWithReturnValue
+from Views.Video import Video
 from cvlib.ImageUtil import ImageUtil
 from tess.tesseract import Tess
 
@@ -24,6 +25,7 @@ from tess.tesseract import Tess
 class BackdropHandler:
 
     # TODO: Add type mapping and return types to methods with correct descriptions
+    # TODO: Resource handling of Temp (saving and restoring) isn't fast enough. Tmp loses out on saving data a lot.
 
     def __init__(self):
         # Scanner
@@ -143,6 +145,7 @@ class BackdropHandler:
                                              args=(PropertyHandler.app_settings["camera"]["iprange"],))
             t_camera.start()
             found_camera = t_camera.join()
+
             non_active = set()
             if len(found_camera) > 0:
                 tmp_cameras = [x[0] for x in self.cameras]
@@ -152,7 +155,7 @@ class BackdropHandler:
 
                 if len(non_active) > 0:
                     for x in non_active:
-                        tmp = Camera(ip=x)
+                        tmp = Camera(x)
                         self.cameras.add((x, tmp))
                         p = Process(target=tmp.start, args=(self.frames_q,))
                         self.active.add((x, p))
@@ -196,9 +199,9 @@ class BackdropHandler:
         while True:
             try:
                 with cv_tmp:
+                    cv_tmp.wait()
                     temp_list = CachedNumberplateHandler.combine_tmp_data()
                     if temp_list is not None:
-                        print("Building Confidence...")
                         refined_temp = CachedNumberplateHandler.improve_confidence(temp_list)
                         if refined_temp is not None:
                             in_cache, out_cache = CachedNumberplateHandler.compare_to_cached(refined_temp)
@@ -228,7 +231,7 @@ class BackdropHandler:
                                     cv_upload.notify_all()
                                 cv_cache.notify_all()
 
-                    cv_tmp.notify_all()
+                    # cv_tmp.notify_all()
             except Exception as e:
                 print(e)
                 pass
@@ -278,24 +281,25 @@ class BackdropHandler:
         """
         t = datetime.now()
         while True:
-            if timedelta(minutes=1) < (datetime.now() - t):
-                print("Cleaning up temp...")
-                with cv_tmp:
-                    try:
-                        # pathlib.Path("../plateos-files/tmp/").mkdir(parents=True, exist_ok=True)
-                        files = CacheHandler.get_file_list("tmp")
-                        if len(files) > 0:
-                            now = datetime.now()
-                            for x in files:
-                                diff = now - datetime.strptime(x, "%Y-%m-%d %H:%M")
-                                if timedelta(seconds=int(self.rates["temp-keep"])) <= diff:
-                                    CacheHandler.remove("tmp", x)
-                    except Exception as e:
-                        print("Error on Cleaning tmp", e)
-                        pass
-                    cv_tmp.notify_all()
-                t = datetime.now()
-            # sleep(60)
+            # if timedelta(minutes=1) < (datetime.now() - t):
+            print("Cleaning up temp...")
+            with cv_tmp:
+                cv_tmp.wait()
+                try:
+                    # pathlib.Path("../plateos-files/tmp/").mkdir(parents=True, exist_ok=True)
+                    files = CacheHandler.get_file_list("tmp")
+                    if len(files) > 0:
+                        now = datetime.now()
+                        for x in files:
+                            diff = now - datetime.strptime(x, "%Y-%m-%d %H:%M")
+                            if timedelta(seconds=int(self.rates["temp-keep"])) <= diff:
+                                CacheHandler.remove("tmp", x)
+                except Exception as e:
+                    print("Error on Cleaning tmp", e)
+                    pass
+                    # cv_tmp.notify_all()
+                # t = datetime.now()
+            sleep(180)
 
     # noinspection PyMethodMayBeStatic
     def cleanup_saved_files(self, cv_cache: Condition, cv_meta: Condition, cv_upload: Condition):
@@ -377,8 +381,9 @@ class BackdropHandler:
                             for x in files:
                                 tmp = CacheHandler.load("offline", x).tolist()
                                 if tmp is not None:
-                                    upload_tuple = CachedNumberplateHandler.convert_dict_to_tuple(tmp)
-                                    if Request.post(self.interface, upload_tuple, self.url):
+                                    # upload_tuple = CachedNumberplateHandler.convert_dict_to_tuple(tmp)
+                                    print("Attempting to Upload Offline...")
+                                    if Request.post(self.interface, tmp, self.url):
                                         CacheHandler.remove("offline", x)
                     except Exception as e:
                         print("Offline Check", e)
@@ -426,7 +431,7 @@ class BackdropHandler:
                     cv.notify_all()
             except Exception as e:
                 pass
-            sleep(0.2)
+            # sleep(0.2)
 
     def meta_queue_handler(self, cv: Condition, meta_time):
         """
@@ -442,6 +447,7 @@ class BackdropHandler:
                 if prev_time is not None:
                     diff = now - prev_time
                     with cv:
+                        cv.wait()
                         out = []
                         while not self.meta_queue.empty():
                             val = self.meta_queue.get_nowait()
@@ -496,7 +502,6 @@ class BackdropHandler:
             # Val contains {"mac": mac, "ip": ip, "image": img}
             # Camera_data is list of Val
             if len(camera_data) > 0:
-                print("Processing Batched Frames...")
                 with ThreadPoolExecutor(max_workers=int(self.processing["max-workers"])) as executor:
                     futures = {executor.submit(process.analyse_frames, data["image"]): data for data in camera_data}
                     for future in concurrent.futures.as_completed(futures):
