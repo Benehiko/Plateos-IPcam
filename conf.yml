@@ -21,11 +21,11 @@ device:
   alias: Device1
   interface: enp2s0
 rates:
-  location-update: 60
-  temp-keep: 480
+  location-update: 300
+  temp-keep: 1800
   meta-keep: 1728000
   cache-keep: 7776000
   uploaded-keep: 172800
   meta-rate: 180
 processing:
-  max-workers: 16
+  max-workers: 2
