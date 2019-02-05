@@ -209,6 +209,7 @@ class BackdropHandler:
                                 if len(in_cache) > 0:
                                     CacheHandler.update_plate_cache(datetime.now().strftime(
                                         "%Y-%m-%d %H"), in_cache)
+                                    cv_cache.notify_all()
                                 upload_list = in_cache + out_cache
                                 with cv_upload:
                                     if len(upload_list) > 0:
@@ -229,7 +230,7 @@ class BackdropHandler:
 
                                                 self.cache_queue.put(upload_dict)
                                     cv_upload.notify_all()
-                                cv_cache.notify_all()
+                                #cv_cache.notify_all()
 
                     # cv_tmp.notify_all()
             except Exception as e:
@@ -313,9 +314,10 @@ class BackdropHandler:
         """
         t = datetime.now()
         while True:
-            if timedelta(minutes=1) < (datetime.now() - t):
+            if timedelta(hours=12) < (datetime.now() - t):
                 print("Cleaning up cache...")
                 with cv_cache:
+                    cv_cache.wait()
                     try:
                         # pathlib.Path("../plateos-files/cache/").mkdir(parents=True, exist_ok=True)
                         files = CacheHandler.get_file_list("cache")
@@ -329,7 +331,7 @@ class BackdropHandler:
                     except Exception as e:
                         print("Error on Cleaning Cache", e)
                         pass
-                    cv_cache.notify_all()
+                    # cv_cache.notify_all()
 
                 with cv_meta:
                     try:
@@ -348,6 +350,7 @@ class BackdropHandler:
                     cv_meta.notify_all()
 
                 with cv_upload:
+                    cv_upload.wait()
                     try:
                         # pathlib.Path("../plateos-files/uploaded/").mkdir(parents=True, exist_ok=True)
                         files = CacheHandler.get_file_list("uploaded")
@@ -360,7 +363,7 @@ class BackdropHandler:
                     except Exception as e:
                         print("Error on Cleaning upload", e)
                         pass
-                    cv_upload.notify_all()
+                    # cv_upload.notify_all()
                 t = datetime.now()
 
     def offline_check(self):
@@ -370,7 +373,7 @@ class BackdropHandler:
         """
         t = datetime.now()
         while True:
-            if timedelta(minutes=1) < (datetime.now() - t):
+            if timedelta(minutes=30) < (datetime.now() - t):
                 print("Checking offline cache...")
                 if Request.check_connectivity():
                     try:
@@ -447,7 +450,6 @@ class BackdropHandler:
                 if prev_time is not None:
                     diff = now - prev_time
                     with cv:
-                        cv.wait()
                         out = []
                         while not self.meta_queue.empty():
                             val = self.meta_queue.get_nowait()
@@ -466,7 +468,7 @@ class BackdropHandler:
                 else:
                     now = datetime.now()
                     meta_time.put(now)
-            sleep(0.2)
+            #sleep(0.2)
 
     def cache_queue_handler(self, cv: Condition):
         """
@@ -476,6 +478,7 @@ class BackdropHandler:
         """
         while True:
             with cv:
+                cv.wait()
                 out = []
                 while not self.cache_queue.empty():
                     val = self.cache_queue.get_nowait()
@@ -484,8 +487,8 @@ class BackdropHandler:
                 if len(out) > 0:
                     now = datetime.now().strftime('%Y-%m-%d %H')
                     CacheHandler.save_cache("cache", now, out)
-                cv.notify_all()
-            sleep(0.2)
+                #cv.notify_all()
+            #sleep(0.2)
 
     def process_frames(self, tmp_q, meta_q, frames_q):
         process = ProcessHelper(self.cv_q)
