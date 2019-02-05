@@ -231,6 +231,7 @@ class BackdropHandler:
             except Exception as e:
                 print(e)
                 pass
+            sleep(10)
 
     def check_alive(self):
         """
