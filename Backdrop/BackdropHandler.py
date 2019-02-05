@@ -6,6 +6,7 @@ from multiprocessing import Process, Queue, Condition
 from os import listdir
 from os.path import isfile, join
 from threading import Thread
+from time import sleep
 
 from Handlers.FrameHandler import FrameHandler
 from Helper.ProcessHelper import ProcessHelper
@@ -81,7 +82,7 @@ class BackdropHandler:
         self.cv_q = cv_q
         self.frames_q = frames_q
 
-        scan_helper = Thread(target=self.scan_helper, args=(self.cameras, self.active,))
+        scan_helper = Thread(target=self.scan_helper)
         scan_helper.start()
 
         process_frames = Process(target=self.process_frames, args=(self.tmp_queue, self.meta_queue, self.frames_q))
@@ -131,34 +132,32 @@ class BackdropHandler:
         scan_helper.join()
         process_frames.join()
 
-    def scan_helper(self, cameras, active):
+    def scan_helper(self):
         """
         Scan cameras on the network
 
         :return:
         """
-        t = datetime.now()
         while True:
-            if timedelta(seconds=10) < (datetime.now() - t):
-                t_camera = ThreadWithReturnValue(target=self.scanner.scan,
-                                                 args=(PropertyHandler.app_settings["camera"]["iprange"],))
-                t_camera.start()
-                found_camera = t_camera.join()
-                non_active = set()
-                if len(found_camera) > 0:
-                    tmp_cameras = [x[0] for x in cameras]
-                    for x in found_camera:
-                        if x not in tmp_cameras:
-                            non_active.add(x)
+            t_camera = ThreadWithReturnValue(target=self.scanner.scan,
+                                             args=(PropertyHandler.app_settings["camera"]["iprange"],))
+            t_camera.start()
+            found_camera = t_camera.join()
+            non_active = set()
+            if len(found_camera) > 0:
+                tmp_cameras = [x[0] for x in self.cameras]
+                for x in found_camera:
+                    if x not in tmp_cameras:
+                        non_active.add(x)
 
-                    if len(non_active) > 0:
-                        for x in non_active:
-                            tmp = Camera(ip=x)
-                            cameras.add((x, tmp))
-                            p = Process(target=tmp.start, args=(self.frames_q,))
-                            active.add((x, p))
-                            p.start()
-                t = datetime.now()
+                if len(non_active) > 0:
+                    for x in non_active:
+                        tmp = Camera(ip=x)
+                        self.cameras.add((x, tmp))
+                        p = Process(target=tmp.start, args=(self.frames_q,))
+                        self.active.add((x, p))
+                        p.start()
+            sleep(10)
 
     def add(self, ip, cameras, active):
         """
@@ -251,6 +250,7 @@ class BackdropHandler:
                                 break
                 except Exception as e:
                     print("Tried to remove process", e)
+            sleep(5)
 
     def upload_dataset(self, data):
         """
