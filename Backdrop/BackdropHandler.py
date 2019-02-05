@@ -104,7 +104,7 @@ class BackdropHandler:
         offline_check = Thread(target=self.offline_check)
         offline_check.start()
 
-        tmp_queue_handler = Thread(target=self.tmp_queue_handler, args=(self.c_tmp,))
+        tmp_queue_handler = Thread(target=self.tmp_queue_handler, args=(self.c_tmp, self.tmp_queue,))
         tmp_queue_handler.start()
 
         meta_queue_handler = Thread(target=self.meta_queue_handler, args=(self.c_meta, self.meta_time))
@@ -295,6 +295,7 @@ class BackdropHandler:
                         pass
                     cv_tmp.notify_all()
                 t = datetime.now()
+            # sleep(60)
 
     # noinspection PyMethodMayBeStatic
     def cleanup_saved_files(self, cv_cache: Condition, cv_meta: Condition, cv_upload: Condition):
@@ -404,7 +405,7 @@ class BackdropHandler:
                     pass
                 t = datetime.now()
 
-    def tmp_queue_handler(self, cv: Condition):
+    def tmp_queue_handler(self, cv: Condition, tmp_queue):
         """
         Temp data across threads/processes - save temp files (used to build confidence)
         :param cv:
@@ -412,16 +413,16 @@ class BackdropHandler:
         """
         while True:
             with cv:
+                print("Saving Temp...")
                 out = []
-                while not self.tmp_queue.empty():
-                    val = self.tmp_queue.get_nowait()
+                while not tmp_queue.empty():
+                    val = tmp_queue.get_nowait()
                     if val is not None:
                         out += val
                 if len(out) > 0:
                     now = datetime.now().strftime('%Y-%m-%d %H:%M')
                     CacheHandler.save_tmp("tmp", now, out)
                 cv.notify_all()
-            sleep(0.2)
 
     def meta_queue_handler(self, cv: Condition, meta_time):
         """
