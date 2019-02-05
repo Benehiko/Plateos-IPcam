@@ -421,7 +421,7 @@ class BackdropHandler:
                     now = datetime.now().strftime('%Y-%m-%d %H:%M')
                     CacheHandler.save_tmp("tmp", now, out)
                 cv.notify_all()
-            sleep(10)
+            sleep(0.2)
 
     def meta_queue_handler(self, cv: Condition, meta_time):
         """
@@ -455,7 +455,7 @@ class BackdropHandler:
                 else:
                     now = datetime.now()
                     meta_time.put(now)
-            sleep(10)
+            sleep(0.2)
 
     def cache_queue_handler(self, cv: Condition):
         """
@@ -474,7 +474,7 @@ class BackdropHandler:
                     now = datetime.now().strftime('%Y-%m-%d %H')
                     CacheHandler.save_cache("cache", now, out)
                 cv.notify_all()
-            sleep(10)
+            sleep(0.2)
 
     def process_frames(self, tmp_q, meta_q, frames_q):
         process = ProcessHelper(self.cv_q)
