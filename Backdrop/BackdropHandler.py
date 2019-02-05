@@ -142,11 +142,11 @@ class BackdropHandler:
         :return:
         """
         while True:
-            # t_camera = ThreadWithReturnValue(target=self.scanner.scan,
-            #                                  args=(PropertyHandler.app_settings["camera"]["iprange"],))
-            # t_camera.start()
-            # found_camera = t_camera.join()
-            found_camera = ["demo.mp4"]
+            t_camera = ThreadWithReturnValue(target=self.scanner.scan,
+                                             args=(PropertyHandler.app_settings["camera"]["iprange"],))
+            t_camera.start()
+            found_camera = t_camera.join()
+            #found_camera = ["demo.mp4"]
             non_active = set()
             if len(found_camera) > 0:
                 tmp_cameras = [x[0] for x in self.cameras]
@@ -156,7 +156,7 @@ class BackdropHandler:
 
                 if len(non_active) > 0:
                     for x in non_active:
-                        tmp = Video(x)  # Camera(x)
+                        tmp = Camera(x)
                         self.cameras.add((x, tmp))
                         p = Process(target=tmp.start, args=(self.frames_q,))
                         self.active.add((x, p))
@@ -302,6 +302,7 @@ class BackdropHandler:
                             diff = now - datetime.strptime(x, "%Y-%m-%d %H:%M")
                             if timedelta(seconds=int(self.rates["temp-keep"])) <= diff:
                                 CacheHandler.remove("tmp", x)
+                                CacheHandler.remove("tmp/images", x)
                 except Exception as e:
                     print("Error on Cleaning tmp", e)
                     pass
@@ -334,6 +335,7 @@ class BackdropHandler:
                                 diff = now - file_last_date
                                 if timedelta(seconds=int(self.rates["cache-keep"])) <= diff:
                                     CacheHandler.remove("cache", file_last_date.strftime("%Y-%m-%d %H"))
+                                    CacheHandler.remove("cache/images", file_last_date.strftime("%Y-%m-%d %H"))
                     except Exception as e:
                         print("Error on Cleaning Cache", e)
                         pass
