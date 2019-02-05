@@ -22,6 +22,7 @@ class Camera:
         self.rest = PropertyHandler.app_settings["camera"]["restful"]
         self.username = PropertyHandler.app_settings["camera"]["username"]
         self.password = PropertyHandler.app_settings["camera"]["password"]
+        self.seconds_per_frame = PropertyHandler.app_settings["camera"]["seconds-per-frame"]
         self.mac = self.get_mac()
         self.alias, self.model = self.get_info()
         self.url = "http://" + ip + self.rest["base"] + "cmd=" + self.rest["snap"]["cmd"] + "&channel=" + str(
@@ -53,7 +54,7 @@ class Camera:
                         if self.model == "" or self.alias == "":
                             self.model, self.alias = self.get_info()
                         q_frames.put({"mac": self.mac, "ip": self.ip, "image": img})
-                sleep(1)
+                sleep(self.seconds_per_frame)
             except Exception as e:
                 print("Camera", self.get_camera_data()["alias"], self.get_camera_data()["ip"], "Died", "\nReason:", e)
                 break

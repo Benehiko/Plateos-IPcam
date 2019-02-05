@@ -11,6 +11,7 @@ camera:
       cmd: GetLocalLink
     info:
       cmd: GetDevInfo
+  seconds-per-frame: 5
 restful:
   url: 127.0.0.1
   port: 8081
