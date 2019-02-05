@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="73461767-bf7c-4bbb-a949-6252378e84fd" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backdrop/BackdropHandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Backdrop/BackdropHandler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Handlers/CacheHandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Handlers/CacheHandler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Handlers/CachedNumberplateHandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Handlers/CachedNumberplateHandler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Handlers/NumberplateHandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Handlers/NumberplateHandler.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -24,7 +28,7 @@
     <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_9.coverage" NAME="scratch_9 Coverage Results" MODIFIED="1545321943877" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_19.coverage" NAME="scratch_19 Coverage Results" MODIFIED="1537098407071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_6.coverage" NAME="scratch_6 Coverage Results" MODIFIED="1545311372785" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
-    <SUITE FILE_PATH="coverage/Plateos_IPcam$run.coverage" NAME="run Coverage Results" MODIFIED="1549330124031" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Plateos_IPcam$run.coverage" NAME="run Coverage Results" MODIFIED="1549378045752" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Plateos_IPcam$scratch_13.coverage" NAME="scratch_13 Coverage Results" MODIFIED="1545489751927" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_10.coverage" NAME="scratch_10 Coverage Results" MODIFIED="1534996601711" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Plateos$scratch_16.coverage" NAME="scratch_16 Coverage Results" MODIFIED="1535942494166" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
@@ -86,14 +90,50 @@
     <window id="3">
       <content type="file-editors">
         <state>
-          <leaf>
-            <file pinned="false" current-in-tab="true">
+          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+            <file pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/Camera/CameraScan.py">
                 <provider selected="true" editor-type-id="text-editor">
                   <state relative-caret-position="415">
-                    <caret line="39" column="9" lean-forward="true" selection-start-line="39" selection-start-column="9" selection-end-line="39" selection-end-column="9" />
+                    <caret line="39" column="9" selection-start-line="39" selection-start-column="9" selection-end-line="39" selection-end-column="9" />
                     <folding>
                       <element signature="e#0#14#0" expanded="true" />
+                    </folding>
+                  </state>
+                </provider>
+              </entry>
+            </file>
+            <file pinned="false" current-in-tab="false">
+              <entry file="file://$PROJECT_DIR$/Views/Camera.py">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="1534">
+                    <caret line="82" column="68" selection-start-line="82" selection-start-column="68" selection-end-line="82" selection-end-column="68" />
+                    <folding>
+                      <element signature="e#0#11#0" expanded="true" />
+                    </folding>
+                  </state>
+                </provider>
+              </entry>
+            </file>
+            <file pinned="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/Handlers/CacheHandler.py">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="226">
+                    <caret line="114" column="8" selection-start-line="114" selection-start-column="8" selection-end-line="114" selection-end-column="8" />
+                    <folding>
+                      <element signature="e#0#11#0" expanded="true" />
+                    </folding>
+                  </state>
+                </provider>
+              </entry>
+            </file>
+            <file pinned="false" current-in-tab="false">
+              <entry file="file://$PROJECT_DIR$/Handlers/RequestHandler.py">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="264">
+                    <caret line="19" column="27" lean-forward="true" selection-start-line="19" selection-start-column="27" selection-end-line="19" selection-end-column="27" />
+                    <folding>
+                      <element signature="e#0#13#0" expanded="true" />
                     </folding>
                   </state>
                 </provider>
@@ -109,29 +149,53 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Backdrop/BackdropHandler.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="476">
-              <caret line="159" column="21" lean-forward="true" selection-start-line="159" selection-start-column="21" selection-end-line="159" selection-end-column="21" />
+            <state relative-caret-position="369">
+              <caret line="224" column="89" lean-forward="true" selection-start-line="224" selection-start-column="89" selection-end-line="224" selection-end-column="89" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
-                <element signature="e#5255#7798#0" />
-                <element signature="e#8046#8368#0" />
-                <element signature="e#12247#13397#0" />
-                <element signature="e#13438#14091#0" />
-                <element signature="e#14149#14577#0" />
-                <element signature="e#14647#15780#0" />
+                <element signature="e#5274#5786#0" />
+                <element signature="e#8848#9546#0" />
+                <element signature="e#10141#11240#0" />
+                <element signature="e#11288#14254#0" />
+                <element signature="e#14293#15560#0" />
+                <element signature="e#15601#16366#0" />
+                <element signature="e#16554#17305#0" />
+                <element signature="e#17173#18512#0" />
+                <element signature="e#19075#21680#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tess/tesseract.py">
+        <entry file="file://$PROJECT_DIR$/Backdrop/Backdrop.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="435">
-              <caret line="92" column="59" lean-forward="true" selection-start-line="92" selection-start-column="59" selection-end-line="92" selection-end-column="59" />
+            <state relative-caret-position="323">
+              <caret line="17" column="54" lean-forward="true" selection-start-line="17" selection-start-column="54" selection-end-line="17" selection-end-column="54" />
+              <folding>
+                <element signature="e#0#42#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Views/Video.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="212">
+              <caret line="39" column="17" selection-start-line="39" selection-start-column="17" selection-end-line="39" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Handlers/CachedNumberplateHandler.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="501">
+              <caret line="77" column="36" selection-start-line="77" selection-start-column="36" selection-end-line="77" selection-end-column="36" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -140,10 +204,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Views/Camera.py">
+        <entry file="file://$PROJECT_DIR$/Handlers/NumberplateHandler.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="836">
-              <caret line="56" column="44" selection-start-line="56" selection-start-column="44" selection-end-line="56" selection-end-column="44" />
+            <state relative-caret-position="216">
+              <caret line="296" column="17" lean-forward="true" selection-start-line="296" selection-start-column="17" selection-end-line="296" selection-end-column="17" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -152,64 +216,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Handlers/FrameHandler.py">
+        <entry file="file://$PROJECT_DIR$/Handlers/CompareData.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="525">
-              <caret line="73" column="56" selection-start-line="73" selection-start-column="56" selection-end-line="73" selection-end-column="56" />
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/static/js/datahandler.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="563">
-              <caret line="333" column="27" selection-start-line="333" selection-start-column="27" selection-end-line="333" selection-end-column="27" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Handlers/CachedNumberplateHandler.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="266">
-              <caret line="20" column="41" selection-start-line="20" selection-start-column="41" selection-end-line="20" selection-end-column="41" />
-              <folding>
-                <element signature="e#0#40#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Handlers/CacheHandler.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="487">
-              <caret line="187" column="55" selection-start-line="187" selection-start-column="55" selection-end-line="187" selection-end-column="55" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/conf.yml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="247">
-              <caret line="13" column="22" lean-forward="true" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Handlers/RequestHandler.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-41">
-              <caret line="9" column="8" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
+            <state relative-caret-position="190">
+              <caret line="12" column="8" selection-start-line="12" selection-start-column="8" selection-end-line="12" selection-end-column="8" />
             </state>
           </provider>
         </entry>
@@ -227,8 +237,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>b</find>
-      <find>GP</find>
       <find>self.cached</find>
       <find>Lesotho</find>
       <find>self.backdrop</find>
@@ -239,7 +247,6 @@
       <find>self.cache_queue</find>
       <find>print</find>
       <find>get_ip</find>
-      <find>self.tmp_queue</find>
       <find>Frame</find>
       <find>FrameHan</find>
       <find>camera_queue</find>
@@ -256,7 +263,10 @@
       <find>[&quot;char&quot;]</find>
       <find>self.cv_q</find>
       <find>pathlib</find>
+      <find>self.tmp_queue</find>
+      <find>c_tmp</find>
       <find>self.cameras</find>
+      <find>self.meta_queue</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$</dir>
@@ -268,7 +278,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_12.py" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_13.py" />
         <option value="$PROJECT_DIR$/TestValidate.py" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_14.py" />
@@ -289,7 +298,6 @@
         <option value="$PROJECT_DIR$/Handlers/CompareData.py" />
         <option value="$PROJECT_DIR$/Handlers/ThreadHandler.py" />
         <option value="$PROJECT_DIR$/Camera/Camera.py" />
-        <option value="$PROJECT_DIR$/Handlers/CachedNumberplateHandler.py" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_20.py" />
         <option value="$PROJECT_DIR$/templates/camera-view.html" />
         <option value="$PROJECT_DIR$/static/css/slider-css.css" />
@@ -310,23 +318,25 @@
         <option value="$PROJECT_DIR$/cvlib/ImageUtil.py" />
         <option value="$PROJECT_DIR$/Handlers/RequestHandler.py" />
         <option value="$PROJECT_DIR$/Backdrop/Backdrop.py" />
-        <option value="$PROJECT_DIR$/Handlers/FrameHandler.py" />
-        <option value="$PROJECT_DIR$/Handlers/CacheHandler.py" />
-        <option value="$PROJECT_DIR$/Handlers/NumberplateHandler.py" />
         <option value="$PROJECT_DIR$/conf.yml" />
         <option value="$PROJECT_DIR$/Handlers/PropertyHandler.py" />
         <option value="$PROJECT_DIR$/Views/Camera.py" />
         <option value="$PROJECT_DIR$/static/js/datahandler.js" />
         <option value="$PROJECT_DIR$/Camera/CameraScan.py" />
+        <option value="$PROJECT_DIR$/Handlers/FrameHandler.py" />
+        <option value="$PROJECT_DIR$/Views/Video.py" />
+        <option value="$PROJECT_DIR$/Handlers/NumberplateHandler.py" />
         <option value="$PROJECT_DIR$/Backdrop/BackdropHandler.py" />
+        <option value="$PROJECT_DIR$/Handlers/CacheHandler.py" />
+        <option value="$PROJECT_DIR$/Handlers/CachedNumberplateHandler.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="84" />
-    <option name="y" value="78" />
-    <option name="width" value="1657" />
-    <option name="height" value="951" />
+    <option name="x" value="67" />
+    <option name="y" value="27" />
+    <option name="width" value="1735" />
+    <option name="height" value="1053" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -350,17 +360,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope">
-        <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
-          <expand>
-            <path>
-              <item name="Plateos" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -392,12 +391,23 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope">
+        <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
+          <expand>
+            <path>
+              <item name="Plateos" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
-    <property name="last_opened_file_path" value="$USER_HOME$/Documents/PyCharm/PlateosTensorflow" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -649,12 +659,13 @@
       <workItem from="1548286591475" duration="26093000" />
       <workItem from="1548378943300" duration="71000" />
       <workItem from="1548783697048" duration="1299000" />
-      <workItem from="1549312027264" duration="16896000" />
+      <workItem from="1549312027264" duration="17058000" />
+      <workItem from="1549333850931" duration="20920000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="427530000" />
+    <option name="totallyTimeSpent" value="448612000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -666,15 +677,15 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="84" y="78" width="1657" height="951" extended-state="0" />
+    <frame x="67" y="27" width="1735" height="1053" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.48820058" visible="true" weight="0.14959653" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.48820058" visible="true" weight="0.14446418" />
       <window_info id="Structure" order="1" sideWeight="0.5117994" side_tool="true" weight="0.18981738" />
       <window_info anchor="bottom" id="Inspection Results" order="0" weight="0.32889965" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" weight="0.2580645" />
-      <window_info anchor="bottom" id="Run" order="3" sideWeight="0.49963155" weight="0.27294686" />
+      <window_info active="true" anchor="bottom" id="Run" order="3" sideWeight="0.49963155" visible="true" weight="0.27204302" />
       <window_info anchor="bottom" id="Debug" order="4" weight="0.3860215" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
@@ -685,7 +696,7 @@
       <window_info anchor="bottom" id="Database Changes" order="11" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.5003685" side_tool="true" weight="0.29812983" />
       <window_info anchor="bottom" id="Favorites" order="13" sideWeight="0.5048701" weight="0.16236559" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="14" visible="true" weight="0.21497585" />
+      <window_info anchor="bottom" id="Terminal" order="14" weight="0.19139785" />
       <window_info anchor="bottom" id="Python Console" order="15" weight="0.32580644" />
       <window_info anchor="right" id="Coverage" order="0" side_tool="true" weight="0.4648589" />
       <window_info anchor="right" id="Commander" order="1" weight="0.4" />
@@ -749,24 +760,10 @@
     </option>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/.PyCharm2018.3/system/python_stubs/-1247971763/builtins.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="4301" column="8" selection-start-line="4301" selection-start-column="8" selection-end-line="4301" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/lib/python3.6/multiprocessing/reduction.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="197">
           <caret line="50" selection-start-line="50" selection-end-line="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Views/Video.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="494">
-          <caret line="32" column="26" selection-start-line="32" selection-start-column="26" selection-end-line="32" selection-end-column="26" />
         </state>
       </provider>
     </entry>
@@ -925,16 +922,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Backdrop/Backdrop.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="13" selection-start-line="13" selection-end-line="13" />
-          <folding>
-            <element signature="e#0#42#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/detection.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="266">
@@ -956,52 +943,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Handlers/NumberplateHandler.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="54">
-          <caret line="266" column="107" lean-forward="true" selection-start-line="266" selection-start-column="107" selection-end-line="266" selection-end-column="107" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Handlers/CachedNumberplateHandler.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="20" column="41" selection-start-line="20" selection-start-column="41" selection-end-line="20" selection-end-column="41" />
-          <folding>
-            <element signature="e#0#40#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Handlers/CacheHandler.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="487">
-          <caret line="187" column="55" selection-start-line="187" selection-start-column="55" selection-end-line="187" selection-end-column="55" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Handlers/PropertyHandler.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="475">
           <caret line="104" column="40" selection-start-line="104" selection-start-column="40" selection-end-line="104" selection-end-column="40" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/run.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="5" column="24" selection-start-line="5" selection-start-column="24" selection-end-line="5" selection-end-column="24" />
-          <folding>
-            <element signature="e#0#38#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1016,61 +963,98 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Handlers/RequestHandler.py">
+    <entry file="file://$PROJECT_DIR$/conf.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-41">
-          <caret line="9" column="8" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Handlers/FrameHandler.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="73" column="56" selection-start-line="73" selection-start-column="56" selection-end-line="73" selection-end-column="56" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/datahandler.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="563">
-          <caret line="333" column="27" selection-start-line="333" selection-start-column="27" selection-end-line="333" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tess/tesseract.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="92" column="59" lean-forward="true" selection-start-line="92" selection-start-column="59" selection-end-line="92" selection-end-column="59" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="247">
+          <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Camera/CameraScan.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="415">
-          <caret line="39" column="9" lean-forward="true" selection-start-line="39" selection-start-column="9" selection-end-line="39" selection-end-column="9" />
+          <caret line="39" column="9" selection-start-line="39" selection-start-column="9" selection-end-line="39" selection-end-column="9" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/conf.yml">
+    <entry file="file://$PROJECT_DIR$/Views/Camera.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="13" column="22" lean-forward="true" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
+        <state relative-caret-position="1534">
+          <caret line="82" column="68" selection-start-line="82" selection-start-column="68" selection-end-line="82" selection-end-column="68" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Views/Camera.py">
+    <entry file="file://$PROJECT_DIR$/tess/tesseract.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="836">
-          <caret line="56" column="44" selection-start-line="56" selection-start-column="44" selection-end-line="56" selection-end-column="44" />
+        <state relative-caret-position="497">
+          <caret line="92" column="59" selection-start-line="92" selection-start-column="59" selection-end-line="92" selection-end-column="59" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="5" column="24" selection-start-line="5" selection-start-column="24" selection-end-line="5" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Views/Video.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="212">
+          <caret line="39" column="17" selection-start-line="39" selection-start-column="17" selection-end-line="39" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/js/datahandler.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="611">
+          <caret line="333" column="27" selection-start-line="333" selection-start-column="27" selection-end-line="333" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Handlers/FrameHandler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="478">
+          <caret line="69" column="34" selection-start-line="69" selection-start-column="34" selection-end-line="69" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Handlers/CompareData.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="12" column="8" selection-start-line="12" selection-start-column="8" selection-end-line="12" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Backdrop/Backdrop.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="17" column="54" lean-forward="true" selection-start-line="17" selection-start-column="54" selection-end-line="17" selection-end-column="54" />
+          <folding>
+            <element signature="e#0#42#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Handlers/NumberplateHandler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="296" column="17" lean-forward="true" selection-start-line="296" selection-start-column="17" selection-end-line="296" selection-end-column="17" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
@@ -1079,16 +1063,49 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Backdrop/BackdropHandler.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="159" column="21" lean-forward="true" selection-start-line="159" selection-start-column="21" selection-end-line="159" selection-end-column="21" />
+        <state relative-caret-position="369">
+          <caret line="224" column="89" lean-forward="true" selection-start-line="224" selection-start-column="89" selection-end-line="224" selection-end-column="89" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
-            <element signature="e#5255#7798#0" />
-            <element signature="e#8046#8368#0" />
-            <element signature="e#12247#13397#0" />
-            <element signature="e#13438#14091#0" />
-            <element signature="e#14149#14577#0" />
-            <element signature="e#14647#15780#0" />
+            <element signature="e#5274#5786#0" />
+            <element signature="e#8848#9546#0" />
+            <element signature="e#10141#11240#0" />
+            <element signature="e#11288#14254#0" />
+            <element signature="e#14293#15560#0" />
+            <element signature="e#15601#16366#0" />
+            <element signature="e#16554#17305#0" />
+            <element signature="e#17173#18512#0" />
+            <element signature="e#19075#21680#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Handlers/RequestHandler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="19" column="27" lean-forward="true" selection-start-line="19" selection-start-column="27" selection-end-line="19" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Handlers/CacheHandler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="226">
+          <caret line="114" column="8" selection-start-line="114" selection-start-column="8" selection-end-line="114" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Handlers/CachedNumberplateHandler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="501">
+          <caret line="77" column="36" selection-start-line="77" selection-start-column="36" selection-end-line="77" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -321,6 +321,7 @@ class NumberplateHandler:
         """
         Remove all the duplicates.
         Returns list without duplicates with increased confidence.
+        removing duplicates of tuple ("plate","province","confidence","time")
         """
         if len(data) > 0:
             plates, counts = CompareData.del_duplicates_list_tuples(data)
@@ -335,12 +336,15 @@ class NumberplateHandler:
 
     @staticmethod
     def get_highest(l):
-        """Get the highest confidence value"""
+        """
+        Get the highest confidence value
+        l: format = (plate, province, confidence, time)
+        """
         if len(l) > 0:
             highest = l[0]
             for x in l:
-                _, _, con, _ = x
-                _, _, h, _ = highest
+                _, _, con, t = x
+                _, _, h, t = highest
                 if h < con:
                     highest = x
             return highest

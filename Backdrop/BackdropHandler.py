@@ -1,4 +1,5 @@
 import concurrent
+import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
 import pathlib
@@ -112,10 +113,10 @@ class BackdropHandler:
         meta_queue_handler = Thread(target=self.meta_queue_handler, args=(self.c_meta, self.meta_time))
         meta_queue_handler.start()
 
-        cache_queue_handler = Thread(target=self.cache_queue_handler, args=(self.c_cache,))
+        cache_queue_handler = Thread(target=self.cache_queue_handler, args=(self.c_cache, self.cache_queue))
         cache_queue_handler.start()
 
-        cache = Thread(target=self.process_temp, args=(self.c_tmp, self.c_cache, self.c_upload,))
+        cache = Thread(target=self.process_temp, args=(self.c_tmp, self.c_cache, self.c_upload, self.cache_queue))
         cache.start()
 
         check_alive = Thread(target=self.check_alive)
@@ -141,11 +142,11 @@ class BackdropHandler:
         :return:
         """
         while True:
-            t_camera = ThreadWithReturnValue(target=self.scanner.scan,
-                                             args=(PropertyHandler.app_settings["camera"]["iprange"],))
-            t_camera.start()
-            found_camera = t_camera.join()
-
+            # t_camera = ThreadWithReturnValue(target=self.scanner.scan,
+            #                                  args=(PropertyHandler.app_settings["camera"]["iprange"],))
+            # t_camera.start()
+            # found_camera = t_camera.join()
+            found_camera = ["demo.mp4"]
             non_active = set()
             if len(found_camera) > 0:
                 tmp_cameras = [x[0] for x in self.cameras]
@@ -155,7 +156,7 @@ class BackdropHandler:
 
                 if len(non_active) > 0:
                     for x in non_active:
-                        tmp = Camera(x)
+                        tmp = Video(x)  # Camera(x)
                         self.cameras.add((x, tmp))
                         p = Process(target=tmp.start, args=(self.frames_q,))
                         self.active.add((x, p))
@@ -186,7 +187,7 @@ class BackdropHandler:
             print(e)
             pass
 
-    def process_temp(self, cv_tmp: Condition, cv_cache: Condition, cv_upload: Condition):
+    def process_temp(self, cv_tmp: Condition, cv_cache: Condition, cv_upload: Condition, cache_q: Queue):
         """
         Extract numberplate from tmp directory and build confidence based off of tmp files.
         Once confidence is built, compare to existing cache data, remove duplications and upload (only if data is 2 min newer than cache)
@@ -198,39 +199,45 @@ class BackdropHandler:
         """
         while True:
             try:
+                # temp_list = None
                 with cv_tmp:
                     cv_tmp.wait()
+                    print("Attempting Confidence Build")
                     temp_list = CachedNumberplateHandler.combine_tmp_data()
+                    # cv_tmp.notify_all()
                     if temp_list is not None:
                         refined_temp = CachedNumberplateHandler.improve_confidence(temp_list)
                         if refined_temp is not None:
-                            in_cache, out_cache = CachedNumberplateHandler.compare_to_cached(refined_temp)
+                            # upload_list = []
                             with cv_cache:
+                                in_cache, out_cache = CachedNumberplateHandler.compare_to_cached(refined_temp)
+                                # cv_cache.wait()
                                 if len(in_cache) > 0:
                                     CacheHandler.update_plate_cache(datetime.now().strftime(
                                         "%Y-%m-%d %H"), in_cache)
-                                    cv_cache.notify_all()
                                 upload_list = in_cache + out_cache
+                                cv_cache.notify_all()
+                            if len(upload_list) > 0:
                                 with cv_upload:
-                                    if len(upload_list) > 0:
-                                        upload_dict = CachedNumberplateHandler.compare_to_uploaded(upload_list)
-                                        if upload_dict is not None:
-                                            if len(upload_dict) > 0:
-                                                upload_tuple = CachedNumberplateHandler.convert_dict_to_tuple(
-                                                    upload_dict)
-                                                if len(upload_tuple) > 0:
-                                                    # Don't remove image from tuple - uploading everything with conf 0.6 >
-                                                    # upload_tuple = [x[:-1] for x in upload_tuple]
-                                                    uploaded = [x[:-1] for x in upload_tuple]
-                                                    CacheHandler.save_tmp("uploaded",
-                                                                          datetime.now().strftime("%Y-%m-%d"),
-                                                                          uploaded)
-                                                    self.upload_dataset(upload_tuple)
-                                                    print("Uploading: ", uploaded)
+                                    upload_dict = CachedNumberplateHandler.compare_to_uploaded(upload_list)
+                                    if upload_dict is not None:
+                                        if len(upload_dict) > 0:
+                                            with_images = CachedNumberplateHandler.get_tmp_images(upload_dict)
+                                            upload_tuple = CachedNumberplateHandler.convert_dict_to_tuple(
+                                                with_images)
+                                            if len(upload_tuple) > 0:
+                                                # Don't remove image from tuple - uploading everything with conf 0.6 >
+                                                # upload_tuple = [x[:-1] for x in upload_tuple]
+                                                uploaded = [x[:-1] for x in upload_tuple]
+                                                CacheHandler.save_upload("uploaded",
+                                                                         datetime.now().strftime("%Y-%m-%d"),
+                                                                         uploaded)
+                                                self.upload_dataset(upload_tuple)
+                                                print("Uploading: ", uploaded)
 
-                                                self.cache_queue.put(upload_dict)
+                                                cache_q.put(upload_dict)
                                     cv_upload.notify_all()
-                                #cv_cache.notify_all()
+                                # cv_cache.notify_all()
 
                     # cv_tmp.notify_all()
             except Exception as e:
@@ -314,10 +321,9 @@ class BackdropHandler:
         """
         t = datetime.now()
         while True:
-            if timedelta(hours=12) < (datetime.now() - t):
+            if timedelta(minutes=10) < (datetime.now() - t):
                 print("Cleaning up cache...")
                 with cv_cache:
-                    cv_cache.wait()
                     try:
                         # pathlib.Path("../plateos-files/cache/").mkdir(parents=True, exist_ok=True)
                         files = CacheHandler.get_file_list("cache")
@@ -331,7 +337,7 @@ class BackdropHandler:
                     except Exception as e:
                         print("Error on Cleaning Cache", e)
                         pass
-                    # cv_cache.notify_all()
+                    cv_cache.notify_all()
 
                 with cv_meta:
                     try:
@@ -350,7 +356,6 @@ class BackdropHandler:
                     cv_meta.notify_all()
 
                 with cv_upload:
-                    cv_upload.wait()
                     try:
                         # pathlib.Path("../plateos-files/uploaded/").mkdir(parents=True, exist_ok=True)
                         files = CacheHandler.get_file_list("uploaded")
@@ -363,7 +368,7 @@ class BackdropHandler:
                     except Exception as e:
                         print("Error on Cleaning upload", e)
                         pass
-                    # cv_upload.notify_all()
+                    cv_upload.notify_all()
                 t = datetime.now()
 
     def offline_check(self):
@@ -434,7 +439,7 @@ class BackdropHandler:
                     cv.notify_all()
             except Exception as e:
                 pass
-            # sleep(0.2)
+            sleep(1)
 
     def meta_queue_handler(self, cv: Condition, meta_time):
         """
@@ -468,9 +473,9 @@ class BackdropHandler:
                 else:
                     now = datetime.now()
                     meta_time.put(now)
-            #sleep(0.2)
+            # sleep(0.2)
 
-    def cache_queue_handler(self, cv: Condition):
+    def cache_queue_handler(self, cv: Condition, cache_q: Queue):
         """
         Handle cache data across threads/processes - save cache data
         :param cv:
@@ -478,17 +483,17 @@ class BackdropHandler:
         """
         while True:
             with cv:
-                cv.wait()
                 out = []
-                while not self.cache_queue.empty():
-                    val = self.cache_queue.get_nowait()
+                while not cache_q.empty():
+                    val = cache_q.get_nowait()
                     if val is not None:
                         out += val
                 if len(out) > 0:
+                    print("Saving Cache...")
                     now = datetime.now().strftime('%Y-%m-%d %H')
                     CacheHandler.save_cache("cache", now, out)
-                #cv.notify_all()
-            #sleep(0.2)
+                cv.notify_all()
+            # sleep(0.2)
 
     def process_frames(self, tmp_q, meta_q, frames_q):
         process = ProcessHelper(self.cv_q)
