@@ -78,17 +78,15 @@ class BackdropHandler:
         self.c_upload = Condition()
 
         self.meta_time = None
-        self.camera_queue = None
         self.cv_q = None
         self.frames_q = None
 
-    def start(self, main_loop: asyncio.AbstractEventLoop, queue, cv_q, frames_q):
+    def start(self, main_loop: asyncio.AbstractEventLoop, cv_q, frames_q):
         self.tmp_queue = janus.Queue(loop=main_loop)
         self.meta_queue = janus.Queue(loop=main_loop)
         self.cache_queue = janus.Queue(loop=main_loop)
         self.meta_time = janus.Queue(loop=main_loop)
 
-        self.camera_queue = queue
         self.cv_q = cv_q
         self.frames_q = frames_q
 
@@ -100,7 +98,6 @@ class BackdropHandler:
             event_loop.run_in_executor(None, self.scan_helper, self.frames_q)
 
             # asyncio.ensure_future(self.add_video(self.frames_q, self.cameras, self.active), loop=event_loop)
-            asyncio.ensure_future(FrameHandler.clean(self.camera_queue.async_q), loop=event_loop)
             asyncio.ensure_future(self.location_update(), loop=event_loop)
             asyncio.ensure_future(self.cleanup_temp(), loop=event_loop)
             asyncio.ensure_future(self.cleanup_saved_files(), loop=event_loop)
@@ -127,14 +124,14 @@ class BackdropHandler:
         :return:
         """
 
-        def add_camera(ip, frames_q, loop):
+        def add_camera(ip):
             tmp = Camera(ip)
             self.cameras.add((ip, tmp))
             loop = asyncio.get_event_loop()
-            asyncio.ensure_future(tmp.start(frames_q), loop=loop)
+            asyncio.ensure_future(tmp.start(frames_q.async_q), loop=loop)
 
-        async def scan(frames_q):
-            loop = asyncio.get_event_loop()
+        async def scan():
+            #loop = asyncio.get_event_loop()
             while True:
                 t_camera = ThreadWithReturnValue(target=self.scanner.scan,
                                                  args=(PropertyHandler.app_settings["camera"]["iprange"],))
@@ -148,14 +145,13 @@ class BackdropHandler:
                             non_active.add(x)
                     if len(non_active) > 0:
                         for x in non_active:
-                            add_camera(x, frames_q, loop)
+                            add_camera(x)
                 await asyncio.sleep(10)
 
-        print("Starting to scan for cameras")
         loop = asyncio.new_event_loop()
         while True:
             try:
-                asyncio.ensure_future(scan(frames_q.async_q), loop=loop)
+                asyncio.ensure_future(scan(), loop=loop)
                 loop.run_forever()
             finally:
                 loop.run_until_complete(loop.shutdown_asyncgens())

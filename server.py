@@ -1,4 +1,6 @@
 from multiprocessing import Queue
+from threading import Thread
+from time import sleep
 
 from flask import Flask, render_template, json as j
 from flask_socketio import SocketIO
@@ -17,9 +19,17 @@ class QueueHandler:
     cv_queue = Queue()
     propertyhandler = PropertyHandler()
 
-    def __init__(self, q, cv_q):
+    def __init__(self, q: Queue, cv_q: Queue):
         self.obj_queue = q
         self.cv_queue = cv_q
+        Thread(target=self.clean).start()
+
+    def clean(self):
+        while True:
+            while not self.obj_queue.empty():
+                self.obj_queue.get_nowait()
+            FrameHandler.clean()
+            sleep(10)
 
 
 @app.route("/")
@@ -37,26 +47,9 @@ def video():
     return render_template("video-view.html")
 
 
-def gen(name):
-    while True:
-        FrameHandler.get_all(QueueHandler.obj_queue)
-        while not QueueHandler.obj_queue.empty():
-            obj = QueueHandler.obj_queue.get()
-            if obj[0] == name:
-                yield (b'--frame\r\n'
-                       b'Content-Type: image/jpeg\r\n\r\n' + obj[1] + b'\r\n')
-
-
 @socketio.on("connected")
 def client_connected():
     print("Client connected")
-    # socketio.start_background_task(get_image)
-
-
-# @app.route("/camera/<string:name>")
-# def camera(name):
-#     # return Response(gen(name), mimetype='multipart/x-mixed-replace; boundary=frame')
-#     return render_template("camera-view.html")
 
 
 def start(q, cv_q):
@@ -70,7 +63,7 @@ def get_image():
     FrameHandler.get_all(QueueHandler.obj_queue)
     obj = None
     while not QueueHandler.obj_queue.empty():
-        obj = QueueHandler.obj_queue.get()
+        obj = QueueHandler.obj_queue.get_nowait()
 
     if obj is not None:
         if type(obj[1]) is str:
@@ -82,36 +75,40 @@ def get_image():
 def handle_shape_h(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
-        tmp = QueueHandler.cv_queue.get()
-        tmp["shape"]["height"] = data["height"]
-        QueueHandler.propertyhandler.set_cv_settings(tmp)  # cv_settings["shape"]["height"] = data["height"]
+        tmp = QueueHandler.cv_queue.get_nowait()
+        if tmp is not None:
+            tmp["shape"]["height"] = data["height"]
+            QueueHandler.propertyhandler.set_cv_settings(tmp)  # cv_settings["shape"]["height"] = data["height"]
 
 
 @socketio.on("shape-width")
 def handle_shape_w(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
-        tmp = QueueHandler.cv_queue.get()
-        tmp["shape"]["width"] = data["width"]
-        QueueHandler.propertyhandler.set_cv_settings(tmp)
+        tmp = QueueHandler.cv_queue.get_nowait()
+        if tmp is not None:
+            tmp["shape"]["width"] = data["width"]
+            QueueHandler.propertyhandler.set_cv_settings(tmp)
 
 
 @socketio.on("shape-area")
 def handle_shape_a(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
-        tmp = QueueHandler.cv_queue.get()
-        tmp["shape"]["area"] = data["area"]
-        QueueHandler.propertyhandler.set_cv_settings(tmp)
+        tmp = QueueHandler.cv_queue.get_nowait()
+        if tmp is not None:
+            tmp["shape"]["area"] = data["area"]
+            QueueHandler.propertyhandler.set_cv_settings(tmp)
 
 
 @socketio.on("preprocessing-morph-height")
 def preprocessing(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
-        tmp = QueueHandler.cv_queue.get()
-        tmp["preprocessing"]["morph"]["height"] = data["morph"]["height"]
-        QueueHandler.propertyhandler.set_cv_settings(tmp)
+        tmp = QueueHandler.cv_queue.get_nowait()
+        if tmp is not None:
+            tmp["preprocessing"]["morph"]["height"] = data["morph"]["height"]
+            QueueHandler.propertyhandler.set_cv_settings(tmp)
     # PropertyHandler.cv_settings["preprocessing"]["morph"] = data["morph"]
 
 
@@ -120,69 +117,76 @@ def preprocess_morph_width(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
         tmp = QueueHandler.cv_queue.get()
-        tmp["preprocessing"]["morph"]["width"] = data["morph"]["width"]
-        QueueHandler.propertyhandler.set_cv_settings(tmp)
+        if tmp is not None:
+            tmp["preprocessing"]["morph"]["width"] = data["morph"]["width"]
+            QueueHandler.propertyhandler.set_cv_settings(tmp)
 
 
 @socketio.on("char-area")
 def char_area(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
-        tmp = QueueHandler.cv_queue.get()
-        tmp["char"]["area"] = data["area"]
-        QueueHandler.propertyhandler.set_cv_settings(tmp)
+        tmp = QueueHandler.cv_queue.get_nowait()
+        if tmp is not None:
+            tmp["char"]["area"] = data["area"]
+            QueueHandler.propertyhandler.set_cv_settings(tmp)
 
 
 @socketio.on("char-width")
 def char_width(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
-        tmp = QueueHandler.cv_queue.get()
-        tmp["char"]["width"] = data["width"]
-        QueueHandler.propertyhandler.set_cv_settings(tmp)
+        tmp = QueueHandler.cv_queue.get_nowait()
+        if tmp is not None:
+            tmp["char"]["width"] = data["width"]
+            QueueHandler.propertyhandler.set_cv_settings(tmp)
 
 
 @socketio.on("char-height")
 def char_height(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
-        tmp = QueueHandler.cv_queue.get()
-        tmp["char"]["height"] = data["height"]
-        QueueHandler.propertyhandler.set_cv_settings(tmp)
+        tmp = QueueHandler.cv_queue.get_nowait()
+        if tmp is not None:
+            tmp["char"]["height"] = data["height"]
+            QueueHandler.propertyhandler.set_cv_settings(tmp)
 
 
 @socketio.on("char-morph")
 def char_morph(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
-        tmp = QueueHandler.cv_queue.get()
-        tmp["char"]["morph"] = data["char"]["morph"]
-        QueueHandler.propertyhandler.set_cv_settings(tmp)
+        tmp = QueueHandler.cv_queue.get_nowait()
+        if tmp is not None:
+            tmp["char"]["morph"] = data["char"]["morph"]
+            QueueHandler.propertyhandler.set_cv_settings(tmp)
 
 
 @socketio.on("angle")
 def angle(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
-        tmp = QueueHandler.cv_queue.get()
-        tmp["shape"]["angle"] = data["angle"]
-        QueueHandler.propertyhandler.set_cv_settings(tmp)
+        tmp = QueueHandler.cv_queue.get_nowait()
+        if tmp is not None:
+            tmp["shape"]["angle"] = data["angle"]
+            QueueHandler.propertyhandler.set_cv_settings(tmp)
 
 
 @socketio.on("mask")
 def mask(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
-        tmp = QueueHandler.cv_queue.get()
-        tmp["preprocessing"]["mask"] = data["mask"]
-        QueueHandler.propertyhandler.set_cv_settings(tmp)
+        tmp = QueueHandler.cv_queue.get_nowait()
+        if tmp is not None:
+            tmp["preprocessing"]["mask"] = data["mask"]
+            QueueHandler.propertyhandler.set_cv_settings(tmp)
 
 
 @socketio.on("otsu")
 def char_morph(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
-        tmp = QueueHandler.cv_queue.get()
+        tmp = QueueHandler.cv_queue.get_nowait()
         tmp["preprocessing"]["otsu"] = data["otsu"]
         QueueHandler.propertyhandler.set_cv_settings(tmp)
 
@@ -191,7 +195,7 @@ def char_morph(data):
 def erode(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
-        tmp = QueueHandler.cv_queue.get()
+        tmp = QueueHandler.cv_queue.get_nowait()
         tmp["preprocessing"]["erode"] = data["erode"]
         QueueHandler.propertyhandler.set_cv_settings(tmp)
 
@@ -201,6 +205,6 @@ def save():
     print('Saving...')
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
-        tmp = QueueHandler.cv_queue.get()
+        tmp = QueueHandler.cv_queue.get_nowait()
         PropertyHandler.save("detection.yml", tmp)
     socketio.emit("saved")
