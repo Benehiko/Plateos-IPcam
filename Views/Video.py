@@ -1,11 +1,8 @@
-from threading import Thread
 from time import sleep
 
 import cv2
+import janus
 import numpy as np
-
-from Helper.ProcessHelper import ProcessHelper
-from tess.tesseract import Tess
 
 
 class Video:
@@ -22,10 +19,9 @@ class Video:
         self.raw.fill(255)
         self.char = []
         self.char_raw = []
-        self.tess = Tess()
 
-    def start(self, q_frames):
-
+    def start(self, q_frames: janus.Queue.sync_q):
+        print("Starting Video")
         while True:
 
             cap = cv2.VideoCapture(self.path)
@@ -36,7 +32,7 @@ class Video:
 
                 ret, frame = cap.read()
                 if ret:
-                    q_frames.put({"mac": self.filename, "ip": self.filename, "image": frame})
+                    q_frames.put_nowait({"mac": self.filename, "ip": self.filename, "image": frame})
                 sleep(1)
             cap.release()
 
