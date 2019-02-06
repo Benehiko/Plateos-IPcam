@@ -99,7 +99,7 @@ class BackdropHandler:
                                        self.cv_q.sync_q, )
             event_loop.run_in_executor(None, self.scan_helper, self.frames_q)
 
-            #asyncio.ensure_future(self.add_video(self.frames_q, self.cameras, self.active), loop=event_loop)
+            # asyncio.ensure_future(self.add_video(self.frames_q, self.cameras, self.active), loop=event_loop)
             asyncio.ensure_future(FrameHandler.clean(self.camera_queue.async_q), loop=event_loop)
             asyncio.ensure_future(self.location_update(), loop=event_loop)
             asyncio.ensure_future(self.cleanup_temp(), loop=event_loop)
@@ -126,34 +126,40 @@ class BackdropHandler:
 
         :return:
         """
-        print("Starting to scan for cameras")
-        while True:
-            t_camera = ThreadWithReturnValue(target=self.scanner.scan,
-                                             args=(PropertyHandler.app_settings["camera"]["iprange"],))
-            t_camera.start()
-            found_camera = t_camera.join()
-            non_active = set()
-            if len(found_camera) > 0:
-                tmp_cameras = [x[0] for x in self.cameras]
-                for x in found_camera:
-                    if x not in tmp_cameras:
-                        non_active.add(x)
 
-                if len(non_active) > 0:
-                    pool = []
-                    loop = asyncio.new_event_loop()
-                    try:
+        def add_camera(ip, frames_q, loop):
+            tmp = Camera(ip)
+            self.cameras.add((ip, tmp))
+            loop = asyncio.get_event_loop()
+            asyncio.ensure_future(tmp.start(frames_q), loop=loop)
+
+        async def scan(frames_q):
+            loop = asyncio.get_event_loop()
+            while True:
+                t_camera = ThreadWithReturnValue(target=self.scanner.scan,
+                                                 args=(PropertyHandler.app_settings["camera"]["iprange"],))
+                t_camera.start()
+                found_camera = t_camera.join()
+                non_active = set()
+                if len(found_camera) > 0:
+                    tmp_cameras = [x[0] for x in self.cameras]
+                    for x in found_camera:
+                        if x not in tmp_cameras:
+                            non_active.add(x)
+                    if len(non_active) > 0:
                         for x in non_active:
-                            tmp = Camera(x)
-                            self.cameras.add((x, tmp))
-                            pool.append(asyncio.ensure_future(tmp.start(frames_q.async_q), loop=loop))
-                            # p = Thread(target=tmp.start, args=(frames_q.sync_q,))
-                            # self.active.add((x, coro))
-                            # p.start()
-                        loop.run_forever()
-                    finally:
-                        loop.run_until_complete(loop.shutdown_asyncgens())
-                        loop.close()
+                            add_camera(x, frames_q, loop)
+                await asyncio.sleep(10)
+
+        print("Starting to scan for cameras")
+        loop = asyncio.new_event_loop()
+        while True:
+            try:
+                asyncio.ensure_future(scan(frames_q.async_q), loop=loop)
+                loop.run_forever()
+            finally:
+                loop.run_until_complete(loop.shutdown_asyncgens())
+                loop.close()
             sleep(10)
 
     async def add_video(self, frames_q, cameras, active):
