@@ -241,12 +241,12 @@ class NumberplateHandler:
         return False
 
     @staticmethod
-    def improve(plates):
+    async def improve(plates):
         tmp_copy = copy.deepcopy(plates)
         tmp = NumberplateHandler.remove_duplicates(plates)
         if tmp is not None:
             for i in range(0, len(tmp)):
-                val, cached_plate = NumberplateHandler.search_in_cache(tmp[i])
+                val, cached_plate = await NumberplateHandler.search_in_cache(tmp[i])
                 if val > 0:
                     cache_conf = 0
                     for x in cached_plate:
@@ -277,14 +277,15 @@ class NumberplateHandler:
         return None
 
     @staticmethod
-    def search_in_cache(plate):
+    async def search_in_cache(plate):
         count = 0
         cached_plates = []
         try:
-            pathlib.Path("cache").mkdir(parents=True, exist_ok=True)
-            files = [f.replace('.npz', '') for f in listdir("cache") if isfile(join("cache", f))]
+            pathlib.Path("../plateos-files/cache/").mkdir(parents=True, exist_ok=True)
+            files = [f.replace('.npz', '') for f in listdir("../plateos-files/cache/") if
+                     isfile(join("../plateos-files/cache", f))]
             for filename in files:
-                data = CacheHandler.loadByPlate("cache", filename, plate)
+                data = await CacheHandler.loadByPlate("cache", filename, plate)
                 cached_plates += data
                 count = count + len(data)
         except Exception as e:
@@ -316,10 +317,11 @@ class NumberplateHandler:
         return ""
 
     @staticmethod
-    def remove_duplicates(data: list)->list or None:
+    def remove_duplicates(data: list) -> list or None:
         """
         Remove all the duplicates.
         Returns list without duplicates with increased confidence.
+        removing duplicates of tuple ("plate","province","confidence","time")
         """
         if len(data) > 0:
             plates, counts = CompareData.del_duplicates_list_tuples(data)
@@ -334,12 +336,15 @@ class NumberplateHandler:
 
     @staticmethod
     def get_highest(l):
-        """Get the highest confidence value"""
+        """
+        Get the highest confidence value
+        l: format = (plate, province, confidence, time)
+        """
         if len(l) > 0:
             highest = l[0]
             for x in l:
-                _, _, con, _ = x
-                _, _, h, _ = highest
+                _, _, con, t = x
+                _, _, h, t = highest
                 if h < con:
                     highest = x
             return highest

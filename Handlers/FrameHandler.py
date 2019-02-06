@@ -1,4 +1,6 @@
+import asyncio
 import base64
+from datetime import datetime
 from io import BytesIO
 from multiprocessing import Queue
 from threading import Thread
@@ -20,7 +22,7 @@ class FrameHandler:
             if val is not None:
                 tmp = [val[0], FrameHandler.get_base64(val[1])]
                 FrameHandler.obj.append(tmp)
-                FrameHandler.queues.put(tmp)
+                FrameHandler.queues.put_nowait(tmp)
         except Exception as e:
             print("Adding Camera error\n", e)
 
@@ -34,7 +36,7 @@ class FrameHandler:
     @staticmethod
     def get_base64(mat):
         if mat is not None:
-            compress = ImageUtil.compress(mat, max_w=480, quality=80)
+            compress = ImageUtil.compress(mat, max_w=1080, quality=80)
             retval, buffer = cv2.imencode('.jpg', compress)
             b64 = base64.standard_b64encode(buffer)
             return b64.decode('utf-8')
@@ -58,11 +60,12 @@ class FrameHandler:
     @staticmethod
     def get_all(queue):
         while not FrameHandler.queues.empty():
-            obj = FrameHandler.queues.get()
-            # image = Image.open(temp)
-            queue.put([obj[0], obj[1]])
+            obj = FrameHandler.queues.get_nowait()
+            if obj is not None:
+                # image = Image.open(temp)
+                queue.put([obj[0], obj[1]])
 
     @staticmethod
     def clean():
         while not FrameHandler.queues.empty():
-            FrameHandler.queues.get()
+            FrameHandler.queues.get_nowait()

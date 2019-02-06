@@ -22,7 +22,7 @@ class Request:
 
             for x in data:
                 plate, province, confidence, date, deviceMac, image = x
-                if confidence < 0.6:
+                if confidence < 0.4:
                     tmp = ""
                 else:
                     image = Image.fromarray(image)
@@ -36,9 +36,7 @@ class Request:
                 out.append(dict(d))
 
             # print("Posting:", out)
-            if Request.check_connectivity():
-                return Request.send(url, out)
-
+            return Request.send(url, out)
         else:
             print("Mac is None")
         return False
@@ -50,14 +48,13 @@ class Request:
             if r.status_code == 200:
                 return True
         except Exception as e:
-            print("Post Error\n", e)
+            print("Couldn't Post")
             pass
         return False
 
     @staticmethod
-    def check_connectivity():
+    def check_connectivity(hostname="8.8.8.8"):
         try:
-            hostname = "8.8.8.8"
             response = subprocess.call(["ping", "-c", "3", hostname], stdout=subprocess.DEVNULL)
             if response == 0:
                 return True
@@ -92,10 +89,10 @@ class Request:
             d = [('mac', Request.get_mac(interface)), ('ip', ip), ('time', now), ('alias', alias)]
             j = dict(d)
             t = dict([("device", j), ('cameras', cameras)])
-            print("Posting:", t)
+            # print("Posting:", t)
             Request.send(url, t)
         except URLError as e:
-            print("Ping Location: ", e)
+            # print("Ping Location: ", e)
             pass
 
     @staticmethod

@@ -11,6 +11,7 @@ camera:
       cmd: GetLocalLink
     info:
       cmd: GetDevInfo
+  seconds-per-frame: 5
 restful:
   url: 127.0.0.1
   port: 8081
@@ -19,3 +20,12 @@ restful:
 device:
   alias: Device1
   interface: enp2s0
+rates:
+  location-update: 1
+  temp-keep: 60
+  meta-keep: 60
+  cache-keep: 60
+  uploaded-keep: 60
+  meta-rate: 60
+processing:
+  max-workers: 2

@@ -8,5 +8,6 @@ try:
     PropertyHandler.load_numberplate()
     runner = Backdrop()
     runner.start()
+
 except KeyboardInterrupt:
     print("Killing process...")

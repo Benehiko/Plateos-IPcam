@@ -1,35 +1,30 @@
+import asyncio
 import json
 import random
 import string
 from datetime import datetime
 from multiprocessing import Queue
+from time import sleep
 from urllib.request import urlopen
 
 import cv2
+import janus
 import numpy as np
 
-from Handlers.FrameHandler import FrameHandler
 from Handlers.PropertyHandler import PropertyHandler
 from Handlers.RequestHandler import Request
-from Handlers.ThreadHandler import ThreadWithReturnValue
-from Helper.ProcessHelper import ProcessHelper
-from cvlib.CvHelper import CvHelper
 from cvlib.ImageUtil import ImageUtil
 
 
 class Camera:
 
-    # TODO: Add type mapping and return types to methods with correct descriptions
-
-    def __init__(self, ip, tess, cv_q):
+    def __init__(self, ip):
         self.randomcmd = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
-
-        self.tess = tess
         self.ip = ip
         self.rest = PropertyHandler.app_settings["camera"]["restful"]
         self.username = PropertyHandler.app_settings["camera"]["username"]
         self.password = PropertyHandler.app_settings["camera"]["password"]
-        self.processHelper = ProcessHelper(cv_q)
+        self.seconds_per_frame = PropertyHandler.app_settings["camera"]["seconds-per-frame"]
         self.mac = self.get_mac()
         self.alias, self.model = self.get_info()
         self.url = "http://" + ip + self.rest["base"] + "cmd=" + self.rest["snap"]["cmd"] + "&channel=" + str(
@@ -40,30 +35,15 @@ class Camera:
         self.then = datetime.now()
         self.frame = np.zeros([100, 100, 3], dtype=np.uint8)
         self.frame.fill(255)
-        self.raw = np.random.random([100, 100])
+        self.raw = np.zeros([100, 100, 3], dtype=np.uint8)
         self.raw.fill(255)
         self.data = []
         self.framequeue = Queue()
 
-    def start(self, q, q2):
+    async def start(self, q_frames: janus.Queue.async_q):
         if self.mac == "":
-            for i in range(0, 5):
-                if self.mac == "":
-                    if i < 5:
-                        self.mac = self.get_mac()
-                    else:
-                        return
-                else:
-                    break
-        if self.alias or self.model == "":
-            for i in range(0, 5):
-                if self.alias or self.model == "":
-                    if i < 5:
-                        self.alias, self.model = self.get_info()
-                    else:
-                        return
-                else:
-                    break
+            return
+
         print("Starting Camera:\nIP:", self.ip, "MAC:", self.mac, "Model", self.model)
         while True:
             try:
@@ -73,36 +53,13 @@ class Camera:
                     npy = np.array(b, dtype=np.uint8)
                     img = cv2.imdecode(npy, -1)
                     if img is not None:
-                        self.frame = img
-                        result, self.frame, self.raw, __ = self.processHelper.analyse_frames(img)
-                        if result is not None:
-                            if len(result) > 0:
-                                t = ThreadWithReturnValue(target=self.tess.multi, args=(result,))
-                                t.start()
-                                tmp = t.join()
-                                if tmp is not None:
-                                    tmp, meta = self.handle_data(tmp, img)
-                                    self.data = tmp
-                                    if len(tmp) > 0:
-                                        q.put(tmp)
-                                    if len(meta) > 0:
-                                        q2.put(meta)
-                    if self.raw is None:
-                        print("raw null")
-                        self.raw = np.random.random([100, 100])
-                    # plate_pics = None
-                    # for x in self.data:
-                    #     if "results" in x:
-                    #         for y in x["results"]:
-                    #             if plate_pics is not None:
-                    #                 plate_pics = np.hstack((plate_pics, y["image"]))
-                    #             else:
-                    #                 plate_pics = y["image"]
-
-                    FrameHandler.add_obj([self.ip, np.hstack((self.frame, CvHelper.gray2rgb(self.raw)))])
+                        if self.model == "" or self.alias == "":
+                            self.model, self.alias = self.get_info()
+                        q_frames.put_nowait({"mac": self.mac, "ip": self.ip, "image": img})
+                sleep(self.seconds_per_frame)
             except Exception as e:
-                print("Camera", self.get_camera_data()["alias"], self.get_camera_data()["ip"], "Died", "\nReason:", e)
-                break
+                print("Camera", self.get_camera_data()["alias"], self.get_camera_data()["ip"], "Died")
+                await asyncio.sleep(1)
 
     def handle_data(self, data, original_img):
         tmp = []

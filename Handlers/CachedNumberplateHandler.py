@@ -1,3 +1,5 @@
+import asyncio
+import time
 from datetime import datetime, timedelta
 
 from Handlers.CacheHandler import CacheHandler
@@ -7,38 +9,76 @@ from Handlers.NumberplateHandler import NumberplateHandler
 class CachedNumberplateHandler:
 
     @staticmethod
-    def combine_tmp_data() -> list or None:
+    async def combine_tmp_data() -> list or None:
         """
         Combine Temporary directory npz files data into single List of dictionaries
         dict: {
-           "plate", "province", "confidence", "time", "camera", "image"
+           "plate", "province", "confidence", "time", "camera"
         }
 
         :param cv_tmp:
         :return:
         """
+
+        async def load(x):
+            return await CacheHandler.load("tmp", x)
+
         try:
             files = CacheHandler.get_file_list("tmp")
             result = []
+            tmp_data = []
             if len(files) > 0:
+                event_loop = asyncio.get_event_loop()
+                pool = []
                 for x in files:
-                    data = CacheHandler.load("tmp", x)
-                    if data is not None:
-                        data = data.tolist()
-                        for d in data:
-                            for y in d["results"]:
-                                result.append({
-                                    "plate": y["plate"],
-                                    "province": y["province"],
-                                    "confidence": y["confidence"],
-                                    "time": y["time"],
-                                    "camera": d["camera"],
-                                    "image": y["image"]
-                                })
+                    pool.append(asyncio.ensure_future(load(x), loop=event_loop))
+
+                data = await asyncio.gather(*pool)
+                data = [x for x in data if x is not None]
+                if len(data) > 0:
+                    for x in data:
+                        tmp_data += x.tolist()
+                for d in tmp_data:
+                    for y in d["results"]:
+                        result.append({
+                            "plate": y["plate"],
+                            "province": y["province"],
+                            "confidence": y["confidence"],
+                            "time": y["time"],
+                            "camera": d["camera"],
+                        })
+                # event_loop.close()
             return result
         except Exception as e:
             print("Error combining tmp data\n", e)
         return None
+
+    @staticmethod
+    async def get_tmp_images(data: list) -> list:
+        """
+        Get the images of plates being uploaded
+        :param data:
+        :return:
+        """
+        result = []
+        try:
+            for x in data:
+                t = datetime.strptime(x["time"], "%Y-%m-%d %H:%M:%S")
+                image_tmp = await CacheHandler.load("tmp/images", t.strftime("%Y-%m-%d %H:%M"))
+                if image_tmp is not None:
+                    list_tmp = image_tmp.tolist()
+                    for p in list_tmp:
+                        for y in p["results"]:
+                            if x["plate"] == y["plate"]:
+                                q = [q for q in result if x["plate"] == q["plate"]]
+                                if len(q) == 0:
+                                    result.append(
+                                        {"plate": x["plate"], "province": x["province"], "confidence": x["confidence"],
+                                         "time": x["time"], "camera": x["camera"], "image": y["image"]})
+                                    break
+        except Exception as e:
+            print("Getting Temp Images Failed", e)
+        return result
 
     @staticmethod
     def convert_dict_to_tuple(dic: list) -> list:
@@ -59,7 +99,7 @@ class CachedNumberplateHandler:
         return result
 
     @staticmethod
-    def improve_confidence(dic: list) -> list or None:
+    async def improve_confidence(dic: list) -> list or None:
         """
         Accept list of dictionaries and improve the confidence of the numberplate data it contains
 
@@ -68,7 +108,7 @@ class CachedNumberplateHandler:
         """
         try:
             tuple_list = CachedNumberplateHandler.convert_dict_to_tuple(dic)
-            result = NumberplateHandler.improve([x[:-2] for x in tuple_list])
+            result = await NumberplateHandler.improve([x[:-1] for x in tuple_list])
             if result is not None:
                 if len(result) > 0:
                     non_duplicates = NumberplateHandler.remove_similar(result)
@@ -79,7 +119,7 @@ class CachedNumberplateHandler:
                             if len(row) > 0:
                                 out.append(
                                     {"plate": plate[0], "province": plate[1], "confidence": plate[2], "time": plate[3],
-                                     "camera": row[0][4], "image": row[0][5]})
+                                     "camera": row[0][4]})
                         return out
         except Exception as e:
             print("Cached Improve Confidence Error\n", e)
@@ -87,14 +127,14 @@ class CachedNumberplateHandler:
         return None
 
     @staticmethod
-    def compare_to_cached(data: list) -> [list, list]:
+    async def compare_to_cached(data: list) -> [list, list]:
         """
         Compare current data to current hour cache
         :param data:
         :return:
         """
         now = datetime.now().strftime("%Y-%m-%d %H")
-        cached_data = CacheHandler.load("cache", now)
+        cached_data = await CacheHandler.load("cache", now)
         in_cache = []
         out_cache = []
         if cached_data is not None:
@@ -108,11 +148,10 @@ class CachedNumberplateHandler:
                     out_cache.append(plate)
         else:
             out_cache = data
-
         return in_cache, out_cache
 
     @staticmethod
-    def compare_to_uploaded(data: list) -> list or None:
+    async def compare_to_uploaded(data: list) -> list or None:
         """
         Compare current data to the previously uploaded data
         :param data:
@@ -123,7 +162,7 @@ class CachedNumberplateHandler:
             return datetime.now().strptime(p[3], "%Y-%m-%d %H:%M:%S")
 
         try:
-            uploaded_cache = CacheHandler.load("uploaded", datetime.now().strftime("%Y-%m-%d"))
+            uploaded_cache = await CacheHandler.load("uploaded", datetime.now().strftime("%Y-%m-%d"))
             result = []
             if uploaded_cache is not None:
                 if len(uploaded_cache) > 0:

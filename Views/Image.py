@@ -1,14 +1,16 @@
 import cv2
 import numpy as np
 
+from Handlers.FrameHandler import FrameHandler
 from Handlers.ThreadHandler import ThreadWithReturnValue
 from Helper.ProcessHelper import ProcessHelper
+from cvlib.CvHelper import CvHelper
 from tess.tesseract import Tess
 
 
 class Image:
 
-    def __init__(self, filename):
+    def __init__(self, filename, tess, cv_q):
         self.path = filename
         self.filename = ""
         self.set_name(filename)
@@ -20,22 +22,21 @@ class Image:
         self.char = []
         self.char_raw = []
         self.data = {}
-        self.processHelper = ProcessHelper()
-        self.tess = Tess()
+        self.processHelper = ProcessHelper(cv_q)
+        self.tess = tess
 
     def start(self):
         img = cv2.imread(self.path, cv2.IMREAD_COLOR)
-        self.frame = img
-        while self.active:
 
+        while self.active:
+            self.frame = img
             result, drawn, raw, chars = self.processHelper.analyse_frames(img.copy())
-            if raw is not None:
-                self.raw = raw
 
             if drawn is not None:
                 self.frame = drawn
-            else:
-                self.frame = img
+
+            if raw is not None:
+                self.raw = raw
 
             if chars is not None:
                 self.char = chars
@@ -46,6 +47,8 @@ class Image:
                     t = ThreadWithReturnValue(target=self.tess.multi, args=(result,))
                     t.start()
                     self.data = t.join()
+
+            FrameHandler.add_obj([self.filename, np.hstack((self.frame, CvHelper.gray2rgb(self.raw)))])
 
     def set_active(self, val):
         self.active = val
@@ -69,5 +72,5 @@ class Image:
     def get_char_raw(self):
         return self.char_raw
 
-    def get_output(self):
-        return self.data
+    def get_ip(self):
+        return self.filename
