@@ -99,7 +99,7 @@ class BackdropHandler:
                                        self.cv_q.sync_q, )
             event_loop.run_in_executor(None, self.scan_helper, self.frames_q)
 
-            asyncio.ensure_future(self.add_video(self.frames_q, self.cameras, self.active), loop=event_loop)
+            #asyncio.ensure_future(self.add_video(self.frames_q, self.cameras, self.active), loop=event_loop)
             asyncio.ensure_future(FrameHandler.clean(self.camera_queue.async_q), loop=event_loop)
             asyncio.ensure_future(self.location_update(), loop=event_loop)
             asyncio.ensure_future(self.cleanup_temp(), loop=event_loop)
@@ -111,7 +111,7 @@ class BackdropHandler:
             asyncio.ensure_future(self.meta_queue_handler(self.meta_time.async_q, self.meta_queue.async_q),
                                   loop=event_loop)
             asyncio.ensure_future(self.cache_queue_handler(self.cache_queue.async_q), loop=event_loop)
-            asyncio.ensure_future(self.check_alive(), loop=event_loop)
+            # asyncio.ensure_future(self.check_alive(), loop=event_loop)
 
             event_loop.run_forever()
         except Exception as e:
@@ -140,12 +140,20 @@ class BackdropHandler:
                         non_active.add(x)
 
                 if len(non_active) > 0:
-                    for x in non_active:
-                        tmp = Camera(x)
-                        self.cameras.add((x, tmp))
-                        p = Thread(target=tmp.start, args=(frames_q.sync_q,))
-                        self.active.add((x, p))
-                        p.start()
+                    pool = []
+                    loop = asyncio.new_event_loop()
+                    try:
+                        for x in non_active:
+                            tmp = Camera(x)
+                            self.cameras.add((x, tmp))
+                            pool.append(asyncio.ensure_future(tmp.start(frames_q.async_q), loop=loop))
+                            # p = Thread(target=tmp.start, args=(frames_q.sync_q,))
+                            # self.active.add((x, coro))
+                            # p.start()
+                        loop.run_forever()
+                    finally:
+                        loop.run_until_complete(loop.shutdown_asyncgens())
+                        loop.close()
             sleep(10)
 
     async def add_video(self, frames_q, cameras, active):
