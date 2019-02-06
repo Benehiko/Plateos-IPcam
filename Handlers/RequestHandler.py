@@ -50,7 +50,7 @@ class Request:
             if r.status_code == 200:
                 return True
         except Exception as e:
-            print("Post Error\n", e)
+            print("Couldn't Post")
             pass
         return False
 
@@ -92,10 +92,10 @@ class Request:
             d = [('mac', Request.get_mac(interface)), ('ip', ip), ('time', now), ('alias', alias)]
             j = dict(d)
             t = dict([("device", j), ('cameras', cameras)])
-            print("Posting:", t)
+            # print("Posting:", t)
             Request.send(url, t)
         except URLError as e:
-            print("Ping Location: ", e)
+            # print("Ping Location: ", e)
             pass
 
     @staticmethod

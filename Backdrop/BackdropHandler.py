@@ -1,23 +1,26 @@
+import asyncio
 import concurrent
-import time
+import pathlib
+from asyncio import Condition
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
-import pathlib
-from multiprocessing import Process, Queue, Condition
+from multiprocessing import Process
 from os import listdir
 from os.path import isfile, join
 from threading import Thread
 from time import sleep
 
-from Handlers.FrameHandler import FrameHandler
-from Helper.ProcessHelper import ProcessHelper
-from Views.Camera import Camera
+import janus
+
 from Camera.CameraScan import CameraScan
 from Handlers.CacheHandler import CacheHandler
 from Handlers.CachedNumberplateHandler import CachedNumberplateHandler
+from Handlers.FrameHandler import FrameHandler
 from Handlers.PropertyHandler import PropertyHandler
 from Handlers.RequestHandler import Request
 from Handlers.ThreadHandler import ThreadWithReturnValue
+from Helper.ProcessHelper import ProcessHelper
+from Views.Camera import Camera
 from Views.Video import Video
 from cvlib.ImageUtil import ImageUtil
 from tess.tesseract import Tess
@@ -59,9 +62,9 @@ class BackdropHandler:
         self.old_time = datetime.now()
 
         # Queues for File handling
-        self.tmp_queue = Queue()
-        self.meta_queue = Queue()
-        self.cache_queue = Queue()
+        self.tmp_queue = None
+        self.meta_queue = None
+        self.cache_queue = None
 
         # Flags for File handling
         self.tmp_access = True
@@ -74,79 +77,61 @@ class BackdropHandler:
         self.c_cache = Condition()
         self.c_upload = Condition()
 
-        self.meta_time = Queue()
-        self.meta_time.put(datetime.now())
+        self.meta_time = None
         self.camera_queue = None
         self.cv_q = None
         self.frames_q = None
 
-    def start(self, queue, cv_q, frames_q):
+    def start(self, main_loop: asyncio.AbstractEventLoop, queue, cv_q, frames_q):
+        self.tmp_queue = janus.Queue(loop=main_loop)
+        self.meta_queue = janus.Queue(loop=main_loop)
+        self.cache_queue = janus.Queue(loop=main_loop)
+        self.meta_time = janus.Queue(loop=main_loop)
+
         self.camera_queue = queue
         self.cv_q = cv_q
         self.frames_q = frames_q
 
-        scan_helper = Thread(target=self.scan_helper)
-        scan_helper.start()
+        event_loop = main_loop
+        try:
+            event_loop.run_in_executor(None, self.process_frames,
+                                       self.tmp_queue.sync_q, self.meta_queue.sync_q, self.frames_q.sync_q,
+                                       self.cv_q.sync_q, )
+            event_loop.run_in_executor(None, self.scan_helper, self.frames_q)
 
-        process_frames = Process(target=self.process_frames, args=(self.tmp_queue, self.meta_queue, self.frames_q))
-        process_frames.start()
+            asyncio.ensure_future(self.add_video(self.frames_q, self.cameras, self.active), loop=event_loop)
+            asyncio.ensure_future(FrameHandler.clean(self.camera_queue.async_q), loop=event_loop)
+            asyncio.ensure_future(self.location_update(), loop=event_loop)
+            asyncio.ensure_future(self.cleanup_temp(), loop=event_loop)
+            asyncio.ensure_future(self.cleanup_saved_files(), loop=event_loop)
+            asyncio.ensure_future(self.offline_check(), loop=event_loop)
+            asyncio.ensure_future(self.process_temp(self.cache_queue.async_q),
+                                  loop=event_loop)
+            asyncio.ensure_future(self.tmp_queue_handler(self.tmp_queue.async_q), loop=event_loop)
+            asyncio.ensure_future(self.meta_queue_handler(self.meta_time.async_q, self.meta_queue.async_q),
+                                  loop=event_loop)
+            asyncio.ensure_future(self.cache_queue_handler(self.cache_queue.async_q), loop=event_loop)
+            asyncio.ensure_future(self.check_alive(), loop=event_loop)
 
-        clean_frame = Thread(target=FrameHandler.clean)
-        clean_frame.start()
+            event_loop.run_forever()
+        except Exception as e:
+            print("Running Asyncio Tasks Error", e)
+        finally:
+            event_loop.run_until_complete(event_loop.shutdown_asyncgens())
+            event_loop.close()
 
-        ping_location = Thread(target=self.location_update)
-        ping_location.start()
-
-        cleanup_temp = Thread(target=self.cleanup_temp, args=(self.c_tmp,))
-        cleanup_temp.start()
-
-        cleanup_cache = Thread(target=self.cleanup_saved_files,
-                               args=(self.c_cache, self.c_meta, self.c_upload,))
-        cleanup_cache.start()
-
-        offline_check = Thread(target=self.offline_check)
-        offline_check.start()
-
-        tmp_queue_handler = Thread(target=self.tmp_queue_handler, args=(self.c_tmp, self.tmp_queue,))
-        tmp_queue_handler.start()
-
-        meta_queue_handler = Thread(target=self.meta_queue_handler, args=(self.c_meta, self.meta_time))
-        meta_queue_handler.start()
-
-        cache_queue_handler = Thread(target=self.cache_queue_handler, args=(self.c_cache, self.cache_queue))
-        cache_queue_handler.start()
-
-        cache = Thread(target=self.process_temp, args=(self.c_tmp, self.c_cache, self.c_upload, self.cache_queue))
-        cache.start()
-
-        check_alive = Thread(target=self.check_alive)
-        check_alive.start()
-
-        clean_frame.join()
-        ping_location.join()
-        cleanup_temp.join()
-        cleanup_cache.join()
-        offline_check.join()
-        tmp_queue_handler.join()
-        meta_queue_handler.join()
-        cache_queue_handler.join()
-        cache.join()
-        check_alive.join()
-        scan_helper.join()
-        process_frames.join()
-
-    def scan_helper(self):
+    def scan_helper(self, frames_q: janus.Queue):
         """
         Scan cameras on the network
 
         :return:
         """
+        print("Starting to scan for cameras")
         while True:
             t_camera = ThreadWithReturnValue(target=self.scanner.scan,
                                              args=(PropertyHandler.app_settings["camera"]["iprange"],))
             t_camera.start()
             found_camera = t_camera.join()
-            #found_camera = ["demo.mp4"]
             non_active = set()
             if len(found_camera) > 0:
                 tmp_cameras = [x[0] for x in self.cameras]
@@ -158,10 +143,18 @@ class BackdropHandler:
                     for x in non_active:
                         tmp = Camera(x)
                         self.cameras.add((x, tmp))
-                        p = Process(target=tmp.start, args=(self.frames_q,))
+                        p = Thread(target=tmp.start, args=(frames_q.sync_q,))
                         self.active.add((x, p))
                         p.start()
             sleep(10)
+
+    async def add_video(self, frames_q, cameras, active):
+        videos = "demo.mp4"
+        tmp = Video(videos)
+        cameras.add((videos, tmp))
+        p = Thread(target=tmp.start, args=(frames_q.sync_q,))
+        active.add((videos, p))
+        p.start()
 
     def add(self, ip, cameras, active):
         """
@@ -187,65 +180,56 @@ class BackdropHandler:
             print(e)
             pass
 
-    def process_temp(self, cv_tmp: Condition, cv_cache: Condition, cv_upload: Condition, cache_q: Queue):
+    async def process_temp(self,
+                           cache_q: janus.Queue.async_q):
         """
         Extract numberplate from tmp directory and build confidence based off of tmp files.
         Once confidence is built, compare to existing cache data, remove duplications and upload (only if data is 2 min newer than cache)
         If cache does not contain such data, upload the file regardless of waiting time (2min).
         Save to cache.
+        :param cache_q:
         :param cv_upload: Condition
         :param cv_cache: Condition
         :type cv_tmp: Condition
         """
         while True:
             try:
-                # temp_list = None
-                with cv_tmp:
-                    cv_tmp.wait()
-                    print("Attempting Confidence Build")
-                    temp_list = CachedNumberplateHandler.combine_tmp_data()
-                    # cv_tmp.notify_all()
-                    if temp_list is not None:
-                        refined_temp = CachedNumberplateHandler.improve_confidence(temp_list)
-                        if refined_temp is not None:
-                            # upload_list = []
-                            with cv_cache:
-                                in_cache, out_cache = CachedNumberplateHandler.compare_to_cached(refined_temp)
-                                # cv_cache.wait()
-                                if len(in_cache) > 0:
-                                    CacheHandler.update_plate_cache(datetime.now().strftime(
-                                        "%Y-%m-%d %H"), in_cache)
-                                upload_list = in_cache + out_cache
-                                cv_cache.notify_all()
-                            if len(upload_list) > 0:
-                                with cv_upload:
-                                    upload_dict = CachedNumberplateHandler.compare_to_uploaded(upload_list)
-                                    if upload_dict is not None:
-                                        if len(upload_dict) > 0:
-                                            with_images = CachedNumberplateHandler.get_tmp_images(upload_dict)
-                                            upload_tuple = CachedNumberplateHandler.convert_dict_to_tuple(
-                                                with_images)
-                                            if len(upload_tuple) > 0:
-                                                # Don't remove image from tuple - uploading everything with conf 0.6 >
-                                                # upload_tuple = [x[:-1] for x in upload_tuple]
-                                                uploaded = [x[:-1] for x in upload_tuple]
-                                                CacheHandler.save_upload("uploaded",
-                                                                         datetime.now().strftime("%Y-%m-%d"),
-                                                                         uploaded)
-                                                self.upload_dataset(upload_tuple)
-                                                print("Uploading: ", uploaded)
+                temp_list = await CachedNumberplateHandler.combine_tmp_data()
+                if temp_list is not None and len(temp_list) > 0:
+                    refined_temp = await CachedNumberplateHandler.improve_confidence(temp_list)
+                    upload_list = []
+                    if refined_temp is not None:
+                        in_cache, out_cache = await CachedNumberplateHandler.compare_to_cached(refined_temp)
+                        if len(in_cache) > 0:
+                            await CacheHandler.update_plate_cache(datetime.now().strftime(
+                                "%Y-%m-%d %H"), in_cache)
+                        upload_list = in_cache + out_cache
 
-                                                cache_q.put(upload_dict)
-                                    cv_upload.notify_all()
-                                # cv_cache.notify_all()
+                    if len(upload_list) > 0:
+                        upload_dict = await CachedNumberplateHandler.compare_to_uploaded(upload_list)
+                        if upload_dict is not None:
+                            if len(upload_dict) > 0:
+                                with_images = await CachedNumberplateHandler.get_tmp_images(upload_dict)
+                                upload_tuple = CachedNumberplateHandler.convert_dict_to_tuple(
+                                    with_images)
+                                if len(upload_tuple) > 0:
+                                    # Don't remove image from tuple - uploading everything with conf 0.6 >
+                                    # upload_tuple = [x[:-1] for x in upload_tuple]
+                                    uploaded = [x[:-1] for x in upload_tuple]
+                                    await CacheHandler.save_upload("uploaded",
+                                                                   datetime.now().strftime("%Y-%m-%d"),
+                                                                   uploaded)
+                                    await self.upload_dataset(upload_tuple)
+                                    print("Uploading: ", uploaded)
 
-                    # cv_tmp.notify_all()
+                                    cache_q.put_nowait(upload_dict)
+
             except Exception as e:
                 print(e)
                 pass
-            sleep(0.2)
+            await asyncio.sleep(1)
 
-    def check_alive(self):
+    async def check_alive(self):
         """
         Check if a camera is alive or not. Remove it from the camera list.
         :return:
@@ -263,9 +247,9 @@ class BackdropHandler:
                                 break
                 except Exception as e:
                     print("Tried to remove process", e)
-            sleep(5)
+            await asyncio.sleep(5)
 
-    def upload_dataset(self, data):
+    async def upload_dataset(self, data):
         """
         Upload finalised data
         :param data:
@@ -275,43 +259,36 @@ class BackdropHandler:
             url = "http://" + self.url + self.addplate
             if Request.post(self.interface, data, url) is False:
                 now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                CacheHandler.save_cache("offline", now, data)
+                await CacheHandler.save_cache("offline", now, data)
         except Exception as e:
             print(e)
             pass
 
-    def cleanup_temp(self, cv_tmp: Condition):
+    async def cleanup_temp(self):
         """
         Cleanup temporary directory at the temp-keep property rate.
 
         :param cv_tmp:
         :return:
         """
-        t = datetime.now()
         while True:
-            # if timedelta(minutes=1) < (datetime.now() - t):
-            print("Cleaning up temp...")
-            with cv_tmp:
-                cv_tmp.wait()
-                try:
-                    # pathlib.Path("../plateos-files/tmp/").mkdir(parents=True, exist_ok=True)
-                    files = CacheHandler.get_file_list("tmp")
-                    if len(files) > 0:
-                        now = datetime.now()
-                        for x in files:
-                            diff = now - datetime.strptime(x, "%Y-%m-%d %H:%M")
-                            if timedelta(seconds=int(self.rates["temp-keep"])) <= diff:
-                                CacheHandler.remove("tmp", x)
-                                CacheHandler.remove("tmp/images", x)
-                except Exception as e:
-                    print("Error on Cleaning tmp", e)
-                    pass
-                    # cv_tmp.notify_all()
-                # t = datetime.now()
-            sleep(180)
+            try:
+                files = CacheHandler.get_file_list("tmp")
+                if len(files) > 0:
+                    now = datetime.now()
+                    for x in files:
+                        diff = now - datetime.strptime(x, "%Y-%m-%d %H:%M")
+                        if timedelta(seconds=int(self.rates["temp-keep"])) <= diff:
+                            print("Cleaning up temp...[rate=", self.rates["temp-keep"], "]")
+                            CacheHandler.remove("tmp", x)
+                            CacheHandler.remove("tmp/images", x)
+            except Exception as e:
+                print("Error on Cleaning tmp", e)
+                pass
+            await asyncio.sleep(10)
 
     # noinspection PyMethodMayBeStatic
-    def cleanup_saved_files(self, cv_cache: Condition, cv_meta: Condition, cv_upload: Condition):
+    async def cleanup_saved_files(self):
         """
         Cleanup saved files in all sectors (cache, meta, uploaded) at the cache-keep, meta-keep and uploaded-keep rates
 
@@ -320,87 +297,78 @@ class BackdropHandler:
         :param cv_upload:
         :return:
         """
-        t = datetime.now()
         while True:
-            if timedelta(minutes=10) < (datetime.now() - t):
-                print("Cleaning up cache...")
-                with cv_cache:
-                    try:
-                        # pathlib.Path("../plateos-files/cache/").mkdir(parents=True, exist_ok=True)
-                        files = CacheHandler.get_file_list("cache")
-                        if len(files) > 0:
-                            for x in files:
-                                file_last_date = datetime.strptime(x, "%Y-%m-%d %H")
-                                now = datetime.now()
-                                diff = now - file_last_date
-                                if timedelta(seconds=int(self.rates["cache-keep"])) <= diff:
-                                    CacheHandler.remove("cache", file_last_date.strftime("%Y-%m-%d %H"))
-                                    CacheHandler.remove("cache/images", file_last_date.strftime("%Y-%m-%d %H"))
-                    except Exception as e:
-                        print("Error on Cleaning Cache", e)
-                        pass
-                    cv_cache.notify_all()
+            try:
+                # pathlib.Path("../plateos-files/cache/").mkdir(parents=True, exist_ok=True)
+                files = CacheHandler.get_file_list("cache")
+                if len(files) > 0:
+                    for x in files:
+                        file_last_date = datetime.strptime(x, "%Y-%m-%d %H")
+                        now = datetime.now()
+                        diff = now - file_last_date
+                        if timedelta(seconds=int(self.rates["cache-keep"])) <= diff:
+                            print("Cleaning up cache...[rate=", self.rates["cache-keep"], "]")
+                            CacheHandler.remove("cache", file_last_date.strftime("%Y-%m-%d %H"))
+                            CacheHandler.remove("cache/images", file_last_date.strftime("%Y-%m-%d %H"))
+            except Exception as e:
+                print("Error on Cleaning Cache", e)
+                pass
+                # cv_cache.notify_all()
+            try:
+                # pathlib.Path("../plateos-files/meta/").mkdir(parents=True, exist_ok=True)
+                files = CacheHandler.get_file_list("meta")
+                if len(files) > 0:
+                    now = datetime.now()
+                    for x in files:
+                        file_last_date = datetime.strptime(x, "%Y-%m-%d %H:%M")
+                        diff = now - file_last_date
+                        if timedelta(seconds=int(self.rates["meta-keep"])) <= diff:
+                            print("Cleaning up meta...[rate=", self.rates["meta-keep"], "]")
+                            CacheHandler.remove("meta", file_last_date.strftime("%Y-%m-%d %H:%M"))
+            except Exception as e:
+                print("Error on Cleaning Meta", e)
+                pass
+                # cv_meta.notify_all()
 
-                with cv_meta:
-                    try:
-                        # pathlib.Path("../plateos-files/meta/").mkdir(parents=True, exist_ok=True)
-                        files = CacheHandler.get_file_list("meta")
-                        if len(files) > 0:
-                            now = datetime.now()
-                            for x in files:
-                                file_last_date = datetime.strptime(x, "%Y-%m-%d %H:%M")
-                                diff = now - file_last_date
-                                if timedelta(seconds=int(self.rates["meta-keep"])) <= diff:
-                                    CacheHandler.remove("meta", file_last_date.strftime("%Y-%m-%d %H:%M"))
-                    except Exception as e:
-                        print("Error on Cleaning Meta", e)
-                        pass
-                    cv_meta.notify_all()
+            try:
+                # pathlib.Path("../plateos-files/uploaded/").mkdir(parents=True, exist_ok=True)
+                files = CacheHandler.get_file_list("uploaded")
+                if len(files) > 0:
+                    now = datetime.now()
+                    for x in files:
+                        diff = now - datetime.strptime(x, "%Y-%m-%d")
+                        if timedelta(seconds=int(self.rates["uploaded-keep"])) <= diff:
+                            print("Cleaning up uploaded...[rate=", self.rates["uploaded-keep"], "]")
+                            CacheHandler.remove("uploaded", x)
+            except Exception as e:
+                print("Error on Cleaning upload", e)
+                pass
+            await asyncio.sleep(10)
 
-                with cv_upload:
-                    try:
-                        # pathlib.Path("../plateos-files/uploaded/").mkdir(parents=True, exist_ok=True)
-                        files = CacheHandler.get_file_list("uploaded")
-                        if len(files) > 0:
-                            now = datetime.now()
-                            for x in files:
-                                diff = now - datetime.strptime(x, "%Y-%m-%d")
-                                if timedelta(seconds=int(self.rates["uploaded-keep"])) <= diff:
-                                    CacheHandler.remove("uploaded", x)
-                    except Exception as e:
-                        print("Error on Cleaning upload", e)
-                        pass
-                    cv_upload.notify_all()
-                t = datetime.now()
-
-    def offline_check(self):
+    async def offline_check(self):
         """
         Check offline data (saved data when network is offline) for upload.
         :return:
         """
-        t = datetime.now()
         while True:
-            if timedelta(minutes=30) < (datetime.now() - t):
-                print("Checking offline cache...")
-                if Request.check_connectivity():
-                    try:
-                        pathlib.Path("../plateos-files/offline/").mkdir(parents=True, exist_ok=True)
-                        files = [f.replace('.npz', '') for f in listdir("../plateos-files/offline") if
-                                 isfile(join("../plateos-files/offline", f))]
-                        if len(files) > 0:
-                            for x in files:
-                                tmp = CacheHandler.load("offline", x).tolist()
-                                if tmp is not None:
-                                    # upload_tuple = CachedNumberplateHandler.convert_dict_to_tuple(tmp)
-                                    print("Attempting to Upload Offline...")
-                                    if Request.post(self.interface, tmp, self.url):
-                                        CacheHandler.remove("offline", x)
-                    except Exception as e:
-                        print("Offline Check", e)
-                        pass
-                t = datetime.now()
+            if Request.check_connectivity():
+                try:
+                    pathlib.Path("../plateos-files/offline/").mkdir(parents=True, exist_ok=True)
+                    files = [f.replace('.npz', '') for f in listdir("../plateos-files/offline") if
+                             isfile(join("../plateos-files/offline", f))]
+                    if len(files) > 0:
+                        for x in files:
+                            tmp = await CacheHandler.load("offline", x)
+                            if tmp is not None:
+                                if Request.post(self.interface, tmp.tolist(), self.url):
+                                    print("Offline uploaded...")
+                                    CacheHandler.remove("offline", x)
+                except Exception as e:
+                    print("Offline upload Error", e)
+                    pass
+            await asyncio.sleep(10)
 
-    def location_update(self):
+    async def location_update(self):
         """
         Give updates to the server about the device (online status)
         :return:
@@ -408,6 +376,7 @@ class BackdropHandler:
         t = datetime.now()
         while True:
             if timedelta(seconds=int(self.rates["location-update"])) < (datetime.now() - t):
+                print("Updating location...[rate=", self.rates["location-update"], "]")
                 try:
                     if Request.check_connectivity():
                         url = "http://" + self.url + self.addlocation
@@ -419,87 +388,87 @@ class BackdropHandler:
                     print("Ping Location Error", e)
                     pass
                 t = datetime.now()
+            await asyncio.sleep(10)
 
-    def tmp_queue_handler(self, cv: Condition, tmp_queue):
+    async def tmp_queue_handler(self, tmp_queue: janus.Queue.async_q):
         """
         Temp data across threads/processes - save temp files (used to build confidence)
+        :param tmp_queue:
         :param cv:
         :return:
         """
         while True:
             try:
-                with cv:
-                    out = []
-                    while not tmp_queue.empty():
-                        val = tmp_queue.get_nowait()
-                        if val is not None:
-                            out += val
-                    if len(out) > 0:
-                        print("Saving Temp...")
-                        now = datetime.now().strftime('%Y-%m-%d %H:%M')
-                        CacheHandler.save_tmp("tmp", now, out)
-                    cv.notify_all()
+                out = []
+                while not tmp_queue.empty():
+                    val = await tmp_queue.get()
+                    if val is not None:
+                        out += val
+                    tmp_queue.task_done()
+
+                if len(out) > 0:
+                    print("Saving Temp...")
+                    now = datetime.now().strftime('%Y-%m-%d %H:%M')
+                    await CacheHandler.save_tmp("tmp", now, out)
             except Exception as e:
                 pass
-            sleep(1)
+            await asyncio.sleep(1)
 
-    def meta_queue_handler(self, cv: Condition, meta_time):
+    async def meta_queue_handler(self, meta_time: janus.Queue.async_q, meta_queue: janus.Queue.async_q):
         """
         Handle meta data across threads/processes - save meta data according to meta-rate property
+        :param meta_queue:
         :param cv:
         :param meta_time:
         :return:
         """
+        t = datetime.now()
         while True:
-            while not meta_time.empty():
-                prev_time = meta_time.get_nowait()
+            try:
                 now = datetime.now()
-                if prev_time is not None:
-                    diff = now - prev_time
-                    with cv:
-                        out = []
-                        while not self.meta_queue.empty():
-                            val = self.meta_queue.get_nowait()
-                            if val is not None:
-                                if diff > timedelta(seconds=int(self.rates["meta-rate"])):
-                                    out += val
+                diff = now - t
+                out = []
+                while not meta_queue.empty():
+                    val = await meta_queue.get()
 
-                        if len(out):
-                            CacheHandler.save_meta("meta", now.strftime('%Y-%m-%d %H:%M'), out)
-                        if diff > timedelta(seconds=int(self.rates["meta-rate"])):
-                            now = datetime.now()
-                            meta_time.put(now)
-                        else:
-                            meta_time.put(prev_time)
-                        cv.notify_all()
-                else:
-                    now = datetime.now()
-                    meta_time.put(now)
-            # sleep(0.2)
+                    if val is not None:
+                        out += val
+                    meta_queue.task_done()
 
-    def cache_queue_handler(self, cv: Condition, cache_q: Queue):
+                if len(out):
+                    if diff > timedelta(seconds=int(self.rates["meta-rate"])):
+                        print("Saving Meta...[rate=", self.rates["meta-rate"], "]")
+                        await CacheHandler.save_meta("meta", now.strftime('%Y-%m-%d %H:%M'), out)
+                        t = datetime.now()
+            except Exception as e:
+                pass
+
+            await asyncio.sleep(1)
+
+    async def cache_queue_handler(self, cache_q: janus.Queue.async_q):
         """
         Handle cache data across threads/processes - save cache data
+        :param cache_q:
         :param cv:
         :return:
         """
         while True:
-            with cv:
-                out = []
-                while not cache_q.empty():
-                    val = cache_q.get_nowait()
-                    if val is not None:
-                        out += val
-                if len(out) > 0:
-                    print("Saving Cache...")
-                    now = datetime.now().strftime('%Y-%m-%d %H')
-                    CacheHandler.save_cache("cache", now, out)
-                cv.notify_all()
-            # sleep(0.2)
+            out = []
+            while not cache_q.empty():
+                val = cache_q.get_nowait()
+                if val is not None:
+                    out += val
+                cache_q.task_done()
+            if len(out) > 0:
+                print("Saving Cache...")
+                now = datetime.now().strftime('%Y-%m-%d %H')
+                await CacheHandler.save_cache("cache", now, out)
+            await asyncio.sleep(1)
 
-    def process_frames(self, tmp_q, meta_q, frames_q):
-        process = ProcessHelper(self.cv_q)
-
+    def process_frames(self, tmp_q: janus.Queue.sync_q, meta_q: janus.Queue.sync_q, frames_q: janus.Queue.sync_q,
+                       cv_q: janus.Queue.sync_q):
+        process = ProcessHelper(cv_q)
+        print("Starting processing frames")
         while True:
             camera_data = []
             processed = []
@@ -509,6 +478,8 @@ class BackdropHandler:
                 val = frames_q.get_nowait()
                 if val is not None:
                     camera_data.append(val)
+                frames_q.task_done()
+
             # Val contains {"mac": mac, "ip": ip, "image": img}
             # Camera_data is list of Val
             if len(camera_data) > 0:
@@ -549,5 +520,8 @@ class BackdropHandler:
                         else:
                             processed.append(data)
 
-                tmp_q.put(results)
-                meta_q.put(meta)
+                tmp_q.put_nowait(results)
+                meta_q.put_nowait(meta)
+                # tmp_q.join()
+                # meta_q.join()
+                # sleep(1)

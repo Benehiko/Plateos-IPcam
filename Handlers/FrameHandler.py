@@ -1,7 +1,8 @@
+import asyncio
 import base64
-from datetime import datetime, timedelta
+from datetime import datetime
 from io import BytesIO
-from multiprocessing import Queue
+from queue import Queue
 from threading import Thread
 
 import cv2
@@ -64,13 +65,14 @@ class FrameHandler:
             queue.put([obj[0], obj[1]])
 
     @staticmethod
-    def clean():
+    async def clean(q):
         t = datetime.now()
         while True:
-            if timedelta(seconds=2) < (datetime.now() - t):
-                try:
-                    while not FrameHandler.queues.empty():
-                        FrameHandler.queues.get_nowait()
-                except Exception as e:
-                    pass
-                t = datetime.now()
+            # if timedelta(seconds=2) < (datetime.now() - t):
+            try:
+                while not q.queues.empty():
+                    q.queues.get_nowait()
+            except Exception as e:
+                pass
+                # t = datetime.now()
+            await asyncio.sleep(2)
