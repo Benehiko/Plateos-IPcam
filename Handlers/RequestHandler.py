@@ -36,9 +36,7 @@ class Request:
                 out.append(dict(d))
 
             # print("Posting:", out)
-            if Request.check_connectivity():
-                return Request.send(url, out)
-
+            return Request.send(url, out)
         else:
             print("Mac is None")
         return False
@@ -55,9 +53,8 @@ class Request:
         return False
 
     @staticmethod
-    def check_connectivity():
+    def check_connectivity(hostname="8.8.8.8"):
         try:
-            hostname = "8.8.8.8"
             response = subprocess.call(["ping", "-c", "3", hostname], stdout=subprocess.DEVNULL)
             if response == 0:
                 return True
