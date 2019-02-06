@@ -43,7 +43,7 @@ class BackdropHandler:
         # Restful Service
         restful = PropertyHandler.app_settings["restful"]
         self.port = restful["port"]
-        self.url = restful["url"] + ":" + str(self.port)
+        self.url = str(restful["url"]) + ":" + str(self.port)
         self.addplate = restful["addplate"]
         self.addlocation = restful["addlocation"]
 
@@ -257,9 +257,10 @@ class BackdropHandler:
         """
         try:
             url = "http://" + self.url + self.addplate
-            if Request.post(self.interface, data, url) is False:
-                now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                await CacheHandler.save_cache("offline", now, data)
+            if Request.check_connectivity(url.split(":")[1].replace("/", "")):
+                if Request.post(self.interface, data, url) is False:
+                    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    await CacheHandler.save_cache("offline", now, data)
         except Exception as e:
             print(e)
             pass
@@ -351,7 +352,7 @@ class BackdropHandler:
         :return:
         """
         while True:
-            if Request.check_connectivity():
+            if Request.check_connectivity(self.url.split(":")[0]):
                 try:
                     pathlib.Path("../plateos-files/offline/").mkdir(parents=True, exist_ok=True)
                     files = [f.replace('.npz', '') for f in listdir("../plateos-files/offline") if
@@ -378,8 +379,8 @@ class BackdropHandler:
             if timedelta(seconds=int(self.rates["location-update"])) < (datetime.now() - t):
                 print("Updating location...[rate=", self.rates["location-update"], "]")
                 try:
-                    if Request.check_connectivity():
-                        url = "http://" + self.url + self.addlocation
+                    url = "http://" + self.url + self.addlocation
+                    if Request.check_connectivity(url.split(":")[1].replace("/", "")):
                         data = []
                         for x in self.cameras:
                             data.append(x[1].get_camera_data())
