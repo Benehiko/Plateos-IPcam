@@ -7,6 +7,7 @@ from time import sleep
 from urllib.request import urlopen
 
 import cv2
+import janus
 import numpy as np
 
 from Handlers.PropertyHandler import PropertyHandler
@@ -38,7 +39,7 @@ class Camera:
         self.data = []
         self.framequeue = Queue()
 
-    def start(self, q_frames):
+    def start(self, q_frames: janus.Queue.sync_q):
         if self.mac == "":
             return
 
@@ -53,7 +54,7 @@ class Camera:
                     if img is not None:
                         if self.model == "" or self.alias == "":
                             self.model, self.alias = self.get_info()
-                        q_frames.put({"mac": self.mac, "ip": self.ip, "image": img})
+                        q_frames.put_nowait({"mac": self.mac, "ip": self.ip, "image": img})
                 sleep(self.seconds_per_frame)
             except Exception as e:
                 print("Camera", self.get_camera_data()["alias"], self.get_camera_data()["ip"], "Died", "\nReason:", e)

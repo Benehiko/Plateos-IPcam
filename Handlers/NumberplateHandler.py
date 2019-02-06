@@ -241,12 +241,12 @@ class NumberplateHandler:
         return False
 
     @staticmethod
-    def improve(plates):
+    async def improve(plates):
         tmp_copy = copy.deepcopy(plates)
         tmp = NumberplateHandler.remove_duplicates(plates)
         if tmp is not None:
             for i in range(0, len(tmp)):
-                val, cached_plate = NumberplateHandler.search_in_cache(tmp[i])
+                val, cached_plate = await NumberplateHandler.search_in_cache(tmp[i])
                 if val > 0:
                     cache_conf = 0
                     for x in cached_plate:
@@ -277,7 +277,7 @@ class NumberplateHandler:
         return None
 
     @staticmethod
-    def search_in_cache(plate):
+    async def search_in_cache(plate):
         count = 0
         cached_plates = []
         try:
@@ -285,7 +285,7 @@ class NumberplateHandler:
             files = [f.replace('.npz', '') for f in listdir("../plateos-files/cache/") if
                      isfile(join("../plateos-files/cache", f))]
             for filename in files:
-                data = CacheHandler.loadByPlate("cache", filename, plate)
+                data = await CacheHandler.loadByPlate("cache", filename, plate)
                 cached_plates += data
                 count = count + len(data)
         except Exception as e:

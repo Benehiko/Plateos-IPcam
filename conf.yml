@@ -21,11 +21,11 @@ device:
   alias: MBTLynnwood
   interface: enp2s0
 rates:
-  location-update: 300
-  temp-keep: 1800
-  meta-keep: 1728000
-  cache-keep: 7776000
-  uploaded-keep: 172800
-  meta-rate: 180
+  location-update: 1
+  temp-keep: 60
+  meta-keep: 60
+  cache-keep: 60
+  uploaded-keep: 60
+  meta-rate: 60
 processing:
   max-workers: 2
