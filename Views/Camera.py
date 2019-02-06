@@ -1,3 +1,4 @@
+import asyncio
 import json
 import random
 import string
@@ -39,7 +40,7 @@ class Camera:
         self.data = []
         self.framequeue = Queue()
 
-    def start(self, q_frames: janus.Queue.sync_q):
+    async def start(self, q_frames: janus.Queue.async_q):
         if self.mac == "":
             return
 
@@ -57,8 +58,8 @@ class Camera:
                         q_frames.put_nowait({"mac": self.mac, "ip": self.ip, "image": img})
                 sleep(self.seconds_per_frame)
             except Exception as e:
-                print("Camera", self.get_camera_data()["alias"], self.get_camera_data()["ip"], "Died", "\nReason:", e)
-                break
+                print("Camera", self.get_camera_data()["alias"], self.get_camera_data()["ip"], "Died")
+                await asyncio.sleep(1)
 
     def handle_data(self, data, original_img):
         tmp = []
