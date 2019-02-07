@@ -187,8 +187,9 @@ def char_morph(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
         tmp = QueueHandler.cv_queue.get_nowait()
-        tmp["preprocessing"]["otsu"] = data["otsu"]
-        QueueHandler.propertyhandler.set_cv_settings(tmp)
+        if tmp is not None:
+            tmp["preprocessing"]["otsu"] = data["otsu"]
+            QueueHandler.propertyhandler.set_cv_settings(tmp)
 
 
 @socketio.on("erode")
@@ -196,8 +197,9 @@ def erode(data):
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
         tmp = QueueHandler.cv_queue.get_nowait()
-        tmp["preprocessing"]["erode"] = data["erode"]
-        QueueHandler.propertyhandler.set_cv_settings(tmp)
+        if tmp is not None:
+            tmp["preprocessing"]["erode"] = data["erode"]
+            QueueHandler.propertyhandler.set_cv_settings(tmp)
 
 
 @socketio.on("save")
@@ -206,5 +208,6 @@ def save():
     QueueHandler.propertyhandler.get_cv_settings(QueueHandler.cv_queue)
     while not QueueHandler.cv_queue.empty():
         tmp = QueueHandler.cv_queue.get_nowait()
-        PropertyHandler.save("detection.yml", tmp)
-    socketio.emit("saved")
+        if tmp is not None:
+            PropertyHandler.save("detection.yml", tmp)
+            socketio.emit("saved")

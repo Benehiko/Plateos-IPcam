@@ -3,8 +3,6 @@ import json
 import random
 import string
 from datetime import datetime
-from multiprocessing import Queue
-from time import sleep
 from urllib.request import urlopen
 
 import cv2
@@ -38,7 +36,6 @@ class Camera:
         self.raw = np.zeros([100, 100, 3], dtype=np.uint8)
         self.raw.fill(255)
         self.data = []
-        self.framequeue = Queue()
 
     async def start(self, q_frames: janus.Queue.async_q):
         if self.mac == "":
@@ -56,7 +53,7 @@ class Camera:
                         if self.model == "" or self.alias == "":
                             self.model, self.alias = self.get_info()
                         q_frames.put_nowait({"mac": self.mac, "ip": self.ip, "image": img})
-                sleep(self.seconds_per_frame)
+                await asyncio.sleep(self.seconds_per_frame)
             except Exception as e:
                 print("Camera", self.get_camera_data()["alias"], self.get_camera_data()["ip"], "Died")
                 await asyncio.sleep(1)
