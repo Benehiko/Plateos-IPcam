@@ -41,23 +41,28 @@ Below are some steps that you can follow to install Teseract 4 and OpenCV 4.3.2.
 
 ### Tesseract 4.0
 
+```shell
 echo "Intalling Tesseract [4] ..."
 echo $pass | sudo -S mkdir -p /usr/share/tesseract-ocr/4.00/tessdata/
 wget https://github.com/tesseract-ocr/tessdata/raw/4.00/eng.traineddata
 wget https://github.com/tesseract-ocr/tessdata/raw/3.04.00/osd.traineddata
 echo $pass | sudo -S cp *.traineddata /usr/share/tesseract-ocr/4.00/tessdata/
 echo $pass | sudo -S apt install --assume-yes tesseract-ocr libtesseract-dev libleptonica-dev
+```
 
 ### OpenCv 4.3.2
 
+```shell
 echo "Installing OpenCV [4.3.2] ..."
 wget -O opencv.tar.gz "https://github.com/opencv/opencv/archive/3.4.2.tar.gz"
 wget -O opencv_contrib.tar.gz "https://github.com/opencv/opencv_contrib/archive/3.4.2.tar.gz"
 tar xvf opencv.tar.gz
 tar xvf opencv_contrib.tar.gz
+```
 
 ### Install OpenCV system packages
 
+```shell
 echo $pass | sudo -S apt install --assume-yes build-essential cmake unzip pkg-config
 echo $pass | sudo -S apt install --assume-yes libjpeg-dev libpng-dev libtiff-dev
 echo $pass | sudo -S apt install --assume-yes libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
@@ -65,9 +70,11 @@ echo $pass | sudo -S apt install --assume-yes libxvidcore-dev libx264-dev
 echo $pass | sudo -S apt install --assume-yes libatlas-base-dev gfortran  liblapacke-dev
 sudo add-apt-repository "deb http://za.archive.ubuntu.com/ubuntu/ xenial main"
 sudo apt install libjasper1 libjasper-dev
+```
 
 ### Compile OpenCV && Install python
 
+```shell
 mkdir -p opencv-3.4.2/build/
 cd opencv-3.4.2/build/
 cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=/usr/local DOPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-3.4.2/modules/ -DINSTALL_PYTHON_EXAMPLES=OFF -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF -DPYTHON_EXECUTABLE=/usr/bin/python3.6 -DENABLE_PRECOMPILED_HEADERS=OFF ..
@@ -75,3 +82,4 @@ make -j $(($(nproc) + 1))
 sudo make install
 sudo ldconfig
 echo $pass | sudo -S mv /usr/local/lib/python3.6/dist-packages/cv2.cpython-36m-x86_64-linux-gnu.so /usr/local/lib/python3.6/dist-packages/cv2.so
+```
